@@ -14,6 +14,7 @@ import com.expleague.ml.loss.L2;
 import com.expleague.ml.loss.WeightedLoss;
 import com.expleague.ml.methods.greedyRegion.GreedyProbLinearRegion;
 import com.expleague.ml.testUtils.TestResourceLoader;
+import gnu.trove.list.array.TIntArrayList;
 import org.junit.Assert;
 
 import java.io.IOException;
@@ -47,6 +48,7 @@ public class GridTest extends FileTestCase {
 
   public void testGrid1() throws IOException {
     final BFGrid grid = GridTools.medianGrid(learn.vecData(), 32);
+
 //    assertEquals(624, grid.size());
     checkResultByFile(BFGrid.CONVERTER.convertTo(grid).toString());
   }
@@ -57,7 +59,8 @@ public class GridTest extends FileTestCase {
   }
 
   public void testBinarize1() throws IOException {
-    final BFGrid grid = GridTools.medianGrid(learn.vecData(), 32);
+     final BFGrid grid = GridTools.medianGrid(learn.vecData(), 32);
+    //System.out.println(learn.vecData());
     assertEquals(1, grid.row(4).size());
     final byte[] bins = new byte[learn.vecData().xdim()];
     final Vec point = new ArrayVec(learn.vecData().xdim());
@@ -65,6 +68,8 @@ public class GridTest extends FileTestCase {
     point.set(17, 0);
 
     grid.binarizeTo(point, bins);
+
+    //System.out.println(bins.length);
     assertEquals(28, bins[0]);
     assertEquals(0, bins[17]);
     assertFalse(grid.bf(28).value(bins));
@@ -217,6 +222,154 @@ public class GridTest extends FileTestCase {
       x.set(0, i * 0.1 - 5);
       System.out.println(x + "\t" + scoreFromLambda.value(x));
     }
+  }
+
+  public void testInsertBorder() {
+    TIntArrayList borders = new TIntArrayList();
+    borders.add(new int[]{1, 3, 5, 7, 9});
+    TIntArrayList mergedBorders = GridTools.insertBorder(borders, 2);
+    assertEquals(2, mergedBorders.get(1));
+    assertEquals(6, mergedBorders.size());
+  }
+
+  // feature with same sorted order
+  public void testCalculatePartitionScore1() {
+    int[] mapper = new int[]{0, 0, 0, 0, 1, 1, 1, 1};
+    double[] feature2 = new double[]{1, 2, 3, 4, 5, 6, 7, 8};
+    TIntArrayList bordersFeature2 = new TIntArrayList();
+    bordersFeature2.add(8); // last border
+    int newBorder = 2;
+    double score1 = GridTools.calculatePartitionScore(mapper, feature2, bordersFeature2, newBorder);
+    assertEquals(-8.317, score1, 0.001);
+  }
+
+  // feature with same sorted order
+  public void testCalculatePartitionScore2() {
+    int[] mapper = new int[]{0, 0, 0, 0, 1, 1, 1, 1};
+    double[] feature2 = new double[]{1, 2, 3, 4, 5, 6, 7, 8};
+    TIntArrayList bordersFeature2 = new TIntArrayList();
+    bordersFeature2.add(8); // last border
+    int newBorder = 3;
+    double score1 = GridTools.calculatePartitionScore(mapper, feature2, bordersFeature2, newBorder);
+    System.out.println(score1);
+    assertEquals(-8.841, score1, 0.001);
+  }
+
+  // feature with same sorted order
+  public void testCalculatePartitionScore3() {
+    int[] mapper = new int[]{0, 0, 0, 0, 1, 1, 1, 1};
+    double[] feature2 = new double[]{1, 2, 3, 4, 5, 6, 7, 8};
+    TIntArrayList bordersFeature2 = new TIntArrayList();
+    bordersFeature2.add(8); // last border
+    int newBorder = 1;
+    double score1 = GridTools.calculatePartitionScore(mapper, feature2, bordersFeature2, newBorder);
+    assertEquals(-8.841, score1, 0.001);
+  }
+
+  // feature with same sorted order
+  public void testCalculatePartitionScore4() {
+    int[] mapper = new int[]{0, 0, 0, 0, 1, 1, 1, 1};
+    double[] feature2 = new double[]{1, 2, 3, 4, 5, 6, 7, 8};
+    TIntArrayList bordersFeature2 = new TIntArrayList();
+    bordersFeature2.add(8); // last border
+    int newBorder = 4;
+    double score1 = GridTools.calculatePartitionScore(mapper, feature2, bordersFeature2, newBorder);
+    assertEquals(-11.09, score1, 0.001);
+  }
+
+  // f1: 1234|5678 / f2: 37561284
+  public void testCalculatePartitionScore5() {
+    int[] mapper = new int[]{0, 1, 1, 1, 0, 0, 0, 1};
+    double[] feature2 = new double[]{3, 7, 5, 6, 1, 2, 8, 4};
+    TIntArrayList bordersFeature2 = new TIntArrayList();
+    bordersFeature2.add(8); // last border
+    int newBorder = 6;
+    double score1 = GridTools.calculatePartitionScore(mapper, feature2, bordersFeature2, newBorder);
+    assertEquals(-6.591, score1, 0.001);
+  }
+
+  // feature with same sorted order
+  public void testBestPartition1() {
+    int[] mapper = new int[]{0, 0, 0, 0, 1, 1, 1, 1};
+    double[] feature2 = new double[]{1, 2, 3, 4, 5, 6, 7, 8};
+    TIntArrayList bordersFeature2 = new TIntArrayList();
+    bordersFeature2.add(8); // last border
+    GridTools.PartitionResult result = GridTools.bestPartition(mapper, feature2, bordersFeature2);
+    assertEquals(2, result.getSplitPosition());
+  }
+
+  // f1: 1234|5678 / f2: 37561284
+  public void testBestPartition2() {
+    int[] mapper = new int[]{0, 1, 1, 1, 0, 0, 0, 1};
+    double[] feature2 = new double[]{3, 7, 5, 6, 1, 2, 8, 4};
+    TIntArrayList bordersFeature2 = new TIntArrayList();
+    bordersFeature2.add(8); // last border
+    GridTools.PartitionResult result = GridTools.bestPartition(mapper, feature2, bordersFeature2);
+    assertEquals(3, result.getSplitPosition());
+  }
+
+  public void testBuildBinsMapper1() {
+    double[] f1 = new double[]{1, 2, 3, 4, 5, 6, 7, 8};
+    double[] f2 = new double[]{5, 6, 1, 8, 3, 4, 2, 7};
+
+    int[] sortedf1 = new int[]{0, 1, 2, 3, 4, 5, 6, 7};
+    int[] sortedf2 = new int[]{2, 6, 4, 5, 0, 1, 7, 3};
+
+    TIntArrayList bordersf1 = new TIntArrayList();
+    bordersf1.add(4);
+    bordersf1.add(8);
+
+    int[] actual = GridTools.buildBinsMapper(bordersf1, sortedf1, sortedf2);
+    int[] expected = new int[]{0, 1, 1, 1, 0, 0, 1, 0};
+
+    for (int i = 0; i < actual.length; i++) {
+      assertEquals(expected[i], actual[i]);
+    }
+  }
+
+  public void testBuildBinsMapper2() {
+    double[] f1 = new double[]{1, 2, 3, 4, 5, 6, 7, 8};
+    double[] f2 = new double[]{5, 6, 1, 8, 3, 4, 2, 7};
+
+    int[] sortedf1 = new int[]{0, 1, 2, 3, 4, 5, 6, 7};
+    int[] sortedf2 = new int[]{0, 1, 2, 3, 4, 5, 6, 7};
+
+    TIntArrayList bordersf1 = new TIntArrayList();
+    bordersf1.add(4);
+    bordersf1.add(8);
+
+    int[] actual = GridTools.buildBinsMapper(bordersf1, sortedf1, sortedf2);
+    int[] expected = new int[]{0, 0, 0, 0, 1, 1, 1, 1};
+
+    for (int i = 0; i < actual.length; i++) {
+      assertEquals(expected[i], actual[i]);
+    }
+  }
+
+  public void testProbabilityBinarize1() {
+    final VecBasedMx data = new VecBasedMx(2, new ArrayVec(1, 3, 2, 7, 3, 5, 4, 6, 5, 1, 6, 2, 7, 8, 8, 4));
+    final VecDataSet ds = new VecDataSetImpl(data, null);
+    BFGrid grid = GridTools.probabilityGrid(ds, 2);
+  }
+
+  public void testProbabilityBinarize2() {
+    final VecBasedMx data = new VecBasedMx(2, new ArrayVec(1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8));
+    final VecDataSet ds = new VecDataSetImpl(data, null);
+    BFGrid grid = GridTools.probabilityGrid(ds, 2);
+  }
+
+  public void testProbabilityBinarize3() {
+    final VecBasedMx data = new VecBasedMx(3, new ArrayVec(1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5, 6, 6, 6, 7, 7, 7, 8, 8, 8));
+    final VecDataSet ds = new VecDataSetImpl(data, null);
+    BFGrid grid = GridTools.probabilityGrid(ds, 1);
+  }
+
+  public void testProbabilityBinarize4() {
+    //final VecBasedMx data = new VecBasedMx(2, new ArrayVec(1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8));
+    //final VecDataSet ds = new VecDataSetImpl(data, null);
+    System.out.println(learn.vecData().xdim());
+    System.out.println(learn.vecData().length());
+    //BFGrid grid = GridTools.probabilityGrid(learn.vecData(), 1);
   }
 
   @Override

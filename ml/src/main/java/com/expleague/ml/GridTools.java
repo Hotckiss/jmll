@@ -2,6 +2,7 @@ package com.expleague.ml;
 
 import com.expleague.commons.math.AnalyticFunc;
 import com.expleague.commons.math.vectors.Vec;
+import com.expleague.commons.util.ArrayTools;
 import com.expleague.ml.data.Aggregate;
 import com.expleague.ml.data.set.VecDataSet;
 import com.expleague.commons.math.vectors.impl.idxtrans.ArrayPermutation;
@@ -15,6 +16,7 @@ import gnu.trove.set.TDoubleSet;
 import gnu.trove.set.hash.TDoubleHashSet;
 import gnu.trove.set.hash.TIntHashSet;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
@@ -23,6 +25,264 @@ import java.util.Arrays;
  * Time: 17:42
  */
 public class GridTools {
+  public static class PartitionResult {
+    private int splitPosition;
+    private double score;
+
+    public PartitionResult(int splitPosition, double score) {
+      this.score = score;
+      this.splitPosition = splitPosition;
+    }
+
+    public int getSplitPosition() {
+      return splitPosition;
+    }
+
+    public double getScore() {
+      return score;
+    }
+
+    public void setSplitPosition(int newSplitPosition) {
+      this.splitPosition = newSplitPosition;
+    }
+
+    public void setScore(double newScore) {
+      this.score = newScore;
+    }
+
+    public static PartitionResult makeWorst() {
+      return new PartitionResult(-1, -Double.MAX_VALUE);
+    }
+  }
+
+  public static TIntArrayList insertBorder(final TIntArrayList borders, final int newBorder) {
+    final TIntArrayList mergedBorders = new TIntArrayList();
+    int i = 0;
+
+    while (i < borders.size() && borders.get(i) < newBorder) {
+      mergedBorders.add(borders.get(i));
+      i++;
+    }
+
+    mergedBorders.add(newBorder);
+
+    while (i < borders.size() && borders.get(i) == newBorder) {
+      i++;
+    }
+
+    while (i < borders.size()) {
+      mergedBorders.add(borders.get(i));
+      i++;
+    }
+
+    return mergedBorders;
+  }
+
+  /**
+   * Given two sorted features with existing borders
+   * We want to add new border in feature2 and we want to calculate quality of this partition
+   * Quality calculation looks like this:
+   * 1) Iterate over each point in dataset and determine it's bin in feature1
+   * 2) Now we want to calculate the probability of choosing correct position in order by feature2 for each point
+   * To do that, we iterate through every bin in second feature, and for each point determine it's bin from feature1
+   * Probability will be 1/number of points from the same bin in feature1 as this point
+   * Quality will be sum for each point log(probability)
+   * Complexity: O(n) [2 * n]
+   * @param binNumberMapper for point i of sortedFeature2 determines it's bin in feature1
+   * @param sortedFeature2 points, sorted in ascending order from feature2
+   * @param bordersFeature2 current fixed borders of feature2, must contain at least sortedFeature2.length
+   * @param newBorderFeature2 new possible border of feature2
+   * @return quality score of new border using input feature1
+   */
+  //TODO: instead of max sum log(1/n) = max -sum log(n) = max - log(prod n) ~ min log(prod n) = min prod n
+  public static double calculatePartitionScore(final int[] binNumberMapper,
+                                               final double[] sortedFeature2,
+                                               final TIntArrayList bordersFeature2,
+                                               final int newBorderFeature2) {
+    // O(n)
+    TIntArrayList mergedBordersFeature2 = insertBorder(bordersFeature2, newBorderFeature2);
+
+    double score = 0.0;
+
+    // i -- number of right border of bin
+    //O(n)
+    for (int i = 0; i < mergedBordersFeature2.size(); i++) {
+      final int start = i > 0 ? mergedBordersFeature2.get(i - 1) : 0;
+      final int end = mergedBordersFeature2.get(i);
+
+      //for points from this bin calculate number of points in each bin in feature1
+      int[] binsCounters = new int[binNumberMapper.length];
+      for (int position = start; position < end; position++) {
+        int binInFeature1 = binNumberMapper[position];
+        binsCounters[binInFeature1]++;
+      }
+
+      //calculate probabilities
+      for (int position = start; position < end; position++) {
+        int binInFeature1 = binNumberMapper[position];
+        score += Math.log(1.0 / binsCounters[binInFeature1]);
+      }
+    }
+
+    return score;
+  }
+
+  /**
+   * Finds the best partition of feature2 according to feature1 and current binarization
+   * Complexity: O(n^2) worst-case [2 * n^2]
+   * @param binNumberMapper
+   * @param sortedFeature2
+   * @param bordersFeature2
+   * @return best border and score
+   */
+  public static PartitionResult bestPartition(final int[] binNumberMapper,
+                                  final double[] sortedFeature2,
+                                  final TIntArrayList bordersFeature2) {
+    double bestScore = -Double.MAX_VALUE;
+    int bestSplit = -1;
+    int bordersPtr = 0;
+    for (int pivot = 0; pivot < binNumberMapper.length; pivot++) {
+      // check that border doesn't exist
+      {
+        while (bordersPtr < bordersFeature2.size() && bordersFeature2.get(bordersPtr) < pivot) {
+          bordersPtr++;
+        }
+        if (bordersPtr < bordersFeature2.size() && bordersFeature2.get(bordersPtr) == pivot) {
+          continue;
+        }
+      }
+
+      double score = calculatePartitionScore(binNumberMapper, sortedFeature2, bordersFeature2, pivot);
+      // maximize sum log(1/n), revert after TODO
+      if (score > bestScore) {
+        bestScore = score;
+        bestSplit = pivot;
+      }
+    }
+
+    return new PartitionResult(bestSplit, bestScore);
+  }
+
+  /**
+   * Builds map: take value in position number i in sorted order by feature2 then
+   * return number of bin of this element in feature1 binarization
+   * All elements are in 0-ind
+   * Complexity: O(n) [3 * n]
+   * @param bordersFeature2 bins borders of feature 1 in sorted order
+   * @param sortedOrderIndicesFeature2 indices of sorted order for feature2
+   * @param sortedOrderIndicesFeature1 indices of sorted order for feature1
+   * @return result mapper
+   */
+  public static int[] buildBinsMapper(final TIntArrayList bordersFeature2,
+                                              final int[] sortedOrderIndicesFeature2,
+                                              final int[] sortedOrderIndicesFeature1) {
+
+    //build reverse permutation to easy search from feature2
+    int[] feature2Mapper = new int[sortedOrderIndicesFeature2.length];
+    for (int i = 0; i < sortedOrderIndicesFeature2.length; i++) {
+      feature2Mapper[sortedOrderIndicesFeature2[i]] = i;
+    }
+
+    //build bins number mapper
+    int[] binNumberMapper = new int[sortedOrderIndicesFeature2.length];
+    int binNumber = 0;
+    for (int i = 0; i < bordersFeature2.size(); i++) {
+      final int start = i > 0 ? bordersFeature2.get(i - 1) : 0;
+      final int end = bordersFeature2.get(i);
+      for (int j = start; j < end; j++) {
+        binNumberMapper[j] = binNumber;
+      }
+
+      binNumber++;
+    }
+
+    int[] resultMapper = new int[sortedOrderIndicesFeature1.length];
+    for (int i = 0; i < sortedOrderIndicesFeature1.length; i++) {
+      int positionInFeature1Order = feature2Mapper[sortedOrderIndicesFeature1[i]];
+      resultMapper[i] = binNumberMapper[positionInFeature1Order];
+    }
+
+    return resultMapper;
+  }
+
+  public static BFGrid probabilityGrid(final VecDataSet ds, final int binFactor) {
+    assert (binFactor < ds.length());
+
+    final int dim = ds.xdim();
+    final BFRowImpl[] rows = new BFRowImpl[dim];
+    int bfCount = 0;
+    ArrayList<TIntArrayList> currentBorders = new ArrayList<>();
+
+    //initial borders
+    for (int i = 0; i < dim; i++) {
+      TIntArrayList borders = new TIntArrayList();
+      borders.add(ds.length());
+      currentBorders.add(borders);
+    }
+
+    for(int iters = 0; iters < binFactor; iters++) {
+      for (int feature_index = 0; feature_index < dim; feature_index++) {
+        System.out.println(feature_index);
+        final double[] feature = new double[ds.length()];
+        final ArrayPermutation permutation = new ArrayPermutation(ds.order(feature_index));
+        final int[] order = permutation.direct();
+        final int[] reverse = permutation.reverse();
+        boolean haveDiffrentElements = false;
+        for (int i = 1; i < order.length; i++)
+          if (order[i] != order[0])
+            haveDiffrentElements = true;
+        if (!haveDiffrentElements)
+          continue;
+
+        for (int i = 0; i < feature.length; i++)
+          feature[i] = ds.at(order[i]).get(feature_index);
+
+        PartitionResult bestFromAll = PartitionResult.makeWorst();
+
+        for (int paired_feature_index = 0; paired_feature_index < dim; paired_feature_index++) {
+          if (paired_feature_index == feature_index) {
+            continue;
+          }
+
+          final ArrayPermutation permutationPaired = new ArrayPermutation(ds.order(paired_feature_index));
+          final int[] reversePaired = permutationPaired.reverse();
+
+          int[] binNumberMapper = buildBinsMapper(currentBorders.get(paired_feature_index), reverse, reversePaired);
+
+          PartitionResult bestResult = bestPartition(binNumberMapper, feature, currentBorders.get(feature_index));
+
+          if (bestFromAll.score < bestResult.score) {
+            bestFromAll = bestResult;
+          }
+        }
+
+        TIntArrayList newBorders = insertBorder(currentBorders.get(feature_index), bestFromAll.splitPosition);
+        currentBorders.set(feature_index, newBorders);
+      }
+    }
+
+    for (int f = 0; f < dim; f++) {
+      final TIntArrayList borders = currentBorders.get(f);
+      int size = borders.size();
+      final TDoubleArrayList dborders = new TDoubleArrayList();
+      final TIntArrayList sizes = new TIntArrayList();
+      final double[] feature = new double[ds.length()];
+      final ArrayPermutation permutation = new ArrayPermutation(ds.order(f));
+      final int[] order = permutation.direct();
+      for (int i = 0; i < feature.length; i++)
+        feature[i] = ds.at(order[i]).get(f);
+
+      for (int b = 0; b < size - 1; b++) {
+        int borderValue = borders.get(b);
+        dborders.add((feature[borderValue - 1] + feature[borderValue]) / 2.);
+        sizes.add(borderValue);
+      }
+      rows[f] = new BFRowImpl(bfCount, f, dborders.toArray(), sizes.toArray());
+      bfCount += dborders.size();
+    }
+
+    return new BFGridImpl(rows);
+  }
 
   public static TIntArrayList greedyLogSumBorders(final double[] sortedFeature,
                                                   final int binFactor) {
@@ -36,6 +296,7 @@ public class GridTools {
         final int start = i > 0 ? borders.get(i - 1) : 0;
         final int end = borders.get(i);
         final double median = sortedFeature[start + (end - start) / 2];
+
         int split = Math.abs(Arrays.binarySearch(sortedFeature, start, end, median));
 
         while (split > 0 && Math.abs(sortedFeature[split] - median) < 1e-9) // look for first less then median value
@@ -93,6 +354,7 @@ public class GridTools {
       final ArrayPermutation permutation = new ArrayPermutation(ds.order(f));
       final int[] order = permutation.direct();
       final int[] reverse = permutation.reverse();
+
       boolean haveDiffrentElements = false;
       for (int i = 1; i < order.length; i++)
         if (order[i] != order[0])
@@ -101,6 +363,8 @@ public class GridTools {
         continue;
       for (int i = 0; i < feature.length; i++)
         feature[i] = ds.at(order[i]).get(f);
+
+      //sorted feature
       final TIntArrayList borders = greedyLogSumBorders(feature, binFactor);
       final TDoubleArrayList dborders = new TDoubleArrayList();
       final TIntArrayList sizes = new TIntArrayList();
