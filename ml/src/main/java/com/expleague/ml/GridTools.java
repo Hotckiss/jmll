@@ -106,6 +106,8 @@ public class GridTools {
 
     // i -- number of right border of bin
     //O(n)
+    System.out.println("Border: " + (newBorderFeature2 + 1));
+    System.out.print("Probabilities: ");
     for (int i = 0; i < mergedBordersFeature2.size(); i++) {
       final int start = i > 0 ? mergedBordersFeature2.get(i - 1) : 0;
       final int end = mergedBordersFeature2.get(i);
@@ -120,10 +122,12 @@ public class GridTools {
       //calculate probabilities
       for (int position = start; position < end; position++) {
         int binInFeature1 = binNumberMapper[position];
-        score += Math.log(1.0 / binsCounters[binInFeature1]);
+        System.out.print((1.0 / binsCounters[binInFeature1]) + " ");
+        score += Math.log(1.0 / (binsCounters[binInFeature1] + 1));
       }
-    }
 
+    }
+    System.out.println();
     return score;
   }
 
@@ -154,12 +158,15 @@ public class GridTools {
 
       double score = calculatePartitionScore(binNumberMapper, sortedFeature2, bordersFeature2, pivot);
       // maximize sum log(1/n), revert after TODO
+      System.out.println("Score: " + score);
+      System.out.println();
       if (score > bestScore) {
         bestScore = score;
         bestSplit = pivot;
       }
     }
 
+    System.out.println("------------------");
     return new PartitionResult(bestSplit, bestScore);
   }
 
@@ -222,7 +229,6 @@ public class GridTools {
 
     for(int iters = 0; iters < binFactor; iters++) {
       for (int feature_index = 0; feature_index < dim; feature_index++) {
-        System.out.println(feature_index);
         final double[] feature = new double[ds.length()];
         final ArrayPermutation permutation = new ArrayPermutation(ds.order(feature_index));
         final int[] order = permutation.direct();
@@ -259,6 +265,13 @@ public class GridTools {
         TIntArrayList newBorders = insertBorder(currentBorders.get(feature_index), bestFromAll.splitPosition);
         currentBorders.set(feature_index, newBorders);
       }
+    }
+
+    for (int i = 0; i < currentBorders.size(); i++) {
+      for (int j = 0; j < currentBorders.get(i).size() - 1; j++) {
+        System.out.print(currentBorders.get(i).get(j) + " ");
+      }
+      System.out.println();
     }
 
     for (int f = 0; f < dim; f++) {

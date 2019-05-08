@@ -355,7 +355,7 @@ public class GridTest extends FileTestCase {
   public void testProbabilityBinarize2() {
     final VecBasedMx data = new VecBasedMx(2, new ArrayVec(1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8));
     final VecDataSet ds = new VecDataSetImpl(data, null);
-    BFGrid grid = GridTools.probabilityGrid(ds, 2);
+    BFGrid grid = GridTools.probabilityGrid(ds, 3);
   }
 
   public void testProbabilityBinarize3() {
@@ -370,6 +370,12 @@ public class GridTest extends FileTestCase {
     System.out.println(learn.vecData().xdim());
     System.out.println(learn.vecData().length());
     //BFGrid grid = GridTools.probabilityGrid(learn.vecData(), 1);
+  }
+
+  public void testProbabilityBinarize5() {
+    final VecBasedMx data = new VecBasedMx(2, new ArrayVec(1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10, 11, 11, 12, 12, 13, 13, 14, 14, 15, 15, 16, 16));
+    final VecDataSet ds = new VecDataSetImpl(data, null);
+    BFGrid grid = GridTools.probabilityGrid(ds, 2);
   }
 
   @Override
