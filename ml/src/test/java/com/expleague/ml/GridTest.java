@@ -349,33 +349,95 @@ public class GridTest extends FileTestCase {
   public void testProbabilityBinarize1() {
     final VecBasedMx data = new VecBasedMx(2, new ArrayVec(1, 3, 2, 7, 3, 5, 4, 6, 5, 1, 6, 2, 7, 8, 8, 4));
     final VecDataSet ds = new VecDataSetImpl(data, null);
-    BFGrid grid = GridTools.probabilityGrid(ds, 2);
+    BFGrid grid = GridTools.probabilityGrid(ds, 2, false);
   }
 
   public void testProbabilityBinarize2() {
     final VecBasedMx data = new VecBasedMx(2, new ArrayVec(1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8));
     final VecDataSet ds = new VecDataSetImpl(data, null);
-    BFGrid grid = GridTools.probabilityGrid(ds, 3);
+    BFGrid grid = GridTools.probabilityGrid(ds, 2, false);
   }
 
   public void testProbabilityBinarize3() {
     final VecBasedMx data = new VecBasedMx(3, new ArrayVec(1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5, 6, 6, 6, 7, 7, 7, 8, 8, 8));
     final VecDataSet ds = new VecDataSetImpl(data, null);
-    BFGrid grid = GridTools.probabilityGrid(ds, 1);
+    BFGrid grid = GridTools.probabilityGrid(ds, 3, false);
   }
 
   public void testProbabilityBinarize4() {
     //final VecBasedMx data = new VecBasedMx(2, new ArrayVec(1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8));
     //final VecDataSet ds = new VecDataSetImpl(data, null);
-    System.out.println(learn.vecData().xdim());
-    System.out.println(learn.vecData().length());
-    //BFGrid grid = GridTools.probabilityGrid(learn.vecData(), 1);
+    //System.out.println(learn.vecData().xdim());
+    //System.out.println(learn.vecData().length());
+    BFGrid grid = GridTools.probabilityGrid(learn.vecData(), 32, true);
   }
 
   public void testProbabilityBinarize5() {
     final VecBasedMx data = new VecBasedMx(2, new ArrayVec(1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10, 11, 11, 12, 12, 13, 13, 14, 14, 15, 15, 16, 16));
     final VecDataSet ds = new VecDataSetImpl(data, null);
-    BFGrid grid = GridTools.probabilityGrid(ds, 2);
+    BFGrid grid = GridTools.probabilityGrid(ds, 2, false);
+  }
+
+  public void testProbabilityBinarize6() {
+    int xdim = 5;
+    int len = 4096;
+    double[] arr = new double[xdim * len];
+    for (int i = 0; i < len; i++) {
+      for (int j = 0; j < xdim; j++) {
+        arr[xdim * i + j] = i;
+      }
+    }
+
+    ArrayVec vec = new ArrayVec(arr, 0, xdim * len);
+    final VecBasedMx data = new VecBasedMx(xdim, vec);
+    final VecDataSet ds = new VecDataSetImpl(data, null);
+    BFGrid grid = GridTools.probabilityGrid(ds, 8, true);
+  }
+
+  public void testProbabilityBinarizeCmp() {
+    int xdim = 5;
+    int len = 4096;
+    double[] arr = new double[xdim * len];
+    for (int i = 0; i < len; i++) {
+      for (int j = 0; j < xdim; j++) {
+        arr[xdim * i + j] = i;
+      }
+    }
+
+    ArrayVec vec = new ArrayVec(arr, 0, xdim * len);
+    final VecBasedMx data = new VecBasedMx(xdim, vec);
+    final VecDataSet ds = new VecDataSetImpl(data, null);
+    BFGrid grid = GridTools.probabilityGrid(ds, 1, true);
+    BFGrid grid1 = GridTools.medianGrid(ds, 1);
+  }
+
+  public void testFirstPartition1() {
+    TIntArrayList arr = new TIntArrayList();
+    arr.add(2);
+
+    assertEquals(1, GridTools.firstPartition(arr));
+  }
+
+  public void testFirstPartition2() {
+    TIntArrayList arr = new TIntArrayList();
+    arr.add(1);
+    arr.add(2);
+    assertEquals(3, GridTools.firstPartition(arr));
+  }
+
+  public void testFirstPartition3() {
+    TIntArrayList arr = new TIntArrayList();
+    arr.add(1);
+    arr.add(2);
+    arr.add(3);
+    arr.add(4);
+    arr.add(6);
+    assertEquals(5, GridTools.firstPartition(arr));
+  }
+
+  public void testFirstPartition4() {
+    TIntArrayList arr = new TIntArrayList();
+    assertEquals(1, GridTools.firstPartition(arr));
   }
 
   @Override
