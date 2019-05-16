@@ -2,6 +2,7 @@ package com.expleague.ml.impl;
 
 import com.expleague.commons.math.vectors.Vec;
 import com.expleague.ml.BFGrid;
+import com.expleague.ml.GridUtils;
 
 import java.util.Arrays;
 
@@ -28,6 +29,7 @@ public class BFGridImpl implements BFGrid {
     for (int i = 0; i < features.length; i++) {
       while (rowIndex < rows.length && i >= rows[rowIndex].bfEnd)
         rowIndex++;
+      //System.out.println("INDEX: " + (i - rows[rowIndex].bfStart));
       features[i] = rows[rowIndex].bf(i - rows[rowIndex].bfStart);
     }
 
@@ -47,6 +49,7 @@ public class BFGridImpl implements BFGrid {
 
   @Override
   public BinaryFeatureImpl bf(final int bfIndex) {
+    GridUtils.inc(bfIndex);
     return features[bfIndex];
   }
 

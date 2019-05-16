@@ -668,8 +668,13 @@ public void testElasticNetBenchmark() {
       boosting.addListener(learnListener);
       boosting.addListener(validateListener);
       boosting.addListener(qualityCalcer);
-//    boosting.addListener(modelPrinter);
+      //boosting.addListener(modelPrinter);
       final Ensemble ans = boosting.fit(_learn.vecData(), loss);
+      /*System.out.println();
+      System.out.println(ans.models.length);
+      for(int t = ans.models.length - 10; t < ans.models.length; t++) {
+        System.out.println(ans.models[t].toString());
+      }*/
       Vec current = new ArrayVec(_validate.size());
       for (int i = 0; i < _validate.size(); i++) {
         double f = 0;
@@ -682,6 +687,13 @@ public void testElasticNetBenchmark() {
     }
   }
 
+  public void testTreeOutput() {
+    final GradientBoosting<SatL2> boosting = new GradientBoosting<SatL2>(
+            new BootstrapOptimization<>(new GreedyObliviousTree<>(GridTools.medianGrid(learn.vecData(), 32), 6), rng),
+            L2Reg.class, 2000, 0.005
+    );
+    new addBoostingListeners<>(boosting, learn.target(SatL2.class), learn, validate);
+  }
 
   public void testGTDRIBoost() {
     final GradientBoosting<L2> boosting = new GradientBoosting<>(
@@ -712,7 +724,7 @@ public void testElasticNetBenchmark() {
   //hhhhhhhhhh
   public void testOTBoost() {
     final GradientBoosting<SatL2> boosting = new GradientBoosting<SatL2>(
-        new BootstrapOptimization<>(new GreedyObliviousTree<>(GridTools.medianGrid(learn.vecData(), 32), 6), rng),
+        new BootstrapOptimization<>(new GreedyObliviousTree<>(GridTools.medianGrid(learn.vecData(), 16), 6), rng),
         L2Reg.class, 2000, 0.005
     );
     new addBoostingListeners<>(boosting, learn.target(SatL2.class), learn, validate);
@@ -720,8 +732,41 @@ public void testElasticNetBenchmark() {
 
   //hhhhhhhhhh
   public void testOTBoost2() {
-    final GradientBoosting<SatL2> boosting = new GradientBoosting<SatL2>(
-            new BootstrapOptimization<>(new GreedyObliviousTree<>(GridTools.probabilityGrid(learn.vecData(), 32, true), 6), rng),
+    //BFGrid grid = GridTools.probabilityGrid(learn.vecData(), 32, true);
+    //System.out.println(new GreedyObliviousTree<>(grid, 6).toString());
+    final GradientBoosting<SatL2> boosting = new GradientBoosting<>(
+            new BootstrapOptimization<>(new GreedyObliviousTree<>(GridTools.probabilityGrid(learn.vecData(), 2, true), 6), rng),
+            L2Reg.class, 2000, 0.005
+    );
+    new addBoostingListeners<>(boosting, learn.target(SatL2.class), learn, validate);
+  }
+
+  public void testOTBoost22() {
+    //BFGrid grid = GridTools.probabilityGrid(learn.vecData(), 32, true);
+    //System.out.println(new GreedyObliviousTree<>(grid, 6).toString());
+    final GradientBoosting<SatL2> boosting = new GradientBoosting<>(
+            new BootstrapOptimization<>(new GreedyObliviousTree<>(GridTools.probabilityGrid(learn.vecData(), 2, true), 6), rng),
+            L2Reg.class, 2000, 0.005
+    );
+    new addBoostingListeners<>(boosting, learn.target(SatL2.class), learn, validate);
+  }
+
+  //hhhhhhhhhh
+  public void testOTBoost21() {
+    //BFGrid grid = GridTools.probabilityGrid(learn.vecData(), 32, true);
+    //System.out.println(new GreedyObliviousTree<>(grid, 6).toString());
+    final GradientBoosting<SatL2> boosting = new GradientBoosting<>(
+            new BootstrapOptimization<>(new GreedyObliviousTree<>(GridTools.medianGrid(learn.vecData(), 8), 6), rng),
+            L2Reg.class, 2000, 0.005
+    );
+    new addBoostingListeners<>(boosting, learn.target(SatL2.class), learn, validate);
+  }
+
+  public void testOTBoost221() {
+    //BFGrid grid = GridTools.probabilityGrid(learn.vecData(), 32, true);
+    //System.out.println(new GreedyObliviousTree<>(grid, 6).toString());
+    final GradientBoosting<SatL2> boosting = new GradientBoosting<>(
+            new BootstrapOptimization<>(new GreedyObliviousTree<>(GridTools.medianGrid(learn.vecData(), 32), 6), rng),
             L2Reg.class, 2000, 0.005
     );
     new addBoostingListeners<>(boosting, learn.target(SatL2.class), learn, validate);
@@ -729,8 +774,21 @@ public void testElasticNetBenchmark() {
 
   //hhhhhhhhhh
   public void testOTBoost3() {
+    //System.out.println(learn.vecData().xdim());
+    //System.out.println(learn.vecData().length());
     final GradientBoosting<SatL2> boosting = new GradientBoosting<SatL2>(
-            new BootstrapOptimization<>(new GreedyObliviousTree<>(GridTools.medianGrid(learn.vecData(), 3), 6), rng),
+            new BootstrapOptimization<>(new GreedyObliviousTree<>(GridTools.medianGrid(learn.vecData(), 32), 6), rng),
+            L2Reg.class, 2000, 0.005
+    );
+    new addBoostingListeners<>(boosting, learn.target(SatL2.class), learn, validate);
+    //GridUtils.out();
+    GridUtils.outArr();
+  }
+
+  //hhhhhhhhhh
+  public void testOTBoost33() {
+    final GradientBoosting<SatL2> boosting = new GradientBoosting<SatL2>(
+            new BootstrapOptimization<>(new GreedyObliviousTree<>(GridTools.medianGrid(learn.vecData(), 8), 6), rng),
             L2Reg.class, 2000, 0.005
     );
     new addBoostingListeners<>(boosting, learn.target(SatL2.class), learn, validate);
@@ -739,7 +797,80 @@ public void testElasticNetBenchmark() {
   //hhhhhhhhhh
   public void testOTBoost4() {
     final GradientBoosting<SatL2> boosting = new GradientBoosting<SatL2>(
-            new BootstrapOptimization<>(new GreedyObliviousTree<>(GridTools.probabilityGrid(learn.vecData(), 4, true), 6), rng),
+            new BootstrapOptimization<>(new GreedyObliviousTree<>(GridTools.probabilityGrid(learn.vecData(), 32, true), 6), rng),
+            L2Reg.class, 2000, 0.005
+    );
+    new addBoostingListeners<>(boosting, learn.target(SatL2.class), learn, validate);
+    //GridUtils.outArr();
+  }
+
+  //hhhhhhhhhh
+  public void testOTBoost5() {
+    final GradientBoosting<SatL2> boosting = new GradientBoosting<SatL2>(
+            new BootstrapOptimization<>(new GreedyObliviousTree<>(GridTools.probabilityGrid(learn.vecData(), 32, true), 6), rng),
+            L2Reg.class, 2000, 0.005
+    );
+    new addBoostingListeners<>(boosting, learn.target(SatL2.class), learn, validate);
+    //GridUtils.outArr();
+  }
+
+  //hhhhhhhhhh
+  public void testOTBoost6() {
+    final GradientBoosting<SatL2> boosting = new GradientBoosting<SatL2>(
+            new BootstrapOptimization<>(new GreedyObliviousTree<>(GridTools.probabilityGrid(learn.vecData(), 32, true), 6), rng),
+            L2Reg.class, 2000, 0.005
+    );
+    new addBoostingListeners<>(boosting, learn.target(SatL2.class), learn, validate);
+    //GridUtils.outArr();
+  }
+
+  //hhhhhhhhhh
+  public void testOTBoost7() {
+    final GradientBoosting<SatL2> boosting = new GradientBoosting<SatL2>(
+            new BootstrapOptimization<>(new GreedyObliviousTree<>(GridTools.probabilityGrid(learn.vecData(), 32, true), 6), rng),
+            L2Reg.class, 2000, 0.005
+    );
+    new addBoostingListeners<>(boosting, learn.target(SatL2.class), learn, validate);
+    //GridUtils.outArr();
+  }
+
+  //hhhhhhhhhh
+  public void testOTBoostRandomSplit() {
+    List<? extends Pool<?>> split = DataTools.splitDataSet(all, rng, 0.8, 0.2);
+    Pool<?> lrn = split.get(0);
+    Pool<?> vld = split.get(1);
+
+    final GradientBoosting<SatL2> boosting = new GradientBoosting<SatL2>(
+            new BootstrapOptimization<>(new GreedyObliviousTree<>(GridTools.probabilityGrid(lrn.vecData(), 32, true), 6), rng),
+            L2Reg.class, 2000, 0.005
+    );
+    new addBoostingListeners<>(boosting, lrn.target(SatL2.class), lrn, vld);
+    //GridUtils.outArr();
+  }
+
+  //hhhhhhhhhh
+  public void testOTBoostRandomSplit16() {
+    List<? extends Pool<?>> split = DataTools.splitDataSet(all, rng, 0.8, 0.2);
+    Pool<?> lrn = split.get(0);
+    Pool<?> vld = split.get(1);
+
+    final GradientBoosting<SatL2> boosting = new GradientBoosting<SatL2>(
+            new BootstrapOptimization<>(new GreedyObliviousTree<>(GridTools.probabilityGrid(lrn.vecData(), 16, true), 6), rng),
+            L2Reg.class, 2000, 0.005
+    );
+    new addBoostingListeners<>(boosting, lrn.target(SatL2.class), lrn, vld);
+
+    final GradientBoosting<SatL2> boosting2 = new GradientBoosting<SatL2>(
+            new BootstrapOptimization<>(new GreedyObliviousTree<>(GridTools.medianGrid(lrn.vecData(), 16), 6), rng),
+            L2Reg.class, 2000, 0.005
+    );
+    new addBoostingListeners<>(boosting2, lrn.target(SatL2.class), lrn, vld);
+    //GridUtils.outArr();
+  }
+  //hhhhhhhhhh
+  public void testOTBoost4_mixed() {
+    final GradientBoosting<SatL2> boosting = new GradientBoosting<SatL2>(
+            new BootstrapOptimization<>(new GreedyObliviousTree<>(GridTools.probabilityGrid_mixed(learn.vecData(), 1, true), 6), rng),
             L2Reg.class, 2000, 0.005
     );
     new addBoostingListeners<>(boosting, learn.target(SatL2.class), learn, validate);

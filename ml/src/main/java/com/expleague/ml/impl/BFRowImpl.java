@@ -1,6 +1,7 @@
 package com.expleague.ml.impl;
 
 import com.expleague.ml.BFGrid;
+import com.expleague.ml.GridUtils;
 
 import java.util.Arrays;
 
@@ -52,6 +53,8 @@ public class BFRowImpl implements BFGrid.Row {
 
   @Override
   public BinaryFeatureImpl bf(final int index) {
+
+    //System.out.println(bfStart + index);
     return bfs[index];
   }
 
