@@ -39,7 +39,9 @@ import com.expleague.ml.models.pgm.SimplePGM;
 import gnu.trove.map.hash.TDoubleDoubleHashMap;
 import gnu.trove.map.hash.TDoubleIntHashMap;
 
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -69,30 +71,26 @@ public class BinarizeTests extends GridTest {
     }
 
     public class addBoostingListeners<GlobalLoss extends TargetFunc> {
-        addBoostingListeners(final GradientBoosting<GlobalLoss> boosting, final GlobalLoss loss, final Pool<?> _learn, final Pool<?> _validate) {
+        addBoostingListeners(final GradientBoosting<GlobalLoss> boosting, final GlobalLoss loss, final Pool<?> _learn, final Pool<?> _validate, final PrintWriter printWriter) {
             final Consumer counter = new ProgressHandler() {
                 int index = 0;
 
                 @Override
                 public void accept(final Trans partial) {
-                    System.out.print("\n" + index++);
+                    System.out.print("\n" + index);
+                    printWriter.print("\n" + index++);
                 }
             };
-            final ScoreCalcer learnListener = new ScoreCalcer(/*"\tlearn:\t"*/"\t", _learn.vecData(), _learn.target(L2.class));
-            final ScoreCalcer validateListener = new ScoreCalcer(/*"\ttest:\t"*/"\t", _validate.vecData(), _validate.target(L2.class));
+            final ScoreCalcer learnListener = new ScoreCalcer(/*"\tlearn:\t"*/"\t", _learn.vecData(), _learn.target(L2.class), printWriter);
+            final ScoreCalcer validateListener = new ScoreCalcer(/*"\ttest:\t"*/"\t", _validate.vecData(), _validate.target(L2.class), printWriter);
             final Consumer<Trans> modelPrinter = new ModelPrinter();
-            final Consumer<Trans> qualityCalcer = new QualityCalcer();
+            final Consumer<Trans> qualityCalcer = new QualityCalcer(printWriter);
             boosting.addListener(counter);
             boosting.addListener(learnListener);
             boosting.addListener(validateListener);
             boosting.addListener(qualityCalcer);
             //boosting.addListener(modelPrinter);
             final Ensemble ans = boosting.fit(_learn.vecData(), loss);
-      /*System.out.println();
-      System.out.println(ans.models.length);
-      for(int t = ans.models.length - 10; t < ans.models.length; t++) {
-        System.out.println(ans.models[t].toString());
-      }*/
             Vec current = new ArrayVec(_validate.size());
             for (int i = 0; i < _validate.size(); i++) {
                 double f = 0;
@@ -100,129 +98,320 @@ public class BinarizeTests extends GridTest {
                     f += ans.weights.get(j) * ((Func) ans.models[j]).value(_validate.vecData().data().row(i));
                 current.set(i, f);
             }
-            System.out.println("\n + Final loss = " + VecTools.distance(current, _validate.target(L2.class).target) / Math.sqrt(_validate.size()));
-
+            System.out.println("\n + Final loss = " + VecTools.distance(current, _validate.target(L2.class).target) / Math.sqrt(_validate.size()) + "\n");
+            printWriter.println("\n + Final loss = " + VecTools.distance(current, _validate.target(L2.class).target) / Math.sqrt(_validate.size()) + "\n");
         }
     }
 
-    /*public void testTreeOutput() {
-        final GradientBoosting<SatL2> boosting = new GradientBoosting<SatL2>(
-                new BootstrapOptimization<>(new GreedyObliviousTree<>(GridTools.medianGrid(learn.vecData(), 32), 6), rng),
-                L2Reg.class, 2000, 0.005
-        );
-        new addBoostingListeners<>(boosting, learn.target(SatL2.class), learn, validate);
-    }*/
+    public void testOTBoost1Prob() {
+        FileWriter fileWriter = null;
+        try {
+            fileWriter = new FileWriter("thread1LogProb.txt");
+        } catch (Exception ex) {
+        }
 
-    /*public void testOTBoost3() {
-        final GradientBoosting<SatL2> boosting = new GradientBoosting<SatL2>(
-                new BootstrapOptimization<>(new GreedyObliviousTree<>(GridTools.medianGrid(learn.vecData(), 32), 6), rng),
-                L2Reg.class, 2000, 0.005
-        );
-        new addBoostingListeners<>(boosting, learn.target(SatL2.class), learn, validate);
-    }*/
+        PrintWriter printWriter = new PrintWriter(fileWriter);
 
-    public void testOTBoost4() {
+        FastRandom rand = new FastRandom(1);
+        List<? extends Pool<?>> split = DataTools.splitDataSet(all10, rand, 0.1, 0.9);
+        Pool<?> local_all = split.get(0);
+
+        List<? extends Pool<?>> split_local_all = DataTools.splitDataSet(local_all, rand, 0.2, 0.8);
+        Pool<?> local_learn = split_local_all.get(0);
+        Pool<?> local_validate = split_local_all.get(1);
+
         final GradientBoosting<SatL2> boosting = new GradientBoosting<SatL2>(
-                new BootstrapOptimization<>(new GreedyObliviousTree<>(GridTools.probabilityGrid(learn.vecData(), 32, true), 6), rng),
+                new BootstrapOptimization<>(new GreedyObliviousTree<>(GridTools.probabilityGrid(local_learn.vecData(), 32, true), 6), rand),
                 L2Reg.class, 2000, 0.005
         );
-        new addBoostingListeners<>(boosting, learn.target(SatL2.class), learn, validate);
-        //GridUtils.outArr();
+        new addBoostingListeners<>(boosting, local_learn.target(SatL2.class), local_learn, local_validate, printWriter);
+        printWriter.println();
+
+        printWriter.close();
     }
 
-    public void testOTBoost5() {
+    public void testOTBoost2Prob() {
+        FileWriter fileWriter = null;
+        try {
+            fileWriter = new FileWriter("thread2LogProb.txt");
+        } catch (Exception ex) {
+        }
+
+        PrintWriter printWriter = new PrintWriter(fileWriter);
+
+        FastRandom rand = new FastRandom(2);
+        List<? extends Pool<?>> split = DataTools.splitDataSet(all10, rand, 0.1, 0.9);
+        Pool<?> local_all = split.get(0);
+
+        List<? extends Pool<?>> split_local_all = DataTools.splitDataSet(local_all, rand, 0.2, 0.8);
+        Pool<?> local_learn = split_local_all.get(0);
+        Pool<?> local_validate = split_local_all.get(1);
+
         final GradientBoosting<SatL2> boosting = new GradientBoosting<SatL2>(
-                new BootstrapOptimization<>(new GreedyObliviousTree<>(GridTools.probabilityGrid(learn.vecData(), 32, true), 6), rng),
+                new BootstrapOptimization<>(new GreedyObliviousTree<>(GridTools.probabilityGrid(local_learn.vecData(), 32, true), 6), rand),
                 L2Reg.class, 2000, 0.005
         );
-        new addBoostingListeners<>(boosting, learn.target(SatL2.class), learn, validate);
-        //GridUtils.outArr();
+        new addBoostingListeners<>(boosting, local_learn.target(SatL2.class), local_learn, local_validate, printWriter);
+        printWriter.println();
+
+        printWriter.close();
     }
 
-    public void testOTBoost6() {
+    public void testOTBoost3Prob() {
+        FileWriter fileWriter = null;
+        try {
+            fileWriter = new FileWriter("thread3LogProb.txt");
+        } catch (Exception ex) {
+        }
+
+        PrintWriter printWriter = new PrintWriter(fileWriter);
+
+        FastRandom rand = new FastRandom(3);
+        List<? extends Pool<?>> split = DataTools.splitDataSet(all10, rand, 0.1, 0.9);
+        Pool<?> local_all = split.get(0);
+
+        List<? extends Pool<?>> split_local_all = DataTools.splitDataSet(local_all, rand, 0.2, 0.8);
+        Pool<?> local_learn = split_local_all.get(0);
+        Pool<?> local_validate = split_local_all.get(1);
+
         final GradientBoosting<SatL2> boosting = new GradientBoosting<SatL2>(
-                new BootstrapOptimization<>(new GreedyObliviousTree<>(GridTools.probabilityGrid(learn.vecData(), 32, true), 6), rng),
+                new BootstrapOptimization<>(new GreedyObliviousTree<>(GridTools.probabilityGrid(local_learn.vecData(), 32, true), 6), rand),
                 L2Reg.class, 2000, 0.005
         );
-        new addBoostingListeners<>(boosting, learn.target(SatL2.class), learn, validate);
-        //GridUtils.outArr();
+        new addBoostingListeners<>(boosting, local_learn.target(SatL2.class), local_learn, local_validate, printWriter);
+        printWriter.println();
+
+        printWriter.close();
     }
 
-    public void testOTBoost7() {
+    public void testOTBoost4Prob() {
+        FileWriter fileWriter = null;
+        try {
+            fileWriter = new FileWriter("thread4LogProb.txt");
+        } catch (Exception ex) {
+        }
+
+        PrintWriter printWriter = new PrintWriter(fileWriter);
+
+        FastRandom rand = new FastRandom(4);
+        List<? extends Pool<?>> split = DataTools.splitDataSet(all10, rand, 0.1, 0.9);
+        Pool<?> local_all = split.get(0);
+
+        List<? extends Pool<?>> split_local_all = DataTools.splitDataSet(local_all, rand, 0.2, 0.8);
+        Pool<?> local_learn = split_local_all.get(0);
+        Pool<?> local_validate = split_local_all.get(1);
+
         final GradientBoosting<SatL2> boosting = new GradientBoosting<SatL2>(
-                new BootstrapOptimization<>(new GreedyObliviousTree<>(GridTools.probabilityGrid(learn.vecData(), 32, true), 6), rng),
+                new BootstrapOptimization<>(new GreedyObliviousTree<>(GridTools.probabilityGrid(local_learn.vecData(), 32, true), 6), rand),
                 L2Reg.class, 2000, 0.005
         );
-        new addBoostingListeners<>(boosting, learn.target(SatL2.class), learn, validate);
-        //GridUtils.outArr();
+        new addBoostingListeners<>(boosting, local_learn.target(SatL2.class), local_learn, local_validate, printWriter);
+        printWriter.println();
+
+        printWriter.close();
     }
 
-    public void testOTBoost8() {
+    public void testOTBoost5Prob() {
+        FileWriter fileWriter = null;
+        try {
+            fileWriter = new FileWriter("thread5LogProb.txt");
+        } catch (Exception ex) {
+        }
+
+        PrintWriter printWriter = new PrintWriter(fileWriter);
+
+        FastRandom rand = new FastRandom(5);
+        List<? extends Pool<?>> split = DataTools.splitDataSet(all10, rand, 0.1, 0.9);
+        Pool<?> local_all = split.get(0);
+
+        List<? extends Pool<?>> split_local_all = DataTools.splitDataSet(local_all, rand, 0.2, 0.8);
+        Pool<?> local_learn = split_local_all.get(0);
+        Pool<?> local_validate = split_local_all.get(1);
+
         final GradientBoosting<SatL2> boosting = new GradientBoosting<SatL2>(
-                new BootstrapOptimization<>(new GreedyObliviousTree<>(GridTools.probabilityGrid(learn.vecData(), 32, true), 6), rng),
+                new BootstrapOptimization<>(new GreedyObliviousTree<>(GridTools.probabilityGrid(local_learn.vecData(), 32, true), 6), rand),
                 L2Reg.class, 2000, 0.005
         );
-        new addBoostingListeners<>(boosting, learn.target(SatL2.class), learn, validate);
-        //GridUtils.outArr();
+        new addBoostingListeners<>(boosting, local_learn.target(SatL2.class), local_learn, local_validate, printWriter);
+        printWriter.println();
+
+        printWriter.close();
     }
 
-    public void testOTBoost9() {
+    public void testOTBoost6Prob() {
+        FileWriter fileWriter = null;
+        try {
+            fileWriter = new FileWriter("thread6LogProb.txt");
+        } catch (Exception ex) {
+        }
+
+        PrintWriter printWriter = new PrintWriter(fileWriter);
+
+        FastRandom rand = new FastRandom(6);
+        List<? extends Pool<?>> split = DataTools.splitDataSet(all10, rand, 0.1, 0.9);
+        Pool<?> local_all = split.get(0);
+
+        List<? extends Pool<?>> split_local_all = DataTools.splitDataSet(local_all, rand, 0.2, 0.8);
+        Pool<?> local_learn = split_local_all.get(0);
+        Pool<?> local_validate = split_local_all.get(1);
+
         final GradientBoosting<SatL2> boosting = new GradientBoosting<SatL2>(
-                new BootstrapOptimization<>(new GreedyObliviousTree<>(GridTools.probabilityGrid(learn.vecData(), 32, true), 6), rng),
+                new BootstrapOptimization<>(new GreedyObliviousTree<>(GridTools.probabilityGrid(local_learn.vecData(), 32, true), 6), rand),
                 L2Reg.class, 2000, 0.005
         );
-        new addBoostingListeners<>(boosting, learn.target(SatL2.class), learn, validate);
-        //GridUtils.outArr();
+        new addBoostingListeners<>(boosting, local_learn.target(SatL2.class), local_learn, local_validate, printWriter);
+        printWriter.println();
+
+        printWriter.close();
     }
 
-    public void testOTBoost10() {
+    public void testOTBoost7Prob() {
+        FileWriter fileWriter = null;
+        try {
+            fileWriter = new FileWriter("thread7LogProb.txt");
+        } catch (Exception ex) {
+        }
+
+        PrintWriter printWriter = new PrintWriter(fileWriter);
+
+        FastRandom rand = new FastRandom(7);
+        List<? extends Pool<?>> split = DataTools.splitDataSet(all10, rand, 0.1, 0.9);
+        Pool<?> local_all = split.get(0);
+
+        List<? extends Pool<?>> split_local_all = DataTools.splitDataSet(local_all, rand, 0.2, 0.8);
+        Pool<?> local_learn = split_local_all.get(0);
+        Pool<?> local_validate = split_local_all.get(1);
+
         final GradientBoosting<SatL2> boosting = new GradientBoosting<SatL2>(
-                new BootstrapOptimization<>(new GreedyObliviousTree<>(GridTools.probabilityGrid(learn.vecData(), 32, true), 6), rng),
+                new BootstrapOptimization<>(new GreedyObliviousTree<>(GridTools.probabilityGrid(local_learn.vecData(), 32, true), 6), rand),
                 L2Reg.class, 2000, 0.005
         );
-        new addBoostingListeners<>(boosting, learn.target(SatL2.class), learn, validate);
-        //GridUtils.outArr();
+        new addBoostingListeners<>(boosting, local_learn.target(SatL2.class), local_learn, local_validate, printWriter);
+        printWriter.println();
+
+        printWriter.close();
     }
 
-    public void testOTBoost11() {
+    public void testOTBoost8Prob() {
+        FileWriter fileWriter = null;
+        try {
+            fileWriter = new FileWriter("thread8LogProb.txt");
+        } catch (Exception ex) {
+        }
+
+        PrintWriter printWriter = new PrintWriter(fileWriter);
+
+        FastRandom rand = new FastRandom(8);
+        List<? extends Pool<?>> split = DataTools.splitDataSet(all10, rand, 0.1, 0.9);
+        Pool<?> local_all = split.get(0);
+
+        List<? extends Pool<?>> split_local_all = DataTools.splitDataSet(local_all, rand, 0.2, 0.8);
+        Pool<?> local_learn = split_local_all.get(0);
+        Pool<?> local_validate = split_local_all.get(1);
+
         final GradientBoosting<SatL2> boosting = new GradientBoosting<SatL2>(
-                new BootstrapOptimization<>(new GreedyObliviousTree<>(GridTools.probabilityGrid(learn.vecData(), 32, true), 6), rng),
+                new BootstrapOptimization<>(new GreedyObliviousTree<>(GridTools.probabilityGrid(local_learn.vecData(), 32, true), 6), rand),
                 L2Reg.class, 2000, 0.005
         );
-        new addBoostingListeners<>(boosting, learn.target(SatL2.class), learn, validate);
-        //GridUtils.outArr();
+        new addBoostingListeners<>(boosting, local_learn.target(SatL2.class), local_learn, local_validate, printWriter);
+        printWriter.println();
+
+        printWriter.close();
     }
 
-    /*
-    public void testOTBoostRandomSplit16() {
-        List<? extends Pool<?>> split = DataTools.splitDataSet(all, rng, 0.8, 0.2);
-        Pool<?> lrn = split.get(0);
-        Pool<?> vld = split.get(1);
+    public void testOTBoost9Prob() {
+        FileWriter fileWriter = null;
+        try {
+            fileWriter = new FileWriter("thread9LogProb.txt");
+        } catch (Exception ex) {
+        }
+
+        PrintWriter printWriter = new PrintWriter(fileWriter);
+
+        FastRandom rand = new FastRandom(9);
+        List<? extends Pool<?>> split = DataTools.splitDataSet(all10, rand, 0.1, 0.9);
+        Pool<?> local_all = split.get(0);
+
+        List<? extends Pool<?>> split_local_all = DataTools.splitDataSet(local_all, rand, 0.2, 0.8);
+        Pool<?> local_learn = split_local_all.get(0);
+        Pool<?> local_validate = split_local_all.get(1);
 
         final GradientBoosting<SatL2> boosting = new GradientBoosting<SatL2>(
-                new BootstrapOptimization<>(new GreedyObliviousTree<>(GridTools.probabilityGrid(lrn.vecData(), 16, true), 6), rng),
+                new BootstrapOptimization<>(new GreedyObliviousTree<>(GridTools.probabilityGrid(local_learn.vecData(), 32, true), 6), rand),
                 L2Reg.class, 2000, 0.005
         );
-        new addBoostingListeners<>(boosting, lrn.target(SatL2.class), lrn, vld);
+        new addBoostingListeners<>(boosting, local_learn.target(SatL2.class), local_learn, local_validate, printWriter);
+        printWriter.println();
 
-        final GradientBoosting<SatL2> boosting2 = new GradientBoosting<SatL2>(
-                new BootstrapOptimization<>(new GreedyObliviousTree<>(GridTools.medianGrid(lrn.vecData(), 16), 6), rng),
+        printWriter.close();
+    }
+
+    public void testOTBoost10Prob() {
+        FileWriter fileWriter = null;
+        try {
+            fileWriter = new FileWriter("thread10LogProb.txt");
+        } catch (Exception ex) {
+        }
+
+        PrintWriter printWriter = new PrintWriter(fileWriter);
+
+        FastRandom rand = new FastRandom(10);
+        List<? extends Pool<?>> split = DataTools.splitDataSet(all10, rand, 0.1, 0.9);
+        Pool<?> local_all = split.get(0);
+
+        List<? extends Pool<?>> split_local_all = DataTools.splitDataSet(local_all, rand, 0.2, 0.8);
+        Pool<?> local_learn = split_local_all.get(0);
+        Pool<?> local_validate = split_local_all.get(1);
+
+        final GradientBoosting<SatL2> boosting = new GradientBoosting<SatL2>(
+                new BootstrapOptimization<>(new GreedyObliviousTree<>(GridTools.probabilityGrid(local_learn.vecData(), 32, true), 6), rand),
                 L2Reg.class, 2000, 0.005
         );
-        new addBoostingListeners<>(boosting2, lrn.target(SatL2.class), lrn, vld);
-        //GridUtils.outArr();
-    }*/
+        new addBoostingListeners<>(boosting, local_learn.target(SatL2.class), local_learn, local_validate, printWriter);
+        printWriter.println();
+
+        printWriter.close();
+    }
+
+    public void testOTBoost1Med() {
+        FileWriter fileWriter = null;
+        try {
+            fileWriter = new FileWriter("thread1LogMed.txt");
+        } catch (Exception ex) {
+        }
+
+        PrintWriter printWriter = new PrintWriter(fileWriter);
+
+        FastRandom rand = new FastRandom(1);
+        List<? extends Pool<?>> split = DataTools.splitDataSet(all10, rand, 0.1, 0.9);
+        Pool<?> local_all = split.get(0);
+
+        List<? extends Pool<?>> split_local_all = DataTools.splitDataSet(local_all, rand, 0.2, 0.8);
+        Pool<?> local_learn = split_local_all.get(0);
+        Pool<?> local_validate = split_local_all.get(1);
+
+        final GradientBoosting<SatL2> boosting = new GradientBoosting<SatL2>(
+                new BootstrapOptimization<>(new GreedyObliviousTree<>(GridTools.medianGrid(local_learn.vecData(), 32), 6), rand),
+                L2Reg.class, 2000, 0.005
+        );
+        new addBoostingListeners<>(boosting, local_learn.target(SatL2.class), local_learn, local_validate, printWriter);
+        printWriter.println();
+
+        printWriter.close();
+    }
 
     protected static class ScoreCalcer implements ProgressHandler {
         final String message;
         final Vec current;
         private final VecDataSet ds;
         private final TargetFunc target;
+        private final PrintWriter printWriter;
 
-        public ScoreCalcer(final String message, final VecDataSet ds, final TargetFunc target) {
+        public ScoreCalcer(final String message, final VecDataSet ds, final TargetFunc target, final PrintWriter printWriter) {
             this.message = message;
             this.ds = ds;
             this.target = target;
+            this.printWriter = printWriter;
             current = new ArrayVec(ds.length());
         }
 
@@ -247,8 +436,10 @@ public class BinarizeTests extends GridTest {
             }
             final double value = target.value(current);
             System.out.print(message + value);
+            printWriter.print(message + value);
             min = Math.min(value, min);
             System.out.print(" best = " + min);
+            printWriter.print(" best = " + min);
         }
     }
 
@@ -267,6 +458,11 @@ public class BinarizeTests extends GridTest {
         Vec residues = VecTools.copy(learn.target(L2.class).target);
         double total = 0;
         int index = 0;
+        private final PrintWriter printWriter;
+
+        public QualityCalcer(final PrintWriter printWriter) {
+            this.printWriter = printWriter;
+        }
 
         @Override
         public void accept(final Trans partial) {
@@ -300,6 +496,7 @@ public class BinarizeTests extends GridTest {
 //          score /= totalDispersion;
                 total += score;
                 this.index++;
+                printWriter.print("\tscore:\t" + score + "\tmean:\t" + (total / this.index));
                 System.out.print("\tscore:\t" + score + "\tmean:\t" + (total / this.index));
             }
         }

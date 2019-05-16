@@ -33,7 +33,7 @@ import java.util.stream.IntStream;
  * Time: 16:35
  */
 public class GridTest extends FileTestCase {
-  public static Pool<?> learn, validate, all;
+  public static Pool<?> learn, validate, all, all10;
   private static FastRandom rng = new FastRandom(0);
 
   private static synchronized void loadDataSet() {
@@ -42,6 +42,7 @@ public class GridTest extends FileTestCase {
         learn = TestResourceLoader.loadPool("features.txt.gz");
         validate = TestResourceLoader.loadPool("featuresTest.txt.gz");
         all = TestResourceLoader.loadPool("featuresAll.txt");
+        all10 = TestResourceLoader.loadPool("featuresAll10.txt");
       }
     } catch (IOException e) {
       e.printStackTrace();
@@ -49,16 +50,17 @@ public class GridTest extends FileTestCase {
   }
 
   public void testSplit() {
-    List<? extends Pool<?>> split = DataTools.splitDataSet(all, rng, 0.8, 0.2);
+    List<? extends Pool<?>> split = DataTools.splitDataSet(all10, rng, 0.1, 0.9);
     System.out.println(split.size());
     Pool<?> p1 = split.get(0);
-    Pool<?> p2 = split.get(1);
+    //Pool<?> p2 = split.get(1);
 
     System.out.println(p1.vecData().xdim());
-    System.out.println(p2.vecData().xdim());
+    //System.out.println(p2.vecData().xdim());
     System.out.println(p1.vecData().length());
-    System.out.println(p2.vecData().length());
-    System.out.println(p1.vecData().data().get(10000, 35));
+    System.out.println(all10.vecData().length());
+    //System.out.println(p2.vecData().length());
+    //System.out.println(p1.vecData().data().get(10000, 35));
 
   }
 

@@ -33,6 +33,7 @@ public final class TestResourceLoader {
   }
 
   public static Pool<?> loadPool(final String localPath) throws IOException {
+    //System.out.println(localPath);
     final InputStream stream = loadResourceAsStream(localPath);
     final InputStreamReader reader = localPath.endsWith(".gz") ? new InputStreamReader(new GZIPInputStream(stream))
                                                                : new InputStreamReader(stream);

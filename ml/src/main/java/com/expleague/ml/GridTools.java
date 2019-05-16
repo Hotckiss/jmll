@@ -943,13 +943,13 @@ public class GridTools {
     final BFRowImpl[] rows = new BFRowImpl[dim];
     final TIntHashSet known = new TIntHashSet();
     int bfCount = 0;
-    FileWriter fileWriter = null;
-    try {
-      fileWriter = new FileWriter("ff.txt");
-    } catch (Exception ex) {
-    }
+    //FileWriter fileWriter = null;
+    //try {
+    //  fileWriter = new FileWriter("ff.txt");
+    //} catch (Exception ex) {
+    //}
 
-    PrintWriter printWriter = new PrintWriter(fileWriter);
+    //PrintWriter printWriter = new PrintWriter(fileWriter);
 
     final double[] feature = new double[ds.length()];
     for (int f = 0; f < dim; f++) {
@@ -965,7 +965,7 @@ public class GridTools {
         continue;
       for (int i = 0; i < feature.length; i++) {
         feature[i] = ds.at(order[i]).get(f);
-        printWriter.print(feature[i] + " ");
+        //printWriter.print(feature[i] + " ");
       }
       //printWriter.println("");
 
@@ -1012,7 +1012,7 @@ public class GridTools {
     }
     System.out.println("]");
     System.out.println("BF: " + bfCount);
-    printWriter.close();
+    //printWriter.close();
     return new BFGridImpl(rows);
   }
 
