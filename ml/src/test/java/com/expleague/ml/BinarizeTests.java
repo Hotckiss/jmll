@@ -319,6 +319,33 @@ public class BinarizeTests extends GridTest {
         printWriter.close();
     }
 
+    public void testOTBoost1Med() {
+        FileWriter fileWriter = null;
+        try {
+            fileWriter = new FileWriter("thread1LogMed.txt");
+        } catch (Exception ex) {
+        }
+
+        PrintWriter printWriter = new PrintWriter(fileWriter);
+
+        FastRandom rand = new FastRandom(1);
+        List<? extends Pool<?>> split = DataTools.splitDataSet(all10, rand, 0.1, 0.9);
+        Pool<?> local_all = split.get(0);
+
+        List<? extends Pool<?>> split_local_all = DataTools.splitDataSet(local_all, rand, 0.2, 0.8);
+        Pool<?> local_learn = split_local_all.get(0);
+        Pool<?> local_validate = split_local_all.get(1);
+
+        final GradientBoosting<SatL2> boosting = new GradientBoosting<SatL2>(
+                new BootstrapOptimization<>(new GreedyObliviousTree<>(GridTools.medianGrid(local_learn.vecData(), 32), 6), rand),
+                L2Reg.class, 2000, 0.005
+        );
+        new addBoostingListeners<>(boosting, local_learn.target(SatL2.class), local_learn, local_validate, printWriter);
+        printWriter.println();
+
+        printWriter.close();
+    }
+
     public void testOTBoost2Med() {
         FileWriter fileWriter = null;
         try {
@@ -464,33 +491,6 @@ public class BinarizeTests extends GridTest {
         PrintWriter printWriter = new PrintWriter(fileWriter);
 
         FastRandom rand = new FastRandom(7);
-        List<? extends Pool<?>> split = DataTools.splitDataSet(all10, rand, 0.1, 0.9);
-        Pool<?> local_all = split.get(0);
-
-        List<? extends Pool<?>> split_local_all = DataTools.splitDataSet(local_all, rand, 0.2, 0.8);
-        Pool<?> local_learn = split_local_all.get(0);
-        Pool<?> local_validate = split_local_all.get(1);
-
-        final GradientBoosting<SatL2> boosting = new GradientBoosting<SatL2>(
-                new BootstrapOptimization<>(new GreedyObliviousTree<>(GridTools.medianGrid(local_learn.vecData(), 32), 6), rand),
-                L2Reg.class, 2000, 0.005
-        );
-        new addBoostingListeners<>(boosting, local_learn.target(SatL2.class), local_learn, local_validate, printWriter);
-        printWriter.println();
-
-        printWriter.close();
-    }
-
-    public void testOTBoost8Med() {
-        FileWriter fileWriter = null;
-        try {
-            fileWriter = new FileWriter("thread8LogMed.txt");
-        } catch (Exception ex) {
-        }
-
-        PrintWriter printWriter = new PrintWriter(fileWriter);
-
-        FastRandom rand = new FastRandom(8);
         List<? extends Pool<?>> split = DataTools.splitDataSet(all10, rand, 0.1, 0.9);
         Pool<?> local_all = split.get(0);
 
