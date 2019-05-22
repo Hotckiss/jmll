@@ -12,8 +12,8 @@ import com.expleague.ml.func.Ensemble;
 import java.io.PrintWriter;
 
 public class BenchmarkLearnScoreCalcer implements ProgressHandler {
-    final String message;
-    final Vec current;
+    private final String message;
+    private final Vec current;
     private final VecDataSet ds;
     private final TargetFunc target;
     private final PrintWriter printWriter;
@@ -26,7 +26,7 @@ public class BenchmarkLearnScoreCalcer implements ProgressHandler {
         current = new ArrayVec(ds.length());
     }
 
-    double min = 1e10;
+    private double min = 1e10;
 
     @Override
     public void accept(final Trans partial) {

@@ -14,13 +14,13 @@ import javafx.scene.chart.XYChart;
 import java.io.PrintWriter;
 
 public class BenchmarkValidateScoreCalcer implements ProgressHandler {
-    final String message;
-    final Vec current;
+    private final String message;
+    private final Vec current;
     private final VecDataSet ds;
     private final TargetFunc target;
     private final PrintWriter printWriter;
-    int index = 0;
-    XYChart.Series series;
+    private int index = 0;
+    private XYChart.Series series;
 
     public BenchmarkValidateScoreCalcer(final String message, final VecDataSet ds, final TargetFunc target, final PrintWriter printWriter, XYChart.Series series) {
         this.message = message;
@@ -31,7 +31,7 @@ public class BenchmarkValidateScoreCalcer implements ProgressHandler {
         current = new ArrayVec(ds.length());
     }
 
-    double min = 1e10;
+    private double min = 1e10;
 
     @Override
     public void accept(final Trans partial) {

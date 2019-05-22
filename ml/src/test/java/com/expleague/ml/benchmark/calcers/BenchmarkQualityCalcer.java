@@ -18,10 +18,10 @@ import static com.expleague.commons.math.MathTools.sqr;
 import static java.lang.Math.log;
 
 public class BenchmarkQualityCalcer implements ProgressHandler {
-    Pool<?> dataset;
-    Vec residues;
-    double total = 0;
-    int index = 0;
+    private Pool<?> dataset;
+    private Vec residues;
+    private double total = 0;
+    private int index = 0;
     private final PrintWriter printWriter;
 
     public BenchmarkQualityCalcer(final PrintWriter printWriter, Pool<?> dataset) {
