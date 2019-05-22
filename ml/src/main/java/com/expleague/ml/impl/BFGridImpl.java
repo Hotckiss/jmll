@@ -49,7 +49,6 @@ public class BFGridImpl implements BFGrid {
 
   @Override
   public BinaryFeatureImpl bf(final int bfIndex) {
-    GridUtils.inc(bfIndex);
     return features[bfIndex];
   }
 

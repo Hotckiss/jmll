@@ -782,7 +782,7 @@ public void testElasticNetBenchmark() {
     );
     new addBoostingListeners<>(boosting, learn.target(SatL2.class), learn, validate);
     //GridUtils.out();
-    GridUtils.outArr();
+    //GridUtils.outArr();
   }
 
   //hhhhhhhhhh

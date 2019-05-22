@@ -86,7 +86,9 @@ public class BinarizeBenchmark extends Application {
                             6,
                             2000,
                             0.005,
-                            new BuildProgressHandler(algorithm1Bar, BFGridFactory.getStepsCount(MethodType.MEDIAN, dataset.vecData(), 32))).run();
+                            new BuildProgressHandler(algorithm1Bar, BFGridFactory.getStepsCount(MethodType.MEDIAN, dataset.vecData(), 32)),
+                            0,
+                            barsUsageSeries1).run();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -105,7 +107,9 @@ public class BinarizeBenchmark extends Application {
                             6,
                             2000,
                             0.005,
-                            new BuildProgressHandler(algorithm2Bar, BFGridFactory.getStepsCount(MethodType.PROBABILITY_PRESORT, dataset.vecData(), 32))).run();
+                            new BuildProgressHandler(algorithm2Bar, BFGridFactory.getStepsCount(MethodType.PROBABILITY_PRESORT, dataset.vecData(), 32)),
+                            1,
+                            barsUsageSeries2).run();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -124,7 +128,9 @@ public class BinarizeBenchmark extends Application {
                             6,
                             2000,
                             0.005,
-                            new BuildProgressHandler(algorithm3Bar, BFGridFactory.getStepsCount(MethodType.PROBABILITY_PRESORT, dataset.vecData(), 32))).run();
+                            new BuildProgressHandler(algorithm3Bar, BFGridFactory.getStepsCount(MethodType.PROBABILITY_PRESORT, dataset.vecData(), 32)),
+                            2,
+                            barsUsageSeries3).run();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -143,7 +149,9 @@ public class BinarizeBenchmark extends Application {
                             6,
                             2000,
                             0.005,
-                            new BuildProgressHandler(algorithm4Bar, BFGridFactory.getStepsCount(MethodType.PROBABILITY_PRESORT, dataset.vecData(), 32))).run();
+                            new BuildProgressHandler(algorithm4Bar, BFGridFactory.getStepsCount(MethodType.PROBABILITY_PRESORT, dataset.vecData(), 32)),
+                            3,
+                            barsUsageSeries4).run();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

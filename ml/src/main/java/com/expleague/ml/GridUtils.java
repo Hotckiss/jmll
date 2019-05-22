@@ -4,22 +4,27 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class GridUtils {
-    public static HashMap<Integer, Integer> counts = new HashMap<>();
+    public static HashMap<Integer, HashMap<Integer, Integer>> counts = new HashMap<>();
     public static int total = 0;
 
-    public static void inc(int binNo) {
-        Integer old = counts.get(binNo);
+    public static void inc(int binNo, int algorithmIndex) {
+        HashMap<Integer, Integer> algoMap = counts.get(algorithmIndex);
+        if (algoMap == null) {
+            counts.put(algorithmIndex, new HashMap<>());
+        }
+
+        Integer old = counts.get(algorithmIndex).get(binNo);
 
         if (old == null) {
-            counts.put(binNo, 1);
+            counts.get(algorithmIndex).put(binNo, 1);
         } else {
-            counts.put(binNo, old + 1);
+            counts.get(algorithmIndex).put(binNo, old + 1);
         }
 
         total++;
     }
 
-    public static void out() {
+    /*public static void out() {
         System.out.println("Total: " + total);
 
         for (Map.Entry<Integer, Integer> entry1 : counts.entrySet()) {
@@ -33,5 +38,5 @@ public class GridUtils {
             System.out.print(entry1.getValue() + ", ");
         }
         System.out.println("]");
-    }
+    }*/
 }

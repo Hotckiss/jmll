@@ -5,6 +5,7 @@ import com.expleague.commons.math.Trans;
 import com.expleague.commons.math.vectors.Vec;
 import com.expleague.commons.math.vectors.VecTools;
 import com.expleague.commons.math.vectors.impl.vectors.ArrayVec;
+import com.expleague.ml.GridUtils;
 import com.expleague.ml.ProgressHandler;
 import com.expleague.ml.TargetFunc;
 import com.expleague.ml.benchmark.calcers.BenchmarkLearnScoreCalcer;
@@ -15,9 +16,15 @@ import com.expleague.ml.data.tools.Pool;
 import com.expleague.ml.func.Ensemble;
 import com.expleague.ml.loss.L2;
 import com.expleague.ml.methods.GradientBoosting;
+import javafx.application.Platform;
 import javafx.scene.chart.XYChart;
 
 import java.io.PrintWriter;
+import java.lang.management.PlatformLoggingMXBean;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Map;
 import java.util.function.Consumer;
 
 public class AddBoostingListeners<GlobalLoss extends TargetFunc> {
@@ -33,7 +40,9 @@ public class AddBoostingListeners<GlobalLoss extends TargetFunc> {
                          final Pool<?> _validate,
                          final PrintWriter printWriter,
                          XYChart.Series series,
-                         XYChart.Series seriesT) {
+                         XYChart.Series seriesT,
+                         XYChart.Series barData,
+                         int index) {
         final Consumer counter = new ProgressHandler() {
             int index = 0;
 
@@ -65,6 +74,20 @@ public class AddBoostingListeners<GlobalLoss extends TargetFunc> {
             for (int j = 0; j < ans.models.length; j++)
                 f += ans.weights.get(j) * ((Func) ans.models[j]).value(_validate.vecData().data().row(i));
             current.set(i, f);
+        }
+
+        int[] binsUsage = new int[GridUtils.counts.get(index).size()];
+        int pos = 0;
+        for (Map.Entry<Integer, Integer> entry1 : GridUtils.counts.get(index).entrySet()) {
+            binsUsage[pos++] = entry1.getValue();
+            //binsUsage.add(entry1.getValue());
+            //System.out.println("Bin: " + entry1.getKey() + " Count: " + entry1.getValue());
+        }
+        Arrays.sort(binsUsage);
+
+        for (int i = 0; i < binsUsage.length; i++) {
+            final int ii = i;
+            Platform.runLater(() -> barData.getData().add(new XYChart.Data(String.valueOf(ii), binsUsage[ii])));
         }
         System.out.println("\n + Final loss = " + VecTools.distance(current, _validate.target(L2.class).target) / Math.sqrt(_validate.size()) + "   " +  ans.models.length + "\n");
         printWriter.println("\n + Final loss = " + VecTools.distance(current, _validate.target(L2.class).target) / Math.sqrt(_validate.size()) + "\n");

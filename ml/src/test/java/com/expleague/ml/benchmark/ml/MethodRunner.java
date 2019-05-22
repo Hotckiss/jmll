@@ -8,7 +8,7 @@ import com.expleague.ml.loss.L2Reg;
 import com.expleague.ml.loss.SatL2;
 import com.expleague.ml.methods.BootstrapOptimization;
 import com.expleague.ml.methods.GradientBoosting;
-import com.expleague.ml.methods.trees.GreedyObliviousTree;
+import com.expleague.ml.methods.trees.GreedyObliviousTreeBenchmark;
 import javafx.scene.chart.XYChart;
 
 import java.io.FileWriter;
@@ -28,6 +28,8 @@ public class MethodRunner {
     private int iterationsCount;
     private double step;
     private BuildProgressHandler buildProgressHandler;
+    private int index;
+    private XYChart.Series barData;
 
     public MethodRunner(String logFileName,
                         Pool<?> dataset,
@@ -40,7 +42,9 @@ public class MethodRunner {
                         int treeDepth,
                         int iterationsCount,
                         double step,
-                        BuildProgressHandler buildProgressHandler) {
+                        BuildProgressHandler buildProgressHandler,
+                        int index,
+                        XYChart.Series barData) {
 
         this.logFileName = logFileName;
         this.dataset = dataset;
@@ -54,6 +58,8 @@ public class MethodRunner {
         this.iterationsCount = iterationsCount;
         this.step = step;
         this.buildProgressHandler = buildProgressHandler;
+        this.index = index;
+        this.barData = barData;
     }
 
     public void run() throws Exception {
@@ -64,11 +70,11 @@ public class MethodRunner {
         Pool<?> local_validate = split_local_all.get(1);
 
         final GradientBoosting<SatL2> boosting = new GradientBoosting<>(
-                new BootstrapOptimization<>(new GreedyObliviousTree<>(BFGridFactory.makeGrid(type, local_learn.vecData(), binFactor, buildProgressHandler), treeDepth), rng),
+                new BootstrapOptimization<>(new GreedyObliviousTreeBenchmark<>(BFGridFactory.makeGrid(type, local_learn.vecData(), binFactor, buildProgressHandler), treeDepth, index), rng),
                 L2Reg.class, iterationsCount, step
         );
 
-        new AddBoostingListeners<>(boosting, local_learn.target(SatL2.class), dataset, local_learn, local_validate, logger, convergeSeries, convergeSeriesTrain);
+        new AddBoostingListeners<>(boosting, local_learn.target(SatL2.class), dataset, local_learn, local_validate, logger, convergeSeries, convergeSeriesTrain, barData, index);
         logger.close();
     }
 }
