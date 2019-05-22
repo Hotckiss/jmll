@@ -4,27 +4,46 @@ import com.expleague.ml.BFGrid;
 import com.expleague.ml.GridTools;
 import com.expleague.ml.BuildProgressHandler;
 import com.expleague.ml.data.set.VecDataSet;
+import javafx.application.Platform;
+import javafx.scene.control.Label;
 
 public class BFGridFactory {
-    public static BFGrid makeGrid(MethodType type, VecDataSet data, int binFactor, BuildProgressHandler buildProgressHandler) {
+    public static BFGrid makeGrid(MethodType type, VecDataSet data, int binFactor, BuildProgressHandler buildProgressHandler, Label binTime) {
+        long s = System.nanoTime();
+        BFGrid res = null;
         switch (type) {
             case MEDIAN:
-                return GridTools.medianGrid(data, binFactor, buildProgressHandler);
+                res =  GridTools.medianGrid(data, binFactor, buildProgressHandler);
+                break;
             case PROBABILITY_FAST:
-                return GridTools.probabilityGrid(data, binFactor, true, buildProgressHandler);
+                res = GridTools.probabilityGrid(data, binFactor, true, buildProgressHandler);
+                break;
             case PROBABILITY_SIMPLE:
-                return GridTools.probabilityGrid(data, binFactor, false, buildProgressHandler);
+                res = GridTools.probabilityGrid(data, binFactor, false, buildProgressHandler);
+                break;
             case PROBABILITY_BIG_INT:
-                return GridTools.probabilityGrid_bigInt(data, binFactor, buildProgressHandler);
+                res = GridTools.probabilityGrid_bigInt(data, binFactor, buildProgressHandler);
+                break;
             case PROBABILITY_MIXED:
-                return GridTools.probabilityGrid_mixed(data, binFactor, true, buildProgressHandler);
+                res = GridTools.probabilityGrid_mixed(data, binFactor, true, buildProgressHandler);
+                break;
             case PROBABILITY_PRESORT:
-                return GridTools.probabilityGrid_presort(data, binFactor, buildProgressHandler);
+                res = GridTools.probabilityGrid_presort(data, binFactor, buildProgressHandler);
+                break;
             case PROBABILITY_MEDIAN:
-                return GridTools.probabilityGridMedian(data, binFactor, buildProgressHandler);
+                res = GridTools.probabilityGridMedian(data, binFactor, buildProgressHandler);
+                break;
+            default:
+                res =  GridTools.medianGrid(data, binFactor, buildProgressHandler);
+                break;
+
         }
 
-        return GridTools.medianGrid(data, binFactor, buildProgressHandler);
+        long f = System.nanoTime();
+        long d = (f - s);
+
+        Platform.runLater(() -> binTime.setText((d < 1000000000) ? ( d/ 1000000) + " ms." : ( d/ 1000000000) + " sec."));
+        return res;
     }
 
     public static int getStepsCount(MethodType type, VecDataSet data, int binFactor) {

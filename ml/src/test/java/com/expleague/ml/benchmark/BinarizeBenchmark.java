@@ -13,6 +13,7 @@ import javafx.geometry.HPos;
 import javafx.scene.Scene;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
@@ -35,6 +36,11 @@ public class BinarizeBenchmark extends Application {
     private ProgressBar algorithm2Bar = new ProgressBar();
     private ProgressBar algorithm3Bar = new ProgressBar();
     private ProgressBar algorithm4Bar = new ProgressBar();
+
+    private Label algorithm1BinTime = new Label();
+    private Label algorithm2BinTime = new Label();
+    private Label algorithm3BinTime = new Label();
+    private Label algorithm4BinTime = new Label();
 
     private XYChart.Series barsUsageSeries1 = new XYChart.Series();
     private XYChart.Series barsUsageSeries2 = new XYChart.Series();
@@ -68,6 +74,11 @@ public class BinarizeBenchmark extends Application {
         algorithm3Bar = BinarizeBenchmarkUIUtils.addProgressBar(gridpane, 2);
         algorithm4Bar = BinarizeBenchmarkUIUtils.addProgressBar(gridpane, 3);
 
+        algorithm1BinTime = BinarizeBenchmarkUIUtils.addBinarizeTime(gridpane, 0);
+        algorithm2BinTime = BinarizeBenchmarkUIUtils.addBinarizeTime(gridpane, 1);
+        algorithm3BinTime = BinarizeBenchmarkUIUtils.addBinarizeTime(gridpane, 2);
+        algorithm4BinTime = BinarizeBenchmarkUIUtils.addBinarizeTime(gridpane, 3);
+
         Button runButt = new Button("Run!");
         GridPane.setHalignment(runButt, HPos.RIGHT);
         gridpane.add(runButt, 1, 3);
@@ -88,7 +99,8 @@ public class BinarizeBenchmark extends Application {
                             0.005,
                             new BuildProgressHandler(algorithm1Bar, BFGridFactory.getStepsCount(MethodType.MEDIAN, dataset.vecData(), 32)),
                             0,
-                            barsUsageSeries1).run();
+                            barsUsageSeries1,
+                            algorithm1BinTime).run();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -109,7 +121,8 @@ public class BinarizeBenchmark extends Application {
                             0.005,
                             new BuildProgressHandler(algorithm2Bar, BFGridFactory.getStepsCount(MethodType.PROBABILITY_PRESORT, dataset.vecData(), 32)),
                             1,
-                            barsUsageSeries2).run();
+                            barsUsageSeries2,
+                            algorithm2BinTime).run();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -130,7 +143,8 @@ public class BinarizeBenchmark extends Application {
                             0.005,
                             new BuildProgressHandler(algorithm3Bar, BFGridFactory.getStepsCount(MethodType.PROBABILITY_PRESORT, dataset.vecData(), 32)),
                             2,
-                            barsUsageSeries3).run();
+                            barsUsageSeries3,
+                            algorithm3BinTime).run();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -151,7 +165,8 @@ public class BinarizeBenchmark extends Application {
                             0.005,
                             new BuildProgressHandler(algorithm4Bar, BFGridFactory.getStepsCount(MethodType.PROBABILITY_PRESORT, dataset.vecData(), 32)),
                             3,
-                            barsUsageSeries4).run();
+                            barsUsageSeries4,
+                            algorithm4BinTime).run();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

@@ -10,6 +10,7 @@ import com.expleague.ml.methods.BootstrapOptimization;
 import com.expleague.ml.methods.GradientBoosting;
 import com.expleague.ml.methods.trees.GreedyObliviousTreeBenchmark;
 import javafx.scene.chart.XYChart;
+import javafx.scene.control.Label;
 
 import java.io.FileWriter;
 import java.io.PrintWriter;
@@ -30,6 +31,7 @@ public class MethodRunner {
     private BuildProgressHandler buildProgressHandler;
     private int index;
     private XYChart.Series barData;
+    private Label binTime;
 
     public MethodRunner(String logFileName,
                         Pool<?> dataset,
@@ -44,7 +46,8 @@ public class MethodRunner {
                         double step,
                         BuildProgressHandler buildProgressHandler,
                         int index,
-                        XYChart.Series barData) {
+                        XYChart.Series barData,
+                        Label binTime) {
 
         this.logFileName = logFileName;
         this.dataset = dataset;
@@ -60,6 +63,7 @@ public class MethodRunner {
         this.buildProgressHandler = buildProgressHandler;
         this.index = index;
         this.barData = barData;
+        this.binTime = binTime;
     }
 
     public void run() throws Exception {
@@ -70,7 +74,7 @@ public class MethodRunner {
         Pool<?> local_validate = split_local_all.get(1);
 
         final GradientBoosting<SatL2> boosting = new GradientBoosting<>(
-                new BootstrapOptimization<>(new GreedyObliviousTreeBenchmark<>(BFGridFactory.makeGrid(type, local_learn.vecData(), binFactor, buildProgressHandler), treeDepth, index), rng),
+                new BootstrapOptimization<>(new GreedyObliviousTreeBenchmark<>(BFGridFactory.makeGrid(type, local_learn.vecData(), binFactor, buildProgressHandler, binTime), treeDepth, index), rng),
                 L2Reg.class, iterationsCount, step
         );
 

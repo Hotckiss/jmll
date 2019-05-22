@@ -97,12 +97,24 @@ public class BinarizeBenchmarkUIUtils {
     public static ProgressBar addProgressBar(GridPane gridpane, int index) {
         Label binLabel = new Label("Binarize progress:");
         GridPane.setHalignment(binLabel, HPos.CENTER);
-        gridpane.add(binLabel, index * 4 + 1, 4);
+        gridpane.add(binLabel, index * 4, 4);
         ProgressBar algorithmBar = new ProgressBar();
         GridPane.setHalignment(algorithmBar, HPos.LEFT);
-        gridpane.add(algorithmBar, index * 4 + 2, 4);
+        gridpane.add(algorithmBar, index * 4 + 1, 4);
 
         return algorithmBar;
+    }
+
+    public static Label addBinarizeTime(GridPane gridpane, int index) {
+        Label binLabel = new Label("Time:");
+        GridPane.setHalignment(binLabel, HPos.CENTER);
+        gridpane.add(binLabel, index * 4 + 2, 4);
+
+        Label timeLabel = new Label();
+        GridPane.setHalignment(timeLabel, HPos.LEFT);
+        gridpane.add(timeLabel, index * 4 + 3, 4);
+
+        return timeLabel;
     }
 
     public static void addBinsChartUsage(GridPane gridPane, XYChart.Series bars, int index) {
