@@ -3,9 +3,7 @@ package com.expleague.ml.benchmark.ui;
 import com.expleague.ml.GridTools;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
-import javafx.scene.chart.LineChart;
-import javafx.scene.chart.NumberAxis;
-import javafx.scene.chart.XYChart;
+import javafx.scene.chart.*;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextField;
@@ -19,7 +17,7 @@ public class BinarizeBenchmarkUIUtils {
         GridPane gridpane = new GridPane();
         gridpane.setPadding(new Insets(5));
         gridpane.setHgap(8);
-        gridpane.setVgap(6);
+        gridpane.setVgap(7);
         ColumnConstraints column1 = new ColumnConstraints(200);
         RowConstraints row0 = new RowConstraints(50);
         RowConstraints row1 = new RowConstraints(50);
@@ -95,5 +93,15 @@ public class BinarizeBenchmarkUIUtils {
         gridpane.add(algorithmBar, index * 2 + 1, 4);
 
         return algorithmBar;
+    }
+
+    public static void addBinsChartUsage(GridPane gridPane, XYChart.Series bars, int index) {
+        final CategoryAxis xAxis = new CategoryAxis();
+        final NumberAxis yAxis = new NumberAxis();
+        final BarChart<String,Number> barChart = new BarChart<>(xAxis, yAxis);
+        barChart.setTitle("Bins usage");
+        barChart.setStyle(".chart-series-line { -fx-stroke-width: 1px; }");
+        barChart.getData().add(bars);
+        gridPane.add(barChart, index * 2, 6, 2, 1);
     }
 }

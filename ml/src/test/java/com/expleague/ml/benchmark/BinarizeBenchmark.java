@@ -36,6 +36,11 @@ public class BinarizeBenchmark extends Application {
     private ProgressBar algorithm3Bar = new ProgressBar();
     private ProgressBar algorithm4Bar = new ProgressBar();
 
+    private XYChart.Series barsUsageSeries1 = new XYChart.Series();
+    private XYChart.Series barsUsageSeries2 = new XYChart.Series();
+    private XYChart.Series barsUsageSeries3 = new XYChart.Series();
+    private XYChart.Series barsUsageSeries4 = new XYChart.Series();
+
     private static synchronized void loadDataSet() {
         try {
             dataset = TestResourceLoader.loadPool("features.txt");
@@ -158,8 +163,18 @@ public class BinarizeBenchmark extends Application {
         BinarizeBenchmarkUIUtils.addAlgorithmChart(gridpane, series3, series3T, 2);
         BinarizeBenchmarkUIUtils.addAlgorithmChart(gridpane, series4, series4T, 3);
 
+        barsUsageSeries1.setName("Bars usage 1");
+        barsUsageSeries2.setName("Bars usage 2");
+        barsUsageSeries3.setName("Bars usage 3");
+        barsUsageSeries4.setName("Bars usage 4");
+
+        BinarizeBenchmarkUIUtils.addBinsChartUsage(gridpane, barsUsageSeries1, 0);
+        BinarizeBenchmarkUIUtils.addBinsChartUsage(gridpane, barsUsageSeries2, 1);
+        BinarizeBenchmarkUIUtils.addBinsChartUsage(gridpane, barsUsageSeries3, 2);
+        BinarizeBenchmarkUIUtils.addBinsChartUsage(gridpane, barsUsageSeries4, 3);
+
         root.getChildren().add(gridpane);
-        primaryStage.setScene(new Scene(root, 1700, 600));
+        primaryStage.setScene(new Scene(root, 1700, 900));
         primaryStage.show();
     }
 }
