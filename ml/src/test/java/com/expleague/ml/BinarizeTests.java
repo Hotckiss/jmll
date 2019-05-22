@@ -11,6 +11,7 @@ import com.expleague.commons.math.vectors.impl.vectors.ArrayVec;
 import com.expleague.commons.math.vectors.impl.vectors.SparseVec;
 import com.expleague.commons.random.FastRandom;
 import com.expleague.commons.seq.ArraySeq;
+import com.expleague.commons.seq.IntSeq;
 import com.expleague.commons.seq.IntSeqBuilder;
 import com.expleague.commons.util.ArrayTools;
 import com.expleague.commons.util.Pair;
@@ -19,6 +20,7 @@ import com.expleague.ml.cli.builders.data.impl.DataBuilderCrossValidation;
 import com.expleague.ml.data.set.VecDataSet;
 import com.expleague.ml.data.set.impl.VecDataSetImpl;
 import com.expleague.ml.data.tools.DataTools;
+import com.expleague.ml.data.tools.FakePool;
 import com.expleague.ml.data.tools.FeaturesTxtPool;
 import com.expleague.ml.data.tools.Pool;
 import com.expleague.ml.func.Ensemble;
@@ -36,6 +38,7 @@ import com.expleague.ml.models.ObliviousTree;
 import com.expleague.ml.models.pgm.ProbabilisticGraphicalModel;
 import com.expleague.ml.models.pgm.Route;
 import com.expleague.ml.models.pgm.SimplePGM;
+import com.expleague.ml.testUtils.TestResourceLoader;
 import gnu.trove.map.hash.TDoubleDoubleHashMap;
 import gnu.trove.map.hash.TDoubleIntHashMap;
 
@@ -112,7 +115,7 @@ public class BinarizeTests extends GridTest {
 
         PrintWriter printWriter = new PrintWriter(fileWriter);
 
-        FastRandom rand = new FastRandom(1);
+        FastRandom rand = new FastRandom(925);
         List<? extends Pool<?>> split = DataTools.splitDataSet(all10, rand, 0.1, 0.9);
         Pool<?> local_all = split.get(0);
 
@@ -121,7 +124,7 @@ public class BinarizeTests extends GridTest {
         Pool<?> local_validate = split_local_all.get(1);
 
         final GradientBoosting<SatL2> boosting = new GradientBoosting<SatL2>(
-                new BootstrapOptimization<>(new GreedyObliviousTree<>(GridTools.probabilityGrid(local_learn.vecData(), 32, true), 6), rand),
+                new BootstrapOptimization<>(new GreedyObliviousTree<>(GridTools.probabilityGrid2(local_learn.vecData(), 32, true), 6), rand),
                 L2Reg.class, 2000, 0.005
         );
         new addBoostingListeners<>(boosting, local_learn.target(SatL2.class), local_learn, local_validate, printWriter);
@@ -139,7 +142,7 @@ public class BinarizeTests extends GridTest {
 
         PrintWriter printWriter = new PrintWriter(fileWriter);
 
-        FastRandom rand = new FastRandom(2);
+        FastRandom rand = new FastRandom(925);
         List<? extends Pool<?>> split = DataTools.splitDataSet(all10, rand, 0.1, 0.9);
         Pool<?> local_all = split.get(0);
 
@@ -148,7 +151,7 @@ public class BinarizeTests extends GridTest {
         Pool<?> local_validate = split_local_all.get(1);
 
         final GradientBoosting<SatL2> boosting = new GradientBoosting<SatL2>(
-                new BootstrapOptimization<>(new GreedyObliviousTree<>(GridTools.probabilityGrid(local_learn.vecData(), 32, true), 6), rand),
+                new BootstrapOptimization<>(new GreedyObliviousTree<>(GridTools.probabilityGrid2(local_learn.vecData(), 32, true), 6), rand),
                 L2Reg.class, 2000, 0.005
         );
         new addBoostingListeners<>(boosting, local_learn.target(SatL2.class), local_learn, local_validate, printWriter);
@@ -166,7 +169,7 @@ public class BinarizeTests extends GridTest {
 
         PrintWriter printWriter = new PrintWriter(fileWriter);
 
-        FastRandom rand = new FastRandom(3);
+        FastRandom rand = new FastRandom(925);
         List<? extends Pool<?>> split = DataTools.splitDataSet(all10, rand, 0.1, 0.9);
         Pool<?> local_all = split.get(0);
 
@@ -193,7 +196,7 @@ public class BinarizeTests extends GridTest {
 
         PrintWriter printWriter = new PrintWriter(fileWriter);
 
-        FastRandom rand = new FastRandom(4);
+        FastRandom rand = new FastRandom(925);
         List<? extends Pool<?>> split = DataTools.splitDataSet(all10, rand, 0.1, 0.9);
         Pool<?> local_all = split.get(0);
 
@@ -220,7 +223,7 @@ public class BinarizeTests extends GridTest {
 
         PrintWriter printWriter = new PrintWriter(fileWriter);
 
-        FastRandom rand = new FastRandom(5);
+        FastRandom rand = new FastRandom(1440);
         List<? extends Pool<?>> split = DataTools.splitDataSet(all10, rand, 0.1, 0.9);
         Pool<?> local_all = split.get(0);
 
@@ -247,7 +250,7 @@ public class BinarizeTests extends GridTest {
 
         PrintWriter printWriter = new PrintWriter(fileWriter);
 
-        FastRandom rand = new FastRandom(6);
+        FastRandom rand = new FastRandom(1441);
         List<? extends Pool<?>> split = DataTools.splitDataSet(all10, rand, 0.1, 0.9);
         Pool<?> local_all = split.get(0);
 
@@ -274,7 +277,7 @@ public class BinarizeTests extends GridTest {
 
         PrintWriter printWriter = new PrintWriter(fileWriter);
 
-        FastRandom rand = new FastRandom(7);
+        FastRandom rand = new FastRandom(1442);
         List<? extends Pool<?>> split = DataTools.splitDataSet(all10, rand, 0.1, 0.9);
         Pool<?> local_all = split.get(0);
 
@@ -301,7 +304,7 @@ public class BinarizeTests extends GridTest {
 
         PrintWriter printWriter = new PrintWriter(fileWriter);
 
-        FastRandom rand = new FastRandom(8);
+        FastRandom rand = new FastRandom(1443);
         List<? extends Pool<?>> split = DataTools.splitDataSet(all10, rand, 0.1, 0.9);
         Pool<?> local_all = split.get(0);
 
@@ -328,7 +331,7 @@ public class BinarizeTests extends GridTest {
 
         PrintWriter printWriter = new PrintWriter(fileWriter);
 
-        FastRandom rand = new FastRandom(1);
+        FastRandom rand = new FastRandom(925);
         List<? extends Pool<?>> split = DataTools.splitDataSet(all10, rand, 0.1, 0.9);
         Pool<?> local_all = split.get(0);
 
@@ -355,7 +358,7 @@ public class BinarizeTests extends GridTest {
 
         PrintWriter printWriter = new PrintWriter(fileWriter);
 
-        FastRandom rand = new FastRandom(2);
+        FastRandom rand = new FastRandom(926);
         List<? extends Pool<?>> split = DataTools.splitDataSet(all10, rand, 0.1, 0.9);
         Pool<?> local_all = split.get(0);
 
@@ -382,7 +385,7 @@ public class BinarizeTests extends GridTest {
 
         PrintWriter printWriter = new PrintWriter(fileWriter);
 
-        FastRandom rand = new FastRandom(3);
+        FastRandom rand = new FastRandom(927);
         List<? extends Pool<?>> split = DataTools.splitDataSet(all10, rand, 0.1, 0.9);
         Pool<?> local_all = split.get(0);
 
@@ -409,7 +412,7 @@ public class BinarizeTests extends GridTest {
 
         PrintWriter printWriter = new PrintWriter(fileWriter);
 
-        FastRandom rand = new FastRandom(4);
+        FastRandom rand = new FastRandom(928);
         List<? extends Pool<?>> split = DataTools.splitDataSet(all10, rand, 0.1, 0.9);
         Pool<?> local_all = split.get(0);
 
@@ -436,7 +439,7 @@ public class BinarizeTests extends GridTest {
 
         PrintWriter printWriter = new PrintWriter(fileWriter);
 
-        FastRandom rand = new FastRandom(5);
+        FastRandom rand = new FastRandom(1440);
         List<? extends Pool<?>> split = DataTools.splitDataSet(all10, rand, 0.1, 0.9);
         Pool<?> local_all = split.get(0);
 
@@ -463,7 +466,7 @@ public class BinarizeTests extends GridTest {
 
         PrintWriter printWriter = new PrintWriter(fileWriter);
 
-        FastRandom rand = new FastRandom(6);
+        FastRandom rand = new FastRandom(1441);
         List<? extends Pool<?>> split = DataTools.splitDataSet(all10, rand, 0.1, 0.9);
         Pool<?> local_all = split.get(0);
 
@@ -490,7 +493,7 @@ public class BinarizeTests extends GridTest {
 
         PrintWriter printWriter = new PrintWriter(fileWriter);
 
-        FastRandom rand = new FastRandom(7);
+        FastRandom rand = new FastRandom(1442);
         List<? extends Pool<?>> split = DataTools.splitDataSet(all10, rand, 0.1, 0.9);
         Pool<?> local_all = split.get(0);
 
@@ -517,7 +520,7 @@ public class BinarizeTests extends GridTest {
 
         PrintWriter printWriter = new PrintWriter(fileWriter);
 
-        FastRandom rand = new FastRandom(8);
+        FastRandom rand = new FastRandom(1443);
         List<? extends Pool<?>> split = DataTools.splitDataSet(all10, rand, 0.1, 0.9);
         Pool<?> local_all = split.get(0);
 
@@ -527,6 +530,277 @@ public class BinarizeTests extends GridTest {
 
         final GradientBoosting<SatL2> boosting = new GradientBoosting<SatL2>(
                 new BootstrapOptimization<>(new GreedyObliviousTree<>(GridTools.medianGrid(local_learn.vecData(), 32), 6), rand),
+                L2Reg.class, 2000, 0.005
+        );
+        new addBoostingListeners<>(boosting, local_learn.target(SatL2.class), local_learn, local_validate, printWriter);
+        printWriter.println();
+
+        printWriter.close();
+    }
+
+
+    public void testOTBoostXMed() {
+        FileWriter fileWriter = null;
+        try {
+            fileWriter = new FileWriter("threadXLogMed.txt");
+        } catch (Exception ex) {
+        }
+
+        PrintWriter printWriter = new PrintWriter(fileWriter);
+
+        FastRandom rand = new FastRandom(1443);
+
+        int xdim = 5;
+        int len = 4096;
+        double[] arr = new double[xdim * len];
+        int[] arr1 = new int[xdim * len];
+        for (int i = 0; i < len; i++) {
+            for (int j = 0; j < xdim; j++) {
+                arr[xdim * i + j] = i;
+                arr1[xdim * i + j] = i;
+            }
+        }
+
+        ArrayVec vec = new ArrayVec(arr, 0, xdim * len);
+        final VecBasedMx data = new VecBasedMx(xdim, vec);
+
+        final FakePool pool = FakePool.create(
+                data,
+                new IntSeq(arr1, 0, len)
+        );
+
+        List<? extends Pool<?>> split_local_all = DataTools.splitDataSet(pool, rand, 0.2, 0.8);
+        Pool<?> local_learn = split_local_all.get(0);
+        Pool<?> local_validate = split_local_all.get(1);
+
+        final GradientBoosting<SatL2> boosting = new GradientBoosting<SatL2>(
+                new BootstrapOptimization<>(new GreedyObliviousTree<>(GridTools.medianGrid(local_learn.vecData(), 32), 6), rand),
+                L2Reg.class, 2000, 0.005
+        );
+        new addBoostingListeners<>(boosting, local_learn.target(SatL2.class), local_learn, local_validate, printWriter);
+        printWriter.println();
+
+        printWriter.close();
+    }
+
+
+    public void testOTBoostXProb() {
+        FileWriter fileWriter = null;
+        try {
+            fileWriter = new FileWriter("threadXLogMed.txt");
+        } catch (Exception ex) {
+        }
+
+        PrintWriter printWriter = new PrintWriter(fileWriter);
+
+        FastRandom rand = new FastRandom(1443);
+
+        int xdim = 5;
+        int len = 4096;
+        double[] arr = new double[xdim * len];
+        int[] arr1 = new int[xdim * len];
+        for (int i = 0; i < len; i++) {
+            for (int j = 0; j < xdim; j++) {
+                arr[xdim * i + j] = i;
+                arr1[xdim * i + j] = i;
+            }
+        }
+
+        ArrayVec vec = new ArrayVec(arr, 0, xdim * len);
+        final VecBasedMx data = new VecBasedMx(xdim, vec);
+
+        final FakePool pool = FakePool.create(
+                data,
+                new IntSeq(arr1, 0, len)
+        );
+
+        List<? extends Pool<?>> split_local_all = DataTools.splitDataSet(pool, rand, 0.2, 0.8);
+        Pool<?> local_learn = split_local_all.get(0);
+        Pool<?> local_validate = split_local_all.get(1);
+
+        final GradientBoosting<SatL2> boosting = new GradientBoosting<SatL2>(
+                new BootstrapOptimization<>(new GreedyObliviousTree<>(GridTools.probabilityGrid(local_learn.vecData(), 32, true), 6), rand),
+                L2Reg.class, 2000, 0.005
+        );
+        new addBoostingListeners<>(boosting, local_learn.target(SatL2.class), local_learn, local_validate, printWriter);
+        printWriter.println();
+
+        printWriter.close();
+    }
+
+    public void testOTBoostX1Med() {
+        FileWriter fileWriter = null;
+        try {
+            fileWriter = new FileWriter("threadX1LogMed.txt");
+        } catch (Exception ex) {
+        }
+
+        PrintWriter printWriter = new PrintWriter(fileWriter);
+
+        FastRandom rand = new FastRandom(1443);
+
+        int xdim = 5;
+        int len = 4096;
+        double[] arr = new double[xdim * len];
+        int[] arr1 = new int[xdim * len];
+        for (int i = 0; i < len; i++) {
+            for (int j = 0; j < xdim; j++) {
+                if (i % 3 == 0) {
+                    arr[xdim * i + j] = i;
+                } else if (i % 3 == 1) {
+                    arr[xdim * i + j] = Math.log(i + 1);
+                } else {
+                    arr[xdim * i + j] = i * i;
+                }
+
+                arr1[xdim * i + j] = i;
+            }
+        }
+
+        ArrayVec vec = new ArrayVec(arr, 0, xdim * len);
+        final VecBasedMx data = new VecBasedMx(xdim, vec);
+
+        final FakePool pool = FakePool.create(
+                data,
+                new IntSeq(arr1, 0, len)
+        );
+
+        List<? extends Pool<?>> split_local_all = DataTools.splitDataSet(pool, rand, 0.2, 0.8);
+        Pool<?> local_learn = split_local_all.get(0);
+        Pool<?> local_validate = split_local_all.get(1);
+
+        final GradientBoosting<SatL2> boosting = new GradientBoosting<SatL2>(
+                new BootstrapOptimization<>(new GreedyObliviousTree<>(GridTools.medianGrid(local_learn.vecData(), 32), 6), rand),
+                L2Reg.class, 2000, 0.005
+        );
+        new addBoostingListeners<>(boosting, local_learn.target(SatL2.class), local_learn, local_validate, printWriter);
+        printWriter.println();
+
+        printWriter.close();
+    }
+
+
+    public void testOTBoostX1Prob() {
+        FileWriter fileWriter = null;
+        try {
+            fileWriter = new FileWriter("threadX1LogProb.txt");
+        } catch (Exception ex) {
+        }
+
+        PrintWriter printWriter = new PrintWriter(fileWriter);
+
+        FastRandom rand = new FastRandom(1443);
+
+        int xdim = 5;
+        int len = 4096;
+        double[] arr = new double[xdim * len];
+        int[] arr1 = new int[xdim * len];
+        for (int i = 0; i < len; i++) {
+            for (int j = 0; j < xdim; j++) {
+                if (i % 3 == 0) {
+                    arr[xdim * i + j] = i;
+                } else if (i % 3 == 1) {
+                    arr[xdim * i + j] = Math.log(i + 1);
+                } else {
+                    arr[xdim * i + j] = i * i;
+                }
+                arr1[xdim * i + j] = i;
+            }
+        }
+
+        ArrayVec vec = new ArrayVec(arr, 0, xdim * len);
+        final VecBasedMx data = new VecBasedMx(xdim, vec);
+
+        final FakePool pool = FakePool.create(
+                data,
+                new IntSeq(arr1, 0, len)
+        );
+
+        List<? extends Pool<?>> split_local_all = DataTools.splitDataSet(pool, rand, 0.2, 0.8);
+        Pool<?> local_learn = split_local_all.get(0);
+        Pool<?> local_validate = split_local_all.get(1);
+
+        final GradientBoosting<SatL2> boosting = new GradientBoosting<SatL2>(
+                new BootstrapOptimization<>(new GreedyObliviousTree<>(GridTools.probabilityGrid(local_learn.vecData(), 32, true), 6), rand),
+                L2Reg.class, 2000, 0.005
+        );
+        new addBoostingListeners<>(boosting, local_learn.target(SatL2.class), local_learn, local_validate, printWriter);
+        printWriter.println();
+
+        printWriter.close();
+    }
+
+    public void testOTBoostX2Med() throws IOException {
+        FileWriter fileWriter = null;
+        try {
+            fileWriter = new FileWriter("threadX2LogMed.txt");
+        } catch (Exception ex) {
+        }
+
+        PrintWriter printWriter = new PrintWriter(fileWriter);
+
+        FastRandom rand = new FastRandom(1443);
+
+        int xdim = 5;
+        int len = 4096;
+        double[] arr = new double[xdim * len];
+        int[] arr1 = new int[xdim * len];
+        for (int i = 0; i < len; i++) {
+            for (int j = 0; j < xdim; j++) {
+                arr[xdim * i + j] = i;
+                arr1[xdim * i + j] = i;
+            }
+        }
+
+        final Pool<?> pool = TestResourceLoader.loadXPool("x.txt");
+
+
+        List<? extends Pool<?>> split_local_all = DataTools.splitDataSet(pool, rand, 0.2, 0.8);
+        Pool<?> local_learn = split_local_all.get(0);
+        Pool<?> local_validate = split_local_all.get(1);
+
+        final GradientBoosting<SatL2> boosting = new GradientBoosting<SatL2>(
+                new BootstrapOptimization<>(new GreedyObliviousTree<>(GridTools.medianGrid(local_learn.vecData(), 32), 6), rand),
+                L2Reg.class, 2000, 0.005
+        );
+        new addBoostingListeners<>(boosting, local_learn.target(SatL2.class), local_learn, local_validate, printWriter);
+        printWriter.println();
+
+        printWriter.close();
+    }
+
+
+    public void testOTBoostX2Prob() throws IOException {
+        FileWriter fileWriter = null;
+        try {
+            fileWriter = new FileWriter("threadX2LogProb.txt");
+        } catch (Exception ex) {
+        }
+
+        PrintWriter printWriter = new PrintWriter(fileWriter);
+
+        FastRandom rand = new FastRandom(1443);
+
+        int xdim = 5;
+        int len = 4096;
+        double[] arr = new double[xdim * len];
+        int[] arr1 = new int[xdim * len];
+        for (int i = 0; i < len; i++) {
+            for (int j = 0; j < xdim; j++) {
+                arr[xdim * i + j] = i;
+                arr1[xdim * i + j] = i;
+            }
+        }
+
+        final Pool<?> pool = TestResourceLoader.loadXPool("x.txt");
+
+
+        List<? extends Pool<?>> split_local_all = DataTools.splitDataSet(pool, rand, 0.2, 0.8);
+        Pool<?> local_learn = split_local_all.get(0);
+        Pool<?> local_validate = split_local_all.get(1);
+
+        final GradientBoosting<SatL2> boosting = new GradientBoosting<SatL2>(
+                new BootstrapOptimization<>(new GreedyObliviousTree<>(GridTools.probabilityGrid(local_learn.vecData(), 32, true), 6), rand),
                 L2Reg.class, 2000, 0.005
         );
         new addBoostingListeners<>(boosting, local_learn.target(SatL2.class), local_learn, local_validate, printWriter);

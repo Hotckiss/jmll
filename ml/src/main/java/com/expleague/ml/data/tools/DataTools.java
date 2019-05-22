@@ -103,6 +103,10 @@ public class DataTools {
     return loadFromFeaturesTxt(file, file.endsWith(".gz") ? new InputStreamReader(new GZIPInputStream(new FileInputStream(file))) : new FileReader(file));
   }
 
+  public static Pool<QURLItem> loadFromXTxt(final String file) throws IOException {
+    return loadFromXTxt(file, new FileReader(file));
+  }
+
   public static FeaturesTxtPool loadFromFeaturesTxt(final String fileName, final Reader in) throws IOException {
     final List<QURLItem> items = new ArrayList<>();
     final VecBuilder target = new VecBuilder();
@@ -133,6 +137,35 @@ public class DataTools {
     );
   }
 
+  public static FeaturesTxtPool loadFromXTxt(final String fileName, final Reader in) throws IOException {
+    final List<QURLItem> items = new ArrayList<>();
+    final VecBuilder target = new VecBuilder();
+    final VecBuilder data = new VecBuilder();
+    final int[] featuresCount = new int[]{-1};
+    CharSeqTools.processLines(in, new Consumer<CharSequence>() {
+      int lindex = 0;
+
+      @Override
+      public void accept(final CharSequence arg) {
+        lindex++;
+        final CharSequence[] parts = CharSeqTools.split(arg, ',');
+        items.add(new QURLItem(1, "2", 3));
+        target.append(CharSeqTools.parseDouble(parts[12]));
+        if (featuresCount[0] < 0)
+          featuresCount[0] = parts.length - 2;
+        else if (featuresCount[0] != parts.length - 2)
+          throw new RuntimeException("\"Failed to parse line \" + lindex + \":\"");
+        for (int i = 0; i < parts.length - 2; i++) {
+          data.append(CharSeqTools.parseDouble(parts[i]));
+        }
+      }
+    });
+    return new FeaturesTxtPool(
+            new ArraySeq<>(items.toArray(new QURLItem[items.size()])),
+            new VecBasedMx(featuresCount[0], data.build()),
+            target.build()
+    );
+  }
 
   public static int getLineCount(final Reader input, final char sep) {
     return CharSeqTools.lines(input, false).limit(1).map(line -> CharSeqTools.split(line, sep).length).findFirst().orElse(0);

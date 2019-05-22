@@ -20,10 +20,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * User: solar
@@ -533,6 +530,335 @@ public class GridTools {
     }
 
     return bestRes;
+  }
+
+  public static PartitionResult bestPartitionWithMapper_veryFast_improved(final int[] binNumberMapper,
+                                                                 final double[] sortedFeature2,
+                                                                 final TIntArrayList bordersFeature2) {
+    int startPivot = firstPartition(bordersFeature2);
+    //System.out.println("First pivot: " + startPivot);
+    int bordersPtr = 0;
+    HashMap<Integer, HashMap<Integer, Integer>> currentMapper = partitionCountersMapper(binNumberMapper, sortedFeature2, bordersFeature2, startPivot);
+    PartitionResult bestRes = new PartitionResult(startPivot, mapperScore(currentMapper));
+    List<PartitionResult> bestResults = new ArrayList<>();
+    bestResults.add(bestRes);
+    PartitionResult lastRes = new PartitionResult(startPivot, mapperScore(currentMapper));
+
+    for (int pivot = startPivot + 1; pivot < binNumberMapper.length; pivot++) {
+      { // check that border doesn't exist
+        while (bordersPtr < bordersFeature2.size() && bordersFeature2.get(bordersPtr) < pivot) {
+          bordersPtr++;
+        }
+        if (bordersPtr < bordersFeature2.size() && bordersFeature2.get(bordersPtr) == pivot) {
+          continue;
+        }
+      }
+      //System.out.println("Pivot: " + pivot);
+      // only one element has change bin number in second feature
+      if (pivot == lastRes.getSplitPosition() + 1) {
+
+        int movedElementBinInFeature1 = binNumberMapper[pivot - 1];
+        int movedElementBinInFeature2 = bordersPtr + 1;
+        //System.out.println("F1: " + movedElementBinInFeature1 + " F2: " + movedElementBinInFeature2);
+        //System.out.println("Keys: " + currentMapper.keySet());
+        //decrement for old bin
+        int value_old = currentMapper.get(movedElementBinInFeature2).get(movedElementBinInFeature1);
+        double contribution_old1 = value_old * Math.log(1.0 / (value_old + 1));
+        double contribution_new1 = (value_old - 1) * Math.log(1.0 / (value_old));
+        if (value_old == 1) {
+          currentMapper.get(movedElementBinInFeature2).remove(movedElementBinInFeature1);
+        } else {
+          currentMapper.get(movedElementBinInFeature2).put(movedElementBinInFeature1, value_old - 1);
+        }
+
+        //increment for new bin
+        Integer value_old1 = currentMapper.get(movedElementBinInFeature2 - 1).get(movedElementBinInFeature1);
+        value_old1 = (value_old1 == null ? 0 : value_old1);
+        double contribution_old2 = value_old1 * Math.log(1.0 / (value_old1 + 1));
+        double contribution_new2 = (value_old1 + 1) * Math.log(1.0 / (value_old1 + 2));
+        currentMapper.get(movedElementBinInFeature2 - 1).put(movedElementBinInFeature1, (value_old1 + 1));
+
+        //double score = mapperScore(currentMapper);
+
+        double score = lastRes.score - contribution_old1 - contribution_old2 + contribution_new1 + contribution_new2;
+
+        if (Math.abs(sortedFeature2[pivot] - sortedFeature2[pivot - 1]) < 1e-9) {
+          lastRes = new PartitionResult(pivot, score);
+          continue;
+        }
+
+        if (Math.abs(score - bestRes.score) < 0.1) {
+          bestResults.add(new PartitionResult(pivot, score));
+        }
+
+        if (score > bestRes.score) {
+          if (Math.abs(score - bestRes.score) > 0.1) {
+            bestResults = new ArrayList<>();
+            bestResults.add(new PartitionResult(pivot, score));
+          }
+          bestRes.setScore(score);
+          bestRes.setSplitPosition(pivot);
+        }
+
+        lastRes = new PartitionResult(pivot, score);
+      } else if (pivot == lastRes.getSplitPosition() + 2) {
+        //outMapper(currentMapper);
+        //old bins numbers in feature2
+        int movedElement1_binInFeature2 = bordersPtr;
+        int movedElement2_binInFeature2 = bordersPtr + 1;
+
+        //old bins numbers in feature1
+        int movedElement1_BinInFeature1 = binNumberMapper[pivot - 2];
+        int movedElement2_BinInFeature1 = binNumberMapper[pivot - 1];
+
+        // old values and contributions
+
+        int value_old_el1 = currentMapper.get(movedElement1_binInFeature2).get(movedElement1_BinInFeature1);
+        double contribution_old1_el1 = value_old_el1 * Math.log(1.0 / (value_old_el1 + 1));
+        double contribution_new1_el1 = (value_old_el1 - 1) * Math.log(1.0 / (value_old_el1));
+        if (value_old_el1 == 1) {
+          currentMapper.get(movedElement1_binInFeature2).remove(movedElement1_BinInFeature1);
+        } else {
+          currentMapper.get(movedElement1_binInFeature2).put(movedElement1_BinInFeature1, value_old_el1 - 1);
+        }
+
+        int value_old_el2 = currentMapper.get(movedElement2_binInFeature2).get(movedElement2_BinInFeature1);
+        double contribution_old1_el2 = value_old_el2 * Math.log(1.0 / (value_old_el2 + 1));
+        double contribution_new1_el2 = (value_old_el2 - 1) * Math.log(1.0 / (value_old_el2));
+        if (value_old_el2 == 1) {
+          currentMapper.get(movedElement2_binInFeature2).remove(movedElement2_BinInFeature1);
+        } else {
+          currentMapper.get(movedElement2_binInFeature2).put(movedElement2_BinInFeature1, value_old_el2 - 1);
+        }
+
+        //new values and contributions
+        Integer value_old1_el1 = currentMapper.get(movedElement1_binInFeature2 - 1).get(movedElement1_BinInFeature1);
+        value_old1_el1 = (value_old1_el1 == null ? 0 : value_old1_el1);
+        double contribution_old2_el1 = value_old1_el1 * Math.log(1.0 / (value_old1_el1 + 1));
+        double contribution_new2_el1 = (value_old1_el1 + 1) * Math.log(1.0 / (value_old1_el1 + 2));
+        currentMapper.get(movedElement1_binInFeature2 - 1).put(movedElement1_BinInFeature1, (value_old1_el1 + 1));
+
+        Integer value_old1_el2 = currentMapper.get(movedElement2_binInFeature2 - 1).get(movedElement2_BinInFeature1);
+        value_old1_el2 = (value_old1_el2 == null ? 0 : value_old1_el2);
+        double contribution_old2_el2 = value_old1_el2 * Math.log(1.0 / (value_old1_el2 + 1));
+        double contribution_new2_el2 = (value_old1_el2 + 1) * Math.log(1.0 / (value_old1_el2 + 2));
+        currentMapper.get(movedElement2_binInFeature2 - 1).put(movedElement2_BinInFeature1, (value_old1_el2 + 1));
+
+        //System.out.println("OPTIMIZED");
+        //System.out.print("----------------------updated----------------------");
+        //outMapper(currentMapper);
+        //double score2 = mapperScore(currentMapper);
+
+        double score = lastRes.score - contribution_old1_el1 - contribution_old1_el2 -
+                contribution_old2_el1 - contribution_old2_el2 +
+                contribution_new1_el1 + contribution_new1_el2 +
+                contribution_new2_el1 + contribution_new2_el2;
+
+        //double sc2 = mapperScore(partitionCountersMapper(binNumberMapper, sortedFeature2, bordersFeature2, pivot));
+
+        //System.out.println("OldSc: " + sc2 + " Nnew: " + score + " Add: " + score2);
+
+        if (Math.abs(sortedFeature2[pivot] - sortedFeature2[pivot - 1]) < 1e-9) {
+          lastRes = new PartitionResult(pivot, score);
+          continue;
+        }
+
+        if (Math.abs(score - bestRes.score) < 0.1) {
+          bestResults.add(new PartitionResult(pivot, score));
+        }
+
+        if (score > bestRes.score) {
+          if (Math.abs(score - bestRes.score) > 0.1) {
+            bestResults = new ArrayList<>();
+            bestResults.add(new PartitionResult(pivot, score));
+          }
+          bestRes.setScore(score);
+          bestRes.setSplitPosition(pivot);
+        }
+
+        lastRes = new PartitionResult(pivot, score);
+
+
+
+
+      } else {
+        System.out.println("REBUILD"); // DENSE partition, signal to decrease binFactor
+        currentMapper = partitionCountersMapper(binNumberMapper, sortedFeature2, bordersFeature2, pivot);
+        double score = mapperScore(currentMapper);
+
+        if (Math.abs(sortedFeature2[pivot] - sortedFeature2[pivot - 1]) < 1e-9) {
+          lastRes = new PartitionResult(pivot, score);
+          continue;
+        }
+
+        if (Math.abs(score - bestRes.score) < 0.1) {
+          bestResults.add(new PartitionResult(pivot, score));
+        }
+
+        if (score > bestRes.score) {
+          if (Math.abs(score - bestRes.score) > 0.1) {
+            bestResults = new ArrayList<>();
+            bestResults.add(new PartitionResult(pivot, score));
+          }
+          bestRes.setScore(score);
+          bestRes.setSplitPosition(pivot);
+        }
+
+        lastRes = new PartitionResult(pivot, score);
+      }
+    }
+
+    if (bestResults.size() == 1) {
+      return bestRes;
+    } else {
+      System.out.println("xxx");
+      //final double scoreRight = Math.log(end - split) + Math.log(split - start);
+      bordersPtr = 0;
+      double bs = -Double.MAX_VALUE;
+      PartitionResult res = bestResults.get(0);
+      for (int i = 0; i < bestResults.size(); i++) {
+        PartitionResult r = bestResults.get(i);
+        { // check that border doesn't exist
+          while (bordersPtr < bordersFeature2.size() && bordersFeature2.get(bordersPtr) < r.splitPosition) {
+            bordersPtr++;
+          }
+        }
+        int end = sortedFeature2.length;
+        int start = 1;
+        if (bordersPtr < bordersFeature2.size())
+          end = bordersFeature2.get(bordersPtr);
+
+        if (bordersPtr > 0)
+          start = bordersFeature2.get(bordersPtr - 1);
+
+        final double scoreRight = Math.log(end - r.splitPosition) + Math.log(r.splitPosition - start);
+
+        if (scoreRight > bs) {
+          bs = scoreRight;
+          res = r;
+        }
+      }
+    return res;
+    }
+  }
+
+  /**
+   * Builds naive probability grid
+   * @param ds
+   * @param binFactor
+   * @param useFastAlgorithm using fast algorithm for partition search
+   * @return
+   */
+  public static BFGrid probabilityGrid2(final VecDataSet ds, final int binFactor, boolean useFastAlgorithm) {
+    assert (binFactor < ds.length());
+
+    final int dim = ds.xdim();
+    final BFRowImpl[] rows = new BFRowImpl[dim];
+    int bfCount = 0;
+    ArrayList<TIntArrayList> currentBorders = new ArrayList<>();
+
+    //initial borders
+    for (int i = 0; i < dim; i++) {
+      TIntArrayList borders = new TIntArrayList();
+      borders.add(ds.length());
+      currentBorders.add(borders);
+    }
+
+    for(int iters = 0; iters < binFactor; iters++) {
+      System.out.println("Iter: " + iters);
+      for (int feature_index = 0; feature_index < dim; feature_index++) {
+        System.out.print("Feature: " + feature_index + " ");
+        final double[] feature = new double[ds.length()];
+        final ArrayPermutation permutation = new ArrayPermutation(ds.order(feature_index));
+        final int[] order = permutation.direct();
+        final int[] reverse = permutation.reverse();
+        boolean haveDiffrentElements = false;
+        for (int i = 1; i < order.length; i++)
+          if (order[i] != order[0])
+            haveDiffrentElements = true;
+        if (!haveDiffrentElements)
+          continue;
+
+        for (int i = 0; i < feature.length; i++)
+          feature[i] = ds.at(order[i]).get(feature_index);
+
+        PartitionResult bestFromAll = PartitionResult.makeWorst();
+
+        int bf = 0;
+        for (int paired_feature_index = 0; paired_feature_index < dim; paired_feature_index++) {
+          //System.out.println(paired_feature_index);
+          if (paired_feature_index == feature_index) {
+            continue;
+          }
+
+          final ArrayPermutation permutationPaired = new ArrayPermutation(ds.order(paired_feature_index));
+          final int[] reversePaired = permutationPaired.reverse();
+
+          int[] binNumberMapper = buildBinsMapper(currentBorders.get(paired_feature_index), reverse, reversePaired);
+
+          PartitionResult bestResult = PartitionResult.makeWorst();
+
+          if (useFastAlgorithm) {
+            bestResult = bestPartitionWithMapper_veryFast_improved(binNumberMapper, feature, currentBorders.get(feature_index));
+
+          } else {
+            bestResult = bestPartition(binNumberMapper, feature, currentBorders.get(feature_index));
+          }
+
+          if (bestFromAll.score < bestResult.score) {
+            bestFromAll = bestResult;
+            bf = paired_feature_index;
+          }
+        }
+
+        //System.out.println(bestFromAll.splitPosition);
+        if (bestFromAll.splitPosition > 1) {
+          System.out.println("BestPaired feature: " + bf);
+          TIntArrayList newBorders = insertBorder(currentBorders.get(feature_index), bestFromAll.splitPosition);
+          currentBorders.set(feature_index, newBorders);
+        } else {
+          System.out.println();
+        }
+
+      }
+    }
+
+    System.out.print("[");
+    for (int i = 0; i < currentBorders.size(); i++) {
+      System.out.print("[");
+      StringBuilder sb = new StringBuilder();
+      for (int j = 0; j < currentBorders.get(i).size() - 1; j++) {
+        sb.append(currentBorders.get(i).get(j) + ", ");
+        //System.out.print(currentBorders.get(i).get(j) + ", ");
+      }
+      if (sb.length() > 0) {
+        sb.delete(sb.length() - 2, sb.length());
+      }
+      System.out.println(sb.toString() + "], ");
+      //System.out.println("]");
+    }
+    System.out.println("]");
+    for (int f = 0; f < dim; f++) {
+      final TIntArrayList borders = currentBorders.get(f);
+      int size = borders.size();
+      final TDoubleArrayList dborders = new TDoubleArrayList();
+      final TIntArrayList sizes = new TIntArrayList();
+      final double[] feature = new double[ds.length()];
+      final ArrayPermutation permutation = new ArrayPermutation(ds.order(f));
+      final int[] order = permutation.direct();
+      for (int i = 0; i < feature.length; i++)
+        feature[i] = ds.at(order[i]).get(f);
+
+      for (int b = 0; b < size - 1; b++) {
+        int borderValue = borders.get(b);
+        dborders.add((feature[borderValue - 1] + feature[borderValue]) / 2.);
+        sizes.add(borderValue);
+      }
+      rows[f] = new BFRowImpl(bfCount, f, dborders.toArray(), sizes.toArray());
+      bfCount += dborders.size();
+    }
+
+    return new BFGridImpl(rows);
   }
 
   /**

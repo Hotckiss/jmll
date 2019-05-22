@@ -40,4 +40,12 @@ public final class TestResourceLoader {
     return DataTools.loadFromFeaturesTxt(localPath, reader);
   }
 
+  public static Pool<?> loadXPool(final String localPath) throws IOException {
+    //System.out.println(localPath);
+    final InputStream stream = loadResourceAsStream(localPath);
+    final InputStreamReader reader = localPath.endsWith(".gz") ? new InputStreamReader(new GZIPInputStream(stream))
+            : new InputStreamReader(stream);
+    return DataTools.loadFromXTxt(localPath, reader);
+  }
+
 }
