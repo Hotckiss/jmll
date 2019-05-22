@@ -1,11 +1,13 @@
 package com.expleague.ml.benchmark.ui;
 
+import com.expleague.ml.GridTools;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
@@ -16,18 +18,22 @@ public class BinarizeBenchmarkUIUtils {
     public static GridPane makeGridPane() {
         GridPane gridpane = new GridPane();
         gridpane.setPadding(new Insets(5));
-        gridpane.setHgap(6);
+        gridpane.setHgap(8);
         gridpane.setVgap(6);
-        ColumnConstraints column1 = new ColumnConstraints(300);
+        ColumnConstraints column1 = new ColumnConstraints(200);
         RowConstraints row0 = new RowConstraints(50);
         RowConstraints row1 = new RowConstraints(50);
         RowConstraints row2 = new RowConstraints(50);
         RowConstraints row3 = new RowConstraints(300);
-        ColumnConstraints column2 = new ColumnConstraints(50, 150, 300);
-        ColumnConstraints column3 = new ColumnConstraints(300);
-        ColumnConstraints column4 = new ColumnConstraints(50, 150, 300);
+        ColumnConstraints column2 = new ColumnConstraints(200);
+        ColumnConstraints column3 = new ColumnConstraints(200);
+        ColumnConstraints column4 = new ColumnConstraints(200);
+        ColumnConstraints column5 = new ColumnConstraints(200);
+        ColumnConstraints column6 = new ColumnConstraints(200);
+        ColumnConstraints column7 = new ColumnConstraints(200);
+        ColumnConstraints column8 = new ColumnConstraints(200);
         column2.setHgrow(Priority.ALWAYS);
-        gridpane.getColumnConstraints().addAll(column1, column2, column3, column4);
+        gridpane.getColumnConstraints().addAll(column1, column2, column3, column4, column5, column6, column7, column8);
         //gridpane.getRowConstraints().addAll(row0, row1, row2, row3);
 
         return gridpane;
@@ -68,28 +74,26 @@ public class BinarizeBenchmarkUIUtils {
         BinarizeBenchmarkUIUtils.addTargetInput(gridpane, targetColumnLabel, targetInput);
     }
 
-    public static void addAlgorithm1Chart(GridPane gridPane, XYChart.Series series) {
+    public static void addAlgorithmChart(GridPane gridPane, XYChart.Series series, XYChart.Series seriesT, int index) {
         final NumberAxis xAxis = new NumberAxis("Iteration", 0, 2000, 250);
         final NumberAxis yAxis = new NumberAxis();
         final LineChart<Number,Number> lineChart = new LineChart<>(xAxis, yAxis);
-        lineChart.setTitle("First binarization");
+        lineChart.setTitle("Score chart");
         lineChart.setCreateSymbols(false);
         lineChart.setStyle(".chart-series-line { -fx-stroke-width: 1px; }");
-        lineChart.setStyle(".default-color0.chart-series-line { -fx-stroke: #e9967a; }");
         lineChart.getData().add(series);
-        gridPane.add(lineChart, 0, 5, 2, 1);
+        lineChart.getData().add(seriesT);
+        gridPane.add(lineChart, index * 2, 5, 2, 1);
     }
 
-    public static void addAlgorithm2Chart(GridPane gridPane, XYChart.Series series) {
-        final NumberAxis xAxis = new NumberAxis("Iteration", 0, 2000, 250);
-        final NumberAxis yAxis = new NumberAxis();
+    public static ProgressBar addProgressBar(GridPane gridpane, int index) {
+        Label binLabel = new Label("Binarize progress:");
+        GridPane.setHalignment(binLabel, HPos.CENTER);
+        gridpane.add(binLabel, index * 2, 4);
+        ProgressBar algorithmBar = new ProgressBar();
+        GridPane.setHalignment(algorithmBar, HPos.LEFT);
+        gridpane.add(algorithmBar, index * 2 + 1, 4);
 
-        final LineChart<Number,Number> lineChart = new LineChart<>(xAxis, yAxis);
-        lineChart.setTitle("Second binarization");
-        lineChart.setCreateSymbols(false);
-        lineChart.setStyle(".chart-series-line { -fx-stroke-width: 1px; }");
-        lineChart.setStyle(".default-color0.chart-series-line { -fx-stroke: #00bb55; }");
-        lineChart.getData().add(series);
-        gridPane.add(lineChart, 2, 5, 2, 1);
+        return algorithmBar;
     }
 }

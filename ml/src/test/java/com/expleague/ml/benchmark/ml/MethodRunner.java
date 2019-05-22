@@ -22,6 +22,7 @@ public class MethodRunner {
     private MethodType type;
     private double learnSize;
     private XYChart.Series convergeSeries;
+    private XYChart.Series convergeSeriesTrain;
     private int binFactor;
     private int treeDepth;
     private int iterationsCount;
@@ -34,6 +35,7 @@ public class MethodRunner {
                         MethodType type,
                         double learnSize,
                         XYChart.Series convergeSeries,
+                        XYChart.Series convergeSeriesTrain,
                         int binFactor,
                         int treeDepth,
                         int iterationsCount,
@@ -46,6 +48,7 @@ public class MethodRunner {
         this.type = type;
         this.learnSize = learnSize;
         this.convergeSeries = convergeSeries;
+        this.convergeSeriesTrain = convergeSeriesTrain;
         this.binFactor = binFactor;
         this.treeDepth = treeDepth;
         this.iterationsCount = iterationsCount;
@@ -65,7 +68,7 @@ public class MethodRunner {
                 L2Reg.class, iterationsCount, step
         );
 
-        new AddBoostingListeners<>(boosting, local_learn.target(SatL2.class), dataset, local_learn, local_validate, logger, convergeSeries);
+        new AddBoostingListeners<>(boosting, local_learn.target(SatL2.class), dataset, local_learn, local_validate, logger, convergeSeries, convergeSeriesTrain);
         logger.close();
     }
 }

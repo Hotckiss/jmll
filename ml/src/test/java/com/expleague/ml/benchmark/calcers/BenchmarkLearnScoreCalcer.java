@@ -8,6 +8,8 @@ import com.expleague.ml.ProgressHandler;
 import com.expleague.ml.TargetFunc;
 import com.expleague.ml.data.set.VecDataSet;
 import com.expleague.ml.func.Ensemble;
+import javafx.application.Platform;
+import javafx.scene.chart.XYChart;
 
 import java.io.PrintWriter;
 
@@ -17,12 +19,15 @@ public class BenchmarkLearnScoreCalcer implements ProgressHandler {
     private final VecDataSet ds;
     private final TargetFunc target;
     private final PrintWriter printWriter;
+    private int index = 0;
+    private XYChart.Series series;
 
-    public BenchmarkLearnScoreCalcer(final String message, final VecDataSet ds, final TargetFunc target, final PrintWriter printWriter) {
+    public BenchmarkLearnScoreCalcer(final String message, final VecDataSet ds, final TargetFunc target, final PrintWriter printWriter, XYChart.Series series) {
         this.message = message;
         this.ds = ds;
         this.target = target;
         this.printWriter = printWriter;
+        this.series = series;
         current = new ArrayVec(ds.length());
     }
 
@@ -30,6 +35,7 @@ public class BenchmarkLearnScoreCalcer implements ProgressHandler {
 
     @Override
     public void accept(final Trans partial) {
+        index++;
         if (partial instanceof Ensemble) {
             final Ensemble linear = (Ensemble) partial;
             final Trans increment = linear.last();
@@ -51,5 +57,8 @@ public class BenchmarkLearnScoreCalcer implements ProgressHandler {
         min = Math.min(value, min);
         System.out.print(" best = " + min);
         printWriter.print(" best = " + min);
+        Platform.runLater(() -> {
+            series.getData().add(new XYChart.Data(index, min));
+        });
     }
 }

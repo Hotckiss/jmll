@@ -32,7 +32,8 @@ public class AddBoostingListeners<GlobalLoss extends TargetFunc> {
                          final Pool<?> _learn,
                          final Pool<?> _validate,
                          final PrintWriter printWriter,
-                         XYChart.Series series) {
+                         XYChart.Series series,
+                         XYChart.Series seriesT) {
         final Consumer counter = new ProgressHandler() {
             int index = 0;
 
@@ -42,7 +43,7 @@ public class AddBoostingListeners<GlobalLoss extends TargetFunc> {
                 printWriter.print("\n" + index++);
             }
         };
-        final BenchmarkLearnScoreCalcer learnListener = new BenchmarkLearnScoreCalcer(/*"\tlearn:\t"*/"\t", _learn.vecData(), _learn.target(L2.class), printWriter);
+        final BenchmarkLearnScoreCalcer learnListener = new BenchmarkLearnScoreCalcer(/*"\tlearn:\t"*/"\t", _learn.vecData(), _learn.target(L2.class), printWriter, seriesT);
         final BenchmarkValidateScoreCalcer validateListener = new BenchmarkValidateScoreCalcer(/*"\ttest:\t"*/"\t", _validate.vecData(), _validate.target(L2.class), printWriter, series);
         final Consumer<Trans> modelPrinter = new BenchmarkModelPrinter();
         final Consumer<Trans> qualityCalcer = new BenchmarkQualityCalcer(printWriter, dataset);
@@ -57,6 +58,7 @@ public class AddBoostingListeners<GlobalLoss extends TargetFunc> {
         boosting.addListener(qualityCalcer);
         //boosting.addListener(modelPrinter);
         final Ensemble ans = boosting.fit(_learn.vecData(), loss);
+
         Vec current = new ArrayVec(_validate.size());
         for (int i = 0; i < _validate.size(); i++) {
             double f = 0;
@@ -64,7 +66,7 @@ public class AddBoostingListeners<GlobalLoss extends TargetFunc> {
                 f += ans.weights.get(j) * ((Func) ans.models[j]).value(_validate.vecData().data().row(i));
             current.set(i, f);
         }
-        System.out.println("\n + Final loss = " + VecTools.distance(current, _validate.target(L2.class).target) / Math.sqrt(_validate.size()) + "\n");
+        System.out.println("\n + Final loss = " + VecTools.distance(current, _validate.target(L2.class).target) / Math.sqrt(_validate.size()) + "   " +  ans.models.length + "\n");
         printWriter.println("\n + Final loss = " + VecTools.distance(current, _validate.target(L2.class).target) / Math.sqrt(_validate.size()) + "\n");
     }
 }
