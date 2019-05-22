@@ -1119,7 +1119,7 @@ public class GridTools {
 
     return new BFGridImpl(rows);
   }
-  
+
   public static BFGrid probabilityGrid_bigInt(final VecDataSet ds, final int binFactor, boolean useFastAlgorithm) {
     assert (binFactor < ds.length());
 
