@@ -32,7 +32,7 @@ public class SerializationTest extends GridTest {
   @Override
   protected void setUp() throws Exception {
     super.setUp();
-    grid = GridTools.medianGrid(learn.vecData(), 32);
+    grid = GridTools.medianGrid(learn.vecData(), 32, new BuildProgressHandler(null));
     dynamicGrid = new BFDynamicGrid(learn.vecData(), 32);
   }
 

@@ -8,6 +8,7 @@ import com.expleague.commons.math.vectors.VecTools;
 import com.expleague.commons.math.vectors.impl.mx.VecBasedMx;
 import com.expleague.commons.math.vectors.impl.vectors.ArrayVec;
 import com.expleague.commons.random.FastRandom;
+import com.expleague.ml.BuildProgressHandler;
 import com.expleague.ml.GridTools;
 import com.expleague.ml.ProgressHandler;
 import com.expleague.ml.data.set.impl.VecDataSetImpl;
@@ -56,7 +57,7 @@ public class DiffTreeTest {
 
     final GradientBoosting<L2> boosting = new GradientBoosting<>(
         new BootstrapOptimization<>(new GreedyObliviousTree<>
-            (GridTools.medianGrid(learn, 64), 6), rng),
+            (GridTools.medianGrid(learn, 64, new BuildProgressHandler(null)), 6), rng),
         L2.class, 150, 0.05);
 
     final Consumer<Trans> counter = new ProgressHandler() {

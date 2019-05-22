@@ -1,6 +1,7 @@
 package com.expleague.ml.models.gpf;
 
 import com.expleague.commons.random.FastRandom;
+import com.expleague.ml.BuildProgressHandler;
 import com.expleague.ml.GridTools;
 import com.expleague.ml.methods.BootstrapOptimization;
 import com.expleague.ml.methods.GradientBoosting;
@@ -54,7 +55,7 @@ public class GPFGbrtTest {
 
     System.out.println("" + new Date() + "\tset up boosting");
     System.out.println("" + new Date() + "\tset up boosting, step=\t" + step);
-    final GradientBoosting<GPFLoglikelihood> boosting = new GradientBoosting<GPFGbrtOptimization.GPFLoglikelihood>(new BootstrapOptimization(new GreedyObliviousTree(GridTools.medianGrid(learn, 32), 6), rng), iterationsCount, step);
+    final GradientBoosting<GPFLoglikelihood> boosting = new GradientBoosting<GPFGbrtOptimization.GPFLoglikelihood>(new BootstrapOptimization(new GreedyObliviousTree(GridTools.medianGrid(learn, 32, new BuildProgressHandler(null)), 6), rng), iterationsCount, step);
     final GPFGbrtOptimization.GPFLoglikelihood learn_loss = new GPFGbrtOptimization.GPFLoglikelihood(model, learn, parallel_processors);
     final GPFGbrtOptimization.GPFLoglikelihood validate_loss = new GPFGbrtOptimization.GPFLoglikelihood(model, validate);
 

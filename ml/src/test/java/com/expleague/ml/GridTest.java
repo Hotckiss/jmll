@@ -70,19 +70,19 @@ public class GridTest extends FileTestCase {
   }
 
   public void testGrid1() throws IOException {
-    final BFGrid grid = GridTools.medianGrid(learn.vecData(), 32);
+    final BFGrid grid = GridTools.medianGrid(learn.vecData(), 32, new BuildProgressHandler(null));
 
 //    assertEquals(624, grid.size());
     checkResultByFile(BFGrid.CONVERTER.convertTo(grid).toString());
   }
 
   public void testBinary() throws IOException {
-    final BFGrid grid = GridTools.medianGrid(learn.vecData(), 32);
+    final BFGrid grid = GridTools.medianGrid(learn.vecData(), 32, new BuildProgressHandler(null));
     assertEquals(1, grid.row(4).size());
   }
 
   public void testBinarize1() throws IOException {
-     final BFGrid grid = GridTools.medianGrid(learn.vecData(), 32);
+     final BFGrid grid = GridTools.medianGrid(learn.vecData(), 32, new BuildProgressHandler(null));
     //System.out.println(learn.vecData());
     assertEquals(1, grid.row(4).size());
     final byte[] bins = new byte[learn.vecData().xdim()];
@@ -100,7 +100,7 @@ public class GridTest extends FileTestCase {
   }
 
   public void testBinarize2() throws IOException {
-    final BFGrid grid = GridTools.medianGrid(learn.vecData(), 32);
+    final BFGrid grid = GridTools.medianGrid(learn.vecData(), 32, new BuildProgressHandler(null));
     assertEquals(1, grid.row(4).size());
     final byte[] bins = new byte[learn.vecData().xdim()];
     final Vec point = new ArrayVec(learn.vecData().xdim());
@@ -111,7 +111,7 @@ public class GridTest extends FileTestCase {
   }
 
   public void testBinarize3() throws IOException {
-    final BFGrid grid = GridTools.medianGrid(learn.vecData(), 32);
+    final BFGrid grid = GridTools.medianGrid(learn.vecData(), 32, new BuildProgressHandler(null));
     assertEquals(1, grid.row(4).size());
     final byte[] bins = new byte[learn.vecData().xdim()];
     final Vec point = new ArrayVec(learn.vecData().xdim());
@@ -126,7 +126,7 @@ public class GridTest extends FileTestCase {
   public void testSplitUniform() {
     final VecBasedMx data = new VecBasedMx(1, new ArrayVec(0, 0.1, 0.2, 0.3, 0.5, 0.6, 0.7, 0.8));
     final VecDataSet ds = new VecDataSetImpl(data, null);
-    final BFGrid grid = GridTools.medianGrid(ds, 3);
+    final BFGrid grid = GridTools.medianGrid(ds, 3, new BuildProgressHandler(null));
     assertEquals(3, grid.size());
     assertEquals(0.1, grid.bf(0).condition());
     assertEquals(0.3, grid.bf(1).condition());
@@ -136,7 +136,7 @@ public class GridTest extends FileTestCase {
   public void testSplitUniformUnsorted() {
     final VecBasedMx data = new VecBasedMx(1, new ArrayVec(0.8, 0.5, 0, 0.1, 0.2, 0.3, 0.6, 0.7));
     final VecDataSet ds = new VecDataSetImpl(data, null);
-    final BFGrid grid = GridTools.medianGrid(ds, 3);
+    final BFGrid grid = GridTools.medianGrid(ds, 3, new BuildProgressHandler(null));
     assertEquals(3, grid.size());
     assertEquals(0.1, grid.bf(0).condition());
     assertEquals(0.3, grid.bf(1).condition());
@@ -146,7 +146,7 @@ public class GridTest extends FileTestCase {
   public void testSplitBinary() {
     final VecBasedMx data = new VecBasedMx(1, new ArrayVec(0, 0, 1, 1, 1, 1, 1, 1));
     final VecDataSet ds = new VecDataSetImpl(data, null);
-    final BFGrid grid = GridTools.medianGrid(ds, 3);
+    final BFGrid grid = GridTools.medianGrid(ds, 3, new BuildProgressHandler(null));
     assertEquals(1, grid.size());
     assertEquals(0., grid.bf(0).condition());
   }
@@ -154,21 +154,21 @@ public class GridTest extends FileTestCase {
   public void testSplitBinaryIncorrect1() {
     final VecBasedMx data = new VecBasedMx(1, new ArrayVec(1, 1, 1, 1, 1, 1, 1, 1));
     final VecDataSet ds = new VecDataSetImpl(data, null);
-    final BFGrid grid = GridTools.medianGrid(ds, 3);
+    final BFGrid grid = GridTools.medianGrid(ds, 3, new BuildProgressHandler(null));
     assertEquals(0, grid.size());
   }
 
   public void testSplitBinaryIncorrect2() {
     final VecBasedMx data = new VecBasedMx(1, new ArrayVec(0, 1, 1, 1, 1, 1, 1, 1));
     final VecDataSet ds = new VecDataSetImpl(data, null);
-    final BFGrid grid = GridTools.medianGrid(ds, 3);
+    final BFGrid grid = GridTools.medianGrid(ds, 3, new BuildProgressHandler(null));
     assertEquals(1, grid.size());
   }
 
   public void testBinarize4() {
     final VecBasedMx data = new VecBasedMx(1, new ArrayVec(0, 0.1, 0.2, 0.3, 0.5, 0.6, 0.7, 0.8));
     final VecDataSet ds = new VecDataSetImpl(data, null);
-    final BFGrid grid = GridTools.medianGrid(ds, 3);
+    final BFGrid grid = GridTools.medianGrid(ds, 3, new BuildProgressHandler(null));
     final byte[] bin = new byte[1];
     grid.binarizeTo(new ArrayVec(0.), bin);
     assertEquals(0, bin[0]);
@@ -179,7 +179,7 @@ public class GridTest extends FileTestCase {
   public void testSameFeatures() {
       final VecBasedMx data = new VecBasedMx(1, new ArrayVec(0.0, 0.5, 0.3));
       final VecDataSet ds = new VecDataSetImpl(data, null);
-      final BFGrid grid = GridTools.medianGrid(ds, 32);
+      final BFGrid grid = GridTools.medianGrid(ds, 32, new BuildProgressHandler(null));
       assertEquals(1, grid.size());
   }
 
@@ -210,7 +210,7 @@ public class GridTest extends FileTestCase {
 
   public void testProbLinearScoreFromLambda() {
     final VecDataSet ds = learn.vecData();
-    final BFGrid grid = GridTools.medianGrid(ds, 32);
+    final BFGrid grid = GridTools.medianGrid(ds, 32, new BuildProgressHandler(null));
     final L2 target = learn.target(L2.class);
     WeightedLoss<L2> wloss = new WeightedLoss<>(target, IntStream.range(0, target.dim()).map(idx -> 1).toArray());
     BinarizedDataSet bds = ds.cache().cache(Binarize.class, VecDataSet.class).binarize(grid);
@@ -233,7 +233,7 @@ public class GridTest extends FileTestCase {
 
   public void testPlotProbLinearScoreFromLambda() {
     final VecDataSet ds = learn.vecData();
-    final BFGrid grid = GridTools.medianGrid(ds, 32);
+    final BFGrid grid = GridTools.medianGrid(ds, 32, new BuildProgressHandler(null));
     final L2 target = learn.target(L2.class);
     WeightedLoss<L2> wloss = new WeightedLoss<>(target, IntStream.range(0, target.dim()).map(idx -> 1).toArray());
     BinarizedDataSet bds = ds.cache().cache(Binarize.class, VecDataSet.class).binarize(grid);
@@ -372,19 +372,19 @@ public class GridTest extends FileTestCase {
   public void testProbabilityBinarize1() {
     final VecBasedMx data = new VecBasedMx(2, new ArrayVec(1, 3, 2, 7, 3, 5, 4, 6, 5, 1, 6, 2, 7, 8, 8, 4));
     final VecDataSet ds = new VecDataSetImpl(data, null);
-    BFGrid grid = GridTools.probabilityGrid(ds, 2, false);
+    BFGrid grid = GridTools.probabilityGrid(ds, 2, false, new BuildProgressHandler(null));
   }
 
   public void testProbabilityBinarize2() {
     final VecBasedMx data = new VecBasedMx(2, new ArrayVec(1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8));
     final VecDataSet ds = new VecDataSetImpl(data, null);
-    BFGrid grid = GridTools.probabilityGrid(ds, 2, true);
+    BFGrid grid = GridTools.probabilityGrid(ds, 2, true, new BuildProgressHandler(null));
   }
 
   public void testProbabilityBinarize3() {
     final VecBasedMx data = new VecBasedMx(3, new ArrayVec(1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5, 6, 6, 6, 7, 7, 7, 8, 8, 8));
     final VecDataSet ds = new VecDataSetImpl(data, null);
-    BFGrid grid = GridTools.probabilityGrid(ds, 3, false);
+    BFGrid grid = GridTools.probabilityGrid(ds, 3, false, new BuildProgressHandler(null));
   }
 
   public void testProbabilityBinarize4() {
@@ -392,13 +392,13 @@ public class GridTest extends FileTestCase {
     //final VecDataSet ds = new VecDataSetImpl(data, null);
     //System.out.println(learn.vecData().xdim());
     //System.out.println(learn.vecData().length());
-    BFGrid grid = GridTools.probabilityGrid(learn.vecData(), 32, true);
+    BFGrid grid = GridTools.probabilityGrid(learn.vecData(), 32, true, new BuildProgressHandler(null));
   }
 
   public void testProbabilityBinarize5() {
     final VecBasedMx data = new VecBasedMx(2, new ArrayVec(1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10, 11, 11, 12, 12, 13, 13, 14, 14, 15, 15, 16, 16));
     final VecDataSet ds = new VecDataSetImpl(data, null);
-    BFGrid grid = GridTools.probabilityGrid(ds, 2, false);
+    BFGrid grid = GridTools.probabilityGrid(ds, 2, false, new BuildProgressHandler(null));
   }
 
   public void testProbabilityBinarize6() {
@@ -414,31 +414,31 @@ public class GridTest extends FileTestCase {
     ArrayVec vec = new ArrayVec(arr, 0, xdim * len);
     final VecBasedMx data = new VecBasedMx(xdim, vec);
     final VecDataSet ds = new VecDataSetImpl(data, null);
-    BFGrid grid = GridTools.probabilityGrid(ds, 8, true);
+    BFGrid grid = GridTools.probabilityGrid(ds, 8, true, new BuildProgressHandler(null));
   }
 
   public void testProbabilityBinarize7() {
     final VecBasedMx data = new VecBasedMx(2, new ArrayVec(1, 1, 2, 2, 4, 4, 8, 8, 16, 16, 32, 32, 64, 64, 128, 128));
     final VecDataSet ds = new VecDataSetImpl(data, null);
-    BFGrid grid = GridTools.probabilityGrid(ds, 2, false);
-    BFGrid grid1 = GridTools.probabilityGrid(ds, 2, true);
-    BFGrid grid2 = GridTools.medianGrid(ds, 2);
+    BFGrid grid = GridTools.probabilityGrid(ds, 2, false, new BuildProgressHandler(null));
+    BFGrid grid1 = GridTools.probabilityGrid(ds, 2, true, new BuildProgressHandler(null));
+    BFGrid grid2 = GridTools.medianGrid(ds, 2, new BuildProgressHandler(null));
   }
 
   public void testProbabilityBinarize8() {
     final VecBasedMx data = new VecBasedMx(2, new ArrayVec(1, 0, 2, 1, 4, 2, 8, 3, 16, 4, 32, 5, 64, 6, 128, 7));
     final VecDataSet ds = new VecDataSetImpl(data, null);
-    BFGrid grid = GridTools.probabilityGrid(ds, 2, false);
-    BFGrid grid1 = GridTools.probabilityGrid(ds, 2, true);
-    BFGrid grid2 = GridTools.medianGrid(ds, 2);
+    BFGrid grid = GridTools.probabilityGrid(ds, 2, false, new BuildProgressHandler(null));
+    BFGrid grid1 = GridTools.probabilityGrid(ds, 2, true, new BuildProgressHandler(null));
+    BFGrid grid2 = GridTools.medianGrid(ds, 2, new BuildProgressHandler(null));
   }
 
   public void testProbabilityBinarize9() {
     final VecBasedMx data = new VecBasedMx(2, new ArrayVec(1, 0, 2, 1, 4, 2, 8, 3, 16, 4, 32, 5, 64, 6, 128, 7, 256, 8, 512, 9, 1024, 10, 2048, 11, 4096, 12, 8192, 13, 16384, 14, 32768, 15, 65536, 16));
     final VecDataSet ds = new VecDataSetImpl(data, null);
-    BFGrid grid = GridTools.probabilityGrid(ds, 2, false);
-    BFGrid grid1 = GridTools.probabilityGrid(ds, 2, true);
-    BFGrid grid2 = GridTools.medianGrid(ds, 2);
+    BFGrid grid = GridTools.probabilityGrid(ds, 2, false, new BuildProgressHandler(null));
+    BFGrid grid1 = GridTools.probabilityGrid(ds, 2, true, new BuildProgressHandler(null));
+    BFGrid grid2 = GridTools.medianGrid(ds, 2, new BuildProgressHandler(null));
   }
 
   public void testProbabilityBinarize10() {
@@ -476,8 +476,8 @@ public class GridTest extends FileTestCase {
     ArrayVec vec = new ArrayVec(arr, 0, xdim * len);
     final VecBasedMx data = new VecBasedMx(xdim, vec);
     final VecDataSet ds = new VecDataSetImpl(data, null);
-    BFGrid grid = GridTools.probabilityGrid_bigInt(ds, 16);
-    BFGrid grid1 = GridTools.probabilityGrid_bigInt(ds, 16);
+    BFGrid grid = GridTools.probabilityGrid_bigInt(ds, 16, new BuildProgressHandler(null));
+    BFGrid grid1 = GridTools.probabilityGrid_bigInt(ds, 16, new BuildProgressHandler(null));
   }
 
   public void testProbabilityBinarizeCmp2() {
@@ -493,7 +493,7 @@ public class GridTest extends FileTestCase {
     ArrayVec vec = new ArrayVec(arr, 0, xdim * len);
     final VecBasedMx data = new VecBasedMx(xdim, vec);
     final VecDataSet ds = new VecDataSetImpl(data, null);
-    BFGrid grid = GridTools.probabilityGrid(ds, 2, true);
+    BFGrid grid = GridTools.probabilityGrid(ds, 2, true, new BuildProgressHandler(null));
     //BFGrid grid1 = GridTools.probabilityGrid(ds, 1, true);
   }
 
@@ -511,7 +511,7 @@ public class GridTest extends FileTestCase {
     ArrayVec vec = new ArrayVec(arr, 0, xdim * len);
     final VecBasedMx data = new VecBasedMx(xdim, vec);
     final VecDataSet ds = new VecDataSetImpl(data, null);
-    BFGrid grid = GridTools.probabilityGrid(ds, 8, true);
+    BFGrid grid = GridTools.probabilityGrid(ds, 8, true, new BuildProgressHandler(null));
     //BFGrid grid1 = GridTools.probabilityGrid(ds, 1, true);
   }
 
@@ -528,8 +528,8 @@ public class GridTest extends FileTestCase {
     ArrayVec vec = new ArrayVec(arr, 0, xdim * len);
     final VecBasedMx data = new VecBasedMx(xdim, vec);
     final VecDataSet ds = new VecDataSetImpl(data, null);
-    BFGrid grid = GridTools.probabilityGrid_bigInt(ds, 1);
-    BFGrid grid1 = GridTools.probabilityGrid_bigInt(ds, 1);
+    BFGrid grid = GridTools.probabilityGrid_bigInt(ds, 1, new BuildProgressHandler(null));
+    BFGrid grid1 = GridTools.probabilityGrid_bigInt(ds, 1, new BuildProgressHandler(null));
   }
 
   public void testBigInt() {
@@ -594,8 +594,8 @@ public class GridTest extends FileTestCase {
     ArrayVec vec = new ArrayVec(arr, 0, xdim * len);
     final VecBasedMx data = new VecBasedMx(xdim, vec);
     final VecDataSet ds = new VecDataSetImpl(data, null);
-    BFGrid grid = GridTools.probabilityGrid(ds, 8, true);
-    BFGrid grid2 = GridTools.medianGrid(ds, 8);
+    BFGrid grid = GridTools.probabilityGrid(ds, 8, true, new BuildProgressHandler(null));
+    BFGrid grid2 = GridTools.medianGrid(ds, 8, new BuildProgressHandler(null));
   }
 
   @Override

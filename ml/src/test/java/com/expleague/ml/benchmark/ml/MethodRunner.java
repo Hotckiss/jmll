@@ -1,7 +1,7 @@
 package com.expleague.ml.benchmark.ml;
 
 import com.expleague.commons.random.FastRandom;
-import com.expleague.ml.GridTools;
+import com.expleague.ml.BuildProgressHandler;
 import com.expleague.ml.data.tools.DataTools;
 import com.expleague.ml.data.tools.Pool;
 import com.expleague.ml.loss.L2Reg;
@@ -26,6 +26,7 @@ public class MethodRunner {
     private int treeDepth;
     private int iterationsCount;
     private double step;
+    private BuildProgressHandler buildProgressHandler;
 
     public MethodRunner(String logFileName,
                         Pool<?> dataset,
@@ -36,7 +37,8 @@ public class MethodRunner {
                         int binFactor,
                         int treeDepth,
                         int iterationsCount,
-                        double step) {
+                        double step,
+                        BuildProgressHandler buildProgressHandler) {
 
         this.logFileName = logFileName;
         this.dataset = dataset;
@@ -48,6 +50,7 @@ public class MethodRunner {
         this.treeDepth = treeDepth;
         this.iterationsCount = iterationsCount;
         this.step = step;
+        this.buildProgressHandler = buildProgressHandler;
     }
 
     public void run() throws Exception {
@@ -58,7 +61,7 @@ public class MethodRunner {
         Pool<?> local_validate = split_local_all.get(1);
 
         final GradientBoosting<SatL2> boosting = new GradientBoosting<>(
-                new BootstrapOptimization<>(new GreedyObliviousTree<>(BFGridFactory.makeGrid(type, local_learn.vecData(), binFactor), treeDepth), rng),
+                new BootstrapOptimization<>(new GreedyObliviousTree<>(BFGridFactory.makeGrid(type, local_learn.vecData(), binFactor, buildProgressHandler), treeDepth), rng),
                 L2Reg.class, iterationsCount, step
         );
 

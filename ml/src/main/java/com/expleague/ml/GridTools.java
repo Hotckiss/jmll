@@ -744,7 +744,7 @@ public class GridTools {
    * @param binFactor
    * @return
    */
-  public static BFGrid probabilityGridMedian(final VecDataSet ds, final int binFactor) {
+  public static BFGrid probabilityGridMedian(final VecDataSet ds, final int binFactor, BuildProgressHandler buildProgressHandler) {
     assert (binFactor < ds.length());
 
     final int dim = ds.xdim();
@@ -782,6 +782,7 @@ public class GridTools {
         int bf = 0;
         for (int paired_feature_index = 0; paired_feature_index < dim; paired_feature_index++) {
           //System.out.println(paired_feature_index);
+          buildProgressHandler.step();
           if (paired_feature_index == feature_index) {
             continue;
           }
@@ -858,7 +859,7 @@ public class GridTools {
    * @param useFastAlgorithm using fast algorithm for partition search
    * @return
    */
-  public static BFGrid probabilityGrid(final VecDataSet ds, final int binFactor, boolean useFastAlgorithm) {
+  public static BFGrid probabilityGrid(final VecDataSet ds, final int binFactor, boolean useFastAlgorithm, BuildProgressHandler buildProgressHandler) {
     assert (binFactor < ds.length());
 
     final int dim = ds.xdim();
@@ -896,6 +897,7 @@ public class GridTools {
         int bf = 0;
         for (int paired_feature_index = 0; paired_feature_index < dim; paired_feature_index++) {
           //System.out.println(paired_feature_index);
+          buildProgressHandler.step();
           if (paired_feature_index == feature_index) {
             continue;
           }
@@ -991,7 +993,7 @@ public class GridTools {
    * @param binFactor
    * @return
    */
-  public static BFGrid probabilityGrid_presort(final VecDataSet ds, final int binFactor) {
+  public static BFGrid probabilityGrid_presort(final VecDataSet ds, final int binFactor, BuildProgressHandler buildProgressHandler) {
     assert (binFactor < ds.length());
 
     final int dim = ds.xdim();
@@ -1042,6 +1044,7 @@ public class GridTools {
         int bf = 0;
         for (int paired_feature_index = 0; paired_feature_index < dim; paired_feature_index++) {
           //System.out.println(paired_feature_index);
+          buildProgressHandler.step();
           if (paired_feature_index == feature_index) {
             continue;
           }
@@ -1110,7 +1113,7 @@ public class GridTools {
     return new BFGridImpl(rows);
   }
 
-  public static BFGrid probabilityGrid_bigInt(final VecDataSet ds, final int binFactor) {
+  public static BFGrid probabilityGrid_bigInt(final VecDataSet ds, final int binFactor,  BuildProgressHandler buildProgressHandler) {
     assert (binFactor < ds.length());
 
     final int dim = ds.xdim();
@@ -1147,7 +1150,7 @@ public class GridTools {
 
         int bf = 0;
         for (int paired_feature_index = 0; paired_feature_index < dim; paired_feature_index++) {
-
+          buildProgressHandler.step();
           if (paired_feature_index == feature_index) {
             continue;
           }
@@ -1225,7 +1228,7 @@ public class GridTools {
     return new BFGridImpl(rows);
   }
 
-  public static BFGrid probabilityGrid_mixed(final VecDataSet ds, final int binFactor, boolean useFastAlgorithm) {
+  public static BFGrid probabilityGrid_mixed(final VecDataSet ds, final int binFactor, boolean useFastAlgorithm, BuildProgressHandler buildProgressHandler) {
     assert (binFactor < ds.length());
 
     final int dim = ds.xdim();
@@ -1259,6 +1262,9 @@ public class GridTools {
           feature[i] = ds.at(order[i]).get(feature_index);
 
         if (feature_index < 7) {
+          for (int k = 0; k < dim; k++) {
+            buildProgressHandler.step();
+          }
           currentBorders.set(feature_index, GridTools.greedyLogSumBorders(feature, binFactor));
           continue;
         }
@@ -1267,6 +1273,7 @@ public class GridTools {
 
         int bf = 0;
         for (int paired_feature_index = 0; paired_feature_index < dim; paired_feature_index++) {
+          buildProgressHandler.step();
           //System.out.println(paired_feature_index);
           if (paired_feature_index == feature_index) {
             continue;
@@ -1393,7 +1400,7 @@ public class GridTools {
     return uniqueValuesSet(vec).size();
   }
 
-  public static BFGrid medianGrid(final VecDataSet ds, final int binFactor) {
+  public static BFGrid medianGrid(final VecDataSet ds, final int binFactor, BuildProgressHandler buildProgressHandler) {
     final int dim = ds.xdim();
     System.out.println("[");
     final BFRowImpl[] rows = new BFRowImpl[dim];
@@ -1409,6 +1416,7 @@ public class GridTools {
 
     final double[] feature = new double[ds.length()];
     for (int f = 0; f < dim; f++) {
+      buildProgressHandler.step();
       final ArrayPermutation permutation = new ArrayPermutation(ds.order(f));
       final int[] order = permutation.direct();
       final int[] reverse = permutation.reverse();

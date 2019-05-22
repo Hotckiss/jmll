@@ -9,6 +9,7 @@ import com.expleague.commons.math.vectors.impl.mx.VecBasedMx;
 import com.expleague.commons.math.vectors.impl.vectors.ArrayVec;
 import com.expleague.commons.random.FastRandom;
 import com.expleague.commons.seq.IntSeq;
+import com.expleague.ml.BuildProgressHandler;
 import com.expleague.ml.GridTools;
 import com.expleague.ml.ProgressHandler;
 import com.expleague.ml.data.set.VecDataSet;
@@ -198,7 +199,7 @@ public class NeuralTreesOptimization implements Optimization<BlockwiseMLLLogit, 
   }
 
   private Ensemble fitBoosting(HighLevelDataset learn, HighLevelDataset test) {
-    final BFGrid grid = GridTools.medianGrid(learn.vec(), 32);
+    final BFGrid grid = GridTools.medianGrid(learn.vec(), 32, new BuildProgressHandler(null));
     final GreedyProbLinearRegion<WeightedLoss<L2Reg>> weak = new GreedyProbLinearRegion<>(grid, 7);
     final BootstrapOptimization bootstrap = new BootstrapOptimization(weak, rng);
 

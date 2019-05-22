@@ -59,7 +59,7 @@ public class TwoStepBlenderLearning {
       final VecDataSet queryOnlyTest = test.joinFeatures(queryFeatures, test.data());
       final Consumer<Trans> learnTracker = new ScorePrinter("Learn", queryOnlyLearn, phaseOneTarget);
       final Consumer<Trans> testTracker = new ScorePrinter("Test", queryOnlyTest, test.target(L2.class));
-      final GradientBoosting<TargetFunc> boosting = new GradientBoosting<>(new GreedyObliviousTree<>(GridTools.medianGrid(queryOnlyLearn, 32), 6), LOOL2.class, 2000, 0.005);
+      final GradientBoosting<TargetFunc> boosting = new GradientBoosting<>(new GreedyObliviousTree<>(GridTools.medianGrid(queryOnlyLearn, 32, new BuildProgressHandler(null)), 6), LOOL2.class, 2000, 0.005);
       boosting.addListener(learnTracker);
       boosting.addListener(testTracker);
       final Ensemble phaseOneModel = boosting.fit(queryOnlyLearn, phaseOneTarget);
@@ -90,7 +90,7 @@ public class TwoStepBlenderLearning {
 //    System.out.println(" test residual: " + Math.sqrt(sum2(phaseTwoTest.target()) / phaseTwoTest.xdim()));
 
     {
-      final BFGrid grid = GridTools.medianGrid(learn.vecData(), 32);
+      final BFGrid grid = GridTools.medianGrid(learn.vecData(), 32, new BuildProgressHandler(null));
       StreamTools.transferData(new CharSeqReader(DataTools.SERIALIZATION.write(grid)), new FileWriter("phase-two.grid"));
 
 //      final TargetFunc phaseTwoLearn = new ExclusiveComplementLLLogit(0.5, (Vec)learn.target(0), (Vec)learn.target(PHASE_TWO_TARGET), learn.data());

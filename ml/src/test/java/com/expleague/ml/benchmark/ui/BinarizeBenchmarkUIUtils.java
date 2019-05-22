@@ -34,28 +34,28 @@ public class BinarizeBenchmarkUIUtils {
     }
 
     public static void addDatasetInput(GridPane gridPane, Label label, TextField field) {
-        GridPane.setHalignment(label, HPos.RIGHT);
+        GridPane.setHalignment(label, HPos.LEFT);
         gridPane.add(label, 0, 0);
         GridPane.setHalignment(field, HPos.LEFT);
-        gridPane.add(field, 1, 0);
+        gridPane.add(field, 1, 0, 3, 1);
     }
 
     public static void addFeaturesInput(GridPane gridPane, Label label, TextField field) {
-        GridPane.setHalignment(label, HPos.RIGHT);
+        GridPane.setHalignment(label, HPos.LEFT);
         gridPane.add(label, 0, 1);
         GridPane.setHalignment(field, HPos.LEFT);
-        gridPane.add(field, 1, 1);
+        gridPane.add(field, 1, 1, 3, 1);
     }
 
     public static void addTargetInput(GridPane gridPane, Label label, TextField field) {
-        GridPane.setHalignment(label, HPos.RIGHT);
+        GridPane.setHalignment(label, HPos.LEFT);
         gridPane.add(label, 0, 2);
         GridPane.setHalignment(field, HPos.LEFT);
-        gridPane.add(field, 1, 2);
+        gridPane.add(field, 1, 2, 3, 1);
     }
 
     public static void addInputs(GridPane gridpane) {
-        Label datasetLabel = new Label("Datset path:");
+        Label datasetLabel = new Label("Dataset path:");
         TextField datasetInput = new TextField();
         BinarizeBenchmarkUIUtils.addDatasetInput(gridpane, datasetLabel, datasetInput);
 
@@ -69,15 +69,27 @@ public class BinarizeBenchmarkUIUtils {
     }
 
     public static void addAlgorithm1Chart(GridPane gridPane, XYChart.Series series) {
-        final NumberAxis xAxis = new NumberAxis();
+        final NumberAxis xAxis = new NumberAxis("Iteration", 0, 2000, 250);
         final NumberAxis yAxis = new NumberAxis();
-        xAxis.setLabel("Iteration");
         final LineChart<Number,Number> lineChart = new LineChart<>(xAxis, yAxis);
         lineChart.setTitle("First binarization");
         lineChart.setCreateSymbols(false);
         lineChart.setStyle(".chart-series-line { -fx-stroke-width: 1px; }");
         lineChart.setStyle(".default-color0.chart-series-line { -fx-stroke: #e9967a; }");
         lineChart.getData().add(series);
-        gridPane.add(lineChart, 0, 4, 2, 1);
+        gridPane.add(lineChart, 0, 5, 2, 1);
+    }
+
+    public static void addAlgorithm2Chart(GridPane gridPane, XYChart.Series series) {
+        final NumberAxis xAxis = new NumberAxis("Iteration", 0, 2000, 250);
+        final NumberAxis yAxis = new NumberAxis();
+
+        final LineChart<Number,Number> lineChart = new LineChart<>(xAxis, yAxis);
+        lineChart.setTitle("Second binarization");
+        lineChart.setCreateSymbols(false);
+        lineChart.setStyle(".chart-series-line { -fx-stroke-width: 1px; }");
+        lineChart.setStyle(".default-color0.chart-series-line { -fx-stroke: #00bb55; }");
+        lineChart.getData().add(series);
+        gridPane.add(lineChart, 2, 5, 2, 1);
     }
 }
