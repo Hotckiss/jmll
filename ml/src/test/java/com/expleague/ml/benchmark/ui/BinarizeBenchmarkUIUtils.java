@@ -2,6 +2,9 @@ package com.expleague.ml.benchmark.ui;
 
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.ColumnConstraints;
@@ -31,7 +34,6 @@ public class BinarizeBenchmarkUIUtils {
     }
 
     public static void addDatasetInput(GridPane gridPane, Label label, TextField field) {
-        // dataset
         GridPane.setHalignment(label, HPos.RIGHT);
         gridPane.add(label, 0, 0);
         GridPane.setHalignment(field, HPos.LEFT);
@@ -39,7 +41,6 @@ public class BinarizeBenchmarkUIUtils {
     }
 
     public static void addFeaturesInput(GridPane gridPane, Label label, TextField field) {
-        // features
         GridPane.setHalignment(label, HPos.RIGHT);
         gridPane.add(label, 0, 1);
         GridPane.setHalignment(field, HPos.LEFT);
@@ -47,10 +48,36 @@ public class BinarizeBenchmarkUIUtils {
     }
 
     public static void addTargetInput(GridPane gridPane, Label label, TextField field) {
-        // dataset
         GridPane.setHalignment(label, HPos.RIGHT);
         gridPane.add(label, 0, 2);
         GridPane.setHalignment(field, HPos.LEFT);
         gridPane.add(field, 1, 2);
+    }
+
+    public static void addInputs(GridPane gridpane) {
+        Label datasetLabel = new Label("Datset path:");
+        TextField datasetInput = new TextField();
+        BinarizeBenchmarkUIUtils.addDatasetInput(gridpane, datasetLabel, datasetInput);
+
+        Label featuresLabel = new Label("Features to extract:");
+        TextField featuresInput = new TextField();
+        BinarizeBenchmarkUIUtils.addFeaturesInput(gridpane, featuresLabel, featuresInput);
+
+        Label targetColumnLabel = new Label("Target column:");
+        TextField targetInput = new TextField();
+        BinarizeBenchmarkUIUtils.addTargetInput(gridpane, targetColumnLabel, targetInput);
+    }
+
+    public static void addAlgorithm1Chart(GridPane gridPane, XYChart.Series series) {
+        final NumberAxis xAxis = new NumberAxis();
+        final NumberAxis yAxis = new NumberAxis();
+        xAxis.setLabel("Iteration");
+        final LineChart<Number,Number> lineChart = new LineChart<>(xAxis, yAxis);
+        lineChart.setTitle("First binarization");
+        lineChart.setCreateSymbols(false);
+        lineChart.setStyle(".chart-series-line { -fx-stroke-width: 1px; }");
+        lineChart.setStyle(".default-color0.chart-series-line { -fx-stroke: #e9967a; }");
+        lineChart.getData().add(series);
+        gridPane.add(lineChart, 0, 4, 2, 1);
     }
 }

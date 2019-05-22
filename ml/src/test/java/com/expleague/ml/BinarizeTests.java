@@ -1,43 +1,20 @@
 package com.expleague.ml;
 
 import com.expleague.commons.math.Func;
-import com.expleague.commons.math.MathTools;
 import com.expleague.commons.math.Trans;
 import com.expleague.commons.math.vectors.*;
-import com.expleague.commons.math.vectors.impl.mx.ColsVecArrayMx;
-import com.expleague.commons.math.vectors.impl.mx.RowsVecArrayMx;
 import com.expleague.commons.math.vectors.impl.mx.VecBasedMx;
 import com.expleague.commons.math.vectors.impl.vectors.ArrayVec;
-import com.expleague.commons.math.vectors.impl.vectors.SparseVec;
 import com.expleague.commons.random.FastRandom;
-import com.expleague.commons.seq.ArraySeq;
 import com.expleague.commons.seq.IntSeq;
-import com.expleague.commons.seq.IntSeqBuilder;
-import com.expleague.commons.util.ArrayTools;
-import com.expleague.commons.util.Pair;
-import com.expleague.commons.util.logging.Interval;
-import com.expleague.ml.cli.builders.data.impl.DataBuilderCrossValidation;
 import com.expleague.ml.data.set.VecDataSet;
-import com.expleague.ml.data.set.impl.VecDataSetImpl;
 import com.expleague.ml.data.tools.DataTools;
 import com.expleague.ml.data.tools.FakePool;
-import com.expleague.ml.data.tools.FeaturesTxtPool;
 import com.expleague.ml.data.tools.Pool;
 import com.expleague.ml.func.Ensemble;
-import com.expleague.ml.func.Linear;
-import com.expleague.ml.func.NormalizedLinear;
 import com.expleague.ml.loss.*;
-import com.expleague.ml.meta.FeatureMeta;
-import com.expleague.ml.meta.TargetMeta;
-import com.expleague.ml.meta.items.QURLItem;
 import com.expleague.ml.methods.*;
-import com.expleague.ml.methods.greedyRegion.*;
 import com.expleague.ml.methods.trees.GreedyObliviousTree;
-import com.expleague.ml.models.ModelTools;
-import com.expleague.ml.models.ObliviousTree;
-import com.expleague.ml.models.pgm.ProbabilisticGraphicalModel;
-import com.expleague.ml.models.pgm.Route;
-import com.expleague.ml.models.pgm.SimplePGM;
 import com.expleague.ml.testUtils.TestResourceLoader;
 import gnu.trove.map.hash.TDoubleDoubleHashMap;
 import gnu.trove.map.hash.TDoubleIntHashMap;
@@ -45,17 +22,10 @@ import gnu.trove.map.hash.TDoubleIntHashMap;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.stream.IntStream;
 
 import static com.expleague.commons.math.MathTools.sqr;
-import static com.expleague.commons.math.vectors.VecTools.copy;
-import static com.expleague.ml.cli.builders.data.ReaderFactory.createFeatureTxtReader;
-import static java.lang.Math.exp;
 import static java.lang.Math.log;
 
 /**
@@ -124,7 +94,7 @@ public class BinarizeTests extends GridTest {
         Pool<?> local_validate = split_local_all.get(1);
 
         final GradientBoosting<SatL2> boosting = new GradientBoosting<SatL2>(
-                new BootstrapOptimization<>(new GreedyObliviousTree<>(GridTools.probabilityGrid2(local_learn.vecData(), 32, true), 6), rand),
+                new BootstrapOptimization<>(new GreedyObliviousTree<>(GridTools.probabilityGridMedian(local_learn.vecData(), 32), 6), rand),
                 L2Reg.class, 2000, 0.005
         );
         new addBoostingListeners<>(boosting, local_learn.target(SatL2.class), local_learn, local_validate, printWriter);
@@ -151,7 +121,7 @@ public class BinarizeTests extends GridTest {
         Pool<?> local_validate = split_local_all.get(1);
 
         final GradientBoosting<SatL2> boosting = new GradientBoosting<SatL2>(
-                new BootstrapOptimization<>(new GreedyObliviousTree<>(GridTools.probabilityGrid2(local_learn.vecData(), 32, true), 6), rand),
+                new BootstrapOptimization<>(new GreedyObliviousTree<>(GridTools.probabilityGridMedian(local_learn.vecData(), 32), 6), rand),
                 L2Reg.class, 2000, 0.005
         );
         new addBoostingListeners<>(boosting, local_learn.target(SatL2.class), local_learn, local_validate, printWriter);

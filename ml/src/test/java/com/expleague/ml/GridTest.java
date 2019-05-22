@@ -13,10 +13,8 @@ import com.expleague.ml.data.set.VecDataSet;
 import com.expleague.ml.data.set.impl.VecDataSetImpl;
 import com.expleague.ml.data.tools.DataTools;
 import com.expleague.ml.data.tools.Pool;
-import com.expleague.ml.data.tools.PoolBuilder;
 import com.expleague.ml.loss.L2;
 import com.expleague.ml.loss.WeightedLoss;
-import com.expleague.ml.meta.DSItem;
 import com.expleague.ml.methods.greedyRegion.GreedyProbLinearRegion;
 import com.expleague.ml.testUtils.TestResourceLoader;
 import gnu.trove.list.array.TIntArrayList;
@@ -478,8 +476,8 @@ public class GridTest extends FileTestCase {
     ArrayVec vec = new ArrayVec(arr, 0, xdim * len);
     final VecBasedMx data = new VecBasedMx(xdim, vec);
     final VecDataSet ds = new VecDataSetImpl(data, null);
-    BFGrid grid = GridTools.probabilityGrid_bigInt(ds, 16, true);
-    BFGrid grid1 = GridTools.probabilityGrid_bigInt(ds, 16, true);
+    BFGrid grid = GridTools.probabilityGrid_bigInt(ds, 16);
+    BFGrid grid1 = GridTools.probabilityGrid_bigInt(ds, 16);
   }
 
   public void testProbabilityBinarizeCmp2() {
@@ -530,8 +528,8 @@ public class GridTest extends FileTestCase {
     ArrayVec vec = new ArrayVec(arr, 0, xdim * len);
     final VecBasedMx data = new VecBasedMx(xdim, vec);
     final VecDataSet ds = new VecDataSetImpl(data, null);
-    BFGrid grid = GridTools.probabilityGrid_bigInt(ds, 1, true);
-    BFGrid grid1 = GridTools.probabilityGrid_bigInt(ds, 1, true);
+    BFGrid grid = GridTools.probabilityGrid_bigInt(ds, 1);
+    BFGrid grid1 = GridTools.probabilityGrid_bigInt(ds, 1);
   }
 
   public void testBigInt() {

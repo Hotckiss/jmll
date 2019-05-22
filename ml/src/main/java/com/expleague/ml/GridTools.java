@@ -2,7 +2,6 @@ package com.expleague.ml;
 
 import com.expleague.commons.math.AnalyticFunc;
 import com.expleague.commons.math.vectors.Vec;
-import com.expleague.commons.util.ArrayTools;
 import com.expleague.ml.data.Aggregate;
 import com.expleague.ml.data.set.VecDataSet;
 import com.expleague.commons.math.vectors.impl.idxtrans.ArrayPermutation;
@@ -16,9 +15,6 @@ import gnu.trove.set.TDoubleSet;
 import gnu.trove.set.hash.TDoubleHashSet;
 import gnu.trove.set.hash.TIntHashSet;
 
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.math.BigInteger;
 import java.util.*;
 
@@ -746,10 +742,9 @@ public class GridTools {
    * Builds naive probability grid
    * @param ds
    * @param binFactor
-   * @param useFastAlgorithm using fast algorithm for partition search
    * @return
    */
-  public static BFGrid probabilityGrid2(final VecDataSet ds, final int binFactor, boolean useFastAlgorithm) {
+  public static BFGrid probabilityGridMedian(final VecDataSet ds, final int binFactor) {
     assert (binFactor < ds.length());
 
     final int dim = ds.xdim();
@@ -798,12 +793,7 @@ public class GridTools {
 
           PartitionResult bestResult = PartitionResult.makeWorst();
 
-          if (useFastAlgorithm) {
-            bestResult = bestPartitionWithMapper_veryFast_improved(binNumberMapper, feature, currentBorders.get(feature_index));
-
-          } else {
-            bestResult = bestPartition(binNumberMapper, feature, currentBorders.get(feature_index));
-          }
+          bestResult = bestPartitionWithMapper_veryFast_improved(binNumberMapper, feature, currentBorders.get(feature_index));
 
           if (bestFromAll.score < bestResult.score) {
             bestFromAll = bestResult;
@@ -1120,7 +1110,7 @@ public class GridTools {
     return new BFGridImpl(rows);
   }
 
-  public static BFGrid probabilityGrid_bigInt(final VecDataSet ds, final int binFactor, boolean useFastAlgorithm) {
+  public static BFGrid probabilityGrid_bigInt(final VecDataSet ds, final int binFactor) {
     assert (binFactor < ds.length());
 
     final int dim = ds.xdim();
