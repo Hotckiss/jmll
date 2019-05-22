@@ -16,22 +16,32 @@ public class BinarizeBenchmarkUIUtils {
     public static GridPane makeGridPane() {
         GridPane gridpane = new GridPane();
         gridpane.setPadding(new Insets(5));
-        gridpane.setHgap(8);
+        gridpane.setHgap(16);
         gridpane.setVgap(7);
-        ColumnConstraints column1 = new ColumnConstraints(200);
+
         RowConstraints row0 = new RowConstraints(50);
         RowConstraints row1 = new RowConstraints(50);
         RowConstraints row2 = new RowConstraints(50);
         RowConstraints row3 = new RowConstraints(300);
-        ColumnConstraints column2 = new ColumnConstraints(200);
-        ColumnConstraints column3 = new ColumnConstraints(200);
-        ColumnConstraints column4 = new ColumnConstraints(200);
-        ColumnConstraints column5 = new ColumnConstraints(200);
-        ColumnConstraints column6 = new ColumnConstraints(200);
-        ColumnConstraints column7 = new ColumnConstraints(200);
-        ColumnConstraints column8 = new ColumnConstraints(200);
+        ColumnConstraints column1 = new ColumnConstraints(100);
+        ColumnConstraints column2 = new ColumnConstraints(100);
+        ColumnConstraints column3 = new ColumnConstraints(100);
+        ColumnConstraints column4 = new ColumnConstraints(100);
+        ColumnConstraints column5 = new ColumnConstraints(100);
+        ColumnConstraints column6 = new ColumnConstraints(100);
+        ColumnConstraints column7 = new ColumnConstraints(100);
+        ColumnConstraints column8 = new ColumnConstraints(100);
+        ColumnConstraints column9 = new ColumnConstraints(100);
+        ColumnConstraints column10 = new ColumnConstraints(100);
+        ColumnConstraints column11= new ColumnConstraints(100);
+        ColumnConstraints column12 = new ColumnConstraints(100);
+        ColumnConstraints column13= new ColumnConstraints(100);
+        ColumnConstraints column14 = new ColumnConstraints(100);
+        ColumnConstraints column15 = new ColumnConstraints(100);
+        ColumnConstraints column16 = new ColumnConstraints(100);
         column2.setHgrow(Priority.ALWAYS);
-        gridpane.getColumnConstraints().addAll(column1, column2, column3, column4, column5, column6, column7, column8);
+        gridpane.getColumnConstraints().addAll(column1, column2, column3, column4, column5, column6, column7, column8,
+                column9,column10,column11,column12,column13,column14,column15,column16);
         //gridpane.getRowConstraints().addAll(row0, row1, row2, row3);
 
         return gridpane;
@@ -81,16 +91,16 @@ public class BinarizeBenchmarkUIUtils {
         lineChart.setStyle(".chart-series-line { -fx-stroke-width: 1px; }");
         lineChart.getData().add(series);
         lineChart.getData().add(seriesT);
-        gridPane.add(lineChart, index * 2, 5, 2, 1);
+        gridPane.add(lineChart, index * 4, 5, 4, 1);
     }
 
     public static ProgressBar addProgressBar(GridPane gridpane, int index) {
         Label binLabel = new Label("Binarize progress:");
         GridPane.setHalignment(binLabel, HPos.CENTER);
-        gridpane.add(binLabel, index * 2, 4);
+        gridpane.add(binLabel, index * 4 + 1, 4);
         ProgressBar algorithmBar = new ProgressBar();
         GridPane.setHalignment(algorithmBar, HPos.LEFT);
-        gridpane.add(algorithmBar, index * 2 + 1, 4);
+        gridpane.add(algorithmBar, index * 4 + 2, 4);
 
         return algorithmBar;
     }
@@ -102,6 +112,6 @@ public class BinarizeBenchmarkUIUtils {
         barChart.setTitle("Bins usage");
         barChart.setStyle(".chart-series-line { -fx-stroke-width: 1px; }");
         barChart.getData().add(bars);
-        gridPane.add(barChart, index * 2, 6, 2, 1);
+        gridPane.add(barChart, index * 4, 6, 4, 1);
     }
 }

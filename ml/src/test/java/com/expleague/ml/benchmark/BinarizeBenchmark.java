@@ -182,7 +182,7 @@ public class BinarizeBenchmark extends Application {
         BinarizeBenchmarkUIUtils.addBinsChartUsage(gridpane, barsUsageSeries4, 3);
 
         root.getChildren().add(gridpane);
-        primaryStage.setScene(new Scene(root, 1700, 900));
+        primaryStage.setScene(new Scene(root, 1920, 900));
         primaryStage.show();
     }
 }
