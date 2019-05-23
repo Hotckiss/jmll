@@ -4,6 +4,7 @@ import com.expleague.commons.math.AnalyticFunc;
 import com.expleague.commons.math.vectors.Vec;
 import com.expleague.ml.binarization.partitions.PartitionResult;
 import com.expleague.ml.binarization.partitions.PartitionResultBigInt;
+import com.expleague.ml.binarization.utils.BinarizationUtils;
 import com.expleague.ml.data.Aggregate;
 import com.expleague.ml.data.set.VecDataSet;
 import com.expleague.commons.math.vectors.impl.idxtrans.ArrayPermutation;
@@ -22,6 +23,7 @@ import java.util.*;
 
 import static com.expleague.ml.binarization.calcers.MapperScoreCalcerBigInt.mapperScoreBigInt;
 import static com.expleague.ml.binarization.utils.BinarizationUtils.firstPartition;
+import static com.expleague.ml.binarization.utils.BinarizationUtils.insertBorder;
 
 /**
  * User: solar
@@ -29,28 +31,7 @@ import static com.expleague.ml.binarization.utils.BinarizationUtils.firstPartiti
  * Time: 17:42
  */
 public class GridTools {
-  public static TIntArrayList insertBorder(final TIntArrayList borders, final int newBorder) {
-    final TIntArrayList mergedBorders = new TIntArrayList();
-    int i = 0;
 
-    while (i < borders.size() && borders.get(i) < newBorder) {
-      mergedBorders.add(borders.get(i));
-      i++;
-    }
-
-    mergedBorders.add(newBorder);
-
-    while (i < borders.size() && borders.get(i) == newBorder) {
-      i++;
-    }
-
-    while (i < borders.size()) {
-      mergedBorders.add(borders.get(i));
-      i++;
-    }
-
-    return mergedBorders;
-  }
 
   /**
    * Builds map: take value in position number i in sorted order by feature2 then
@@ -618,9 +599,6 @@ public class GridTools {
         }
 
         lastRes = new PartitionResult(pivot, score);
-
-
-
 
       } else {
         System.out.println("REBUILD"); // DENSE partition, signal to decrease binFactor
