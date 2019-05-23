@@ -9,11 +9,13 @@ import com.expleague.ml.impl.BFRowImpl;
 import gnu.trove.list.array.TDoubleArrayList;
 import gnu.trove.list.array.TIntArrayList;
 
-public class EqualWidthBinarization {
-    public static BFGrid equalWidthGrid(final VecDataSet ds, final int binFactor, BuildProgressHandler buildProgressHandler) {
+public class EqualFrequencyBinarization {
+    public static BFGrid equalFreqGrid(final VecDataSet ds, final int binFactor, BuildProgressHandler buildProgressHandler) {
         final int dim = ds.xdim();
         final BFRowImpl[] rows = new BFRowImpl[dim];
         int bfCount = 0;
+
+        int width = ds.length() / binFactor + 1;
 
         final double[] feature = new double[ds.length()];
         for (int f = 0; f < dim; f++) {
@@ -25,16 +27,10 @@ public class EqualWidthBinarization {
                 feature[i] = ds.at(order[i]).get(f);
             }
 
-            double min = feature[0];
-            double max = feature[feature.length - 1];
-            double width = (max - min) / binFactor;
-
             final TIntArrayList borders = new TIntArrayList();
 
-            for (int i = 1; i < feature.length; i++) {
-                if (binNumber(min, feature[i], width) != binNumber(min, feature[i - 1], width)) {
-                    borders.add(i);
-                }
+            for (int p = width; p < ds.length(); p += width) {
+                borders.add(p);
             }
 
             borders.add(ds.length());
@@ -52,9 +48,5 @@ public class EqualWidthBinarization {
         }
 
         return new BFGridImpl(rows);
-    }
-
-    private static int binNumber(double min, double val, double width) {
-        return  (int)Math.round((val - min) / width);
     }
 }

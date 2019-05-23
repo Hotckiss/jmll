@@ -10,9 +10,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 
-import static org.junit.Assert.*;
-
-public class EqualWidthBinarizationTest extends FileTestCase {
+public class EqualFrequencyBinarizationTest extends FileTestCase {
     public static Pool<?> learn;
     private static FastRandom rng = new FastRandom(0);
 
@@ -28,12 +26,12 @@ public class EqualWidthBinarizationTest extends FileTestCase {
 
     @Test
     public void testEW1() {
-        BFGrid grid = EqualWidthBinarization.equalWidthGrid(learn.vecData(), 2, new BuildProgressHandler(null));
+        BFGrid grid = EqualFrequencyBinarization.equalFreqGrid(learn.vecData(), 2, new BuildProgressHandler(null));
     }
 
     @Test
     public void testEW2() {
-        BFGrid grid = EqualWidthBinarization.equalWidthGrid(learn.vecData(), 32, new BuildProgressHandler(null));
+        BFGrid grid = EqualFrequencyBinarization.equalFreqGrid(learn.vecData(), 32, new BuildProgressHandler(null));
     }
 
     @Override

@@ -3,7 +3,7 @@ package com.expleague.ml.benchmark.ml;
 import com.expleague.ml.BFGrid;
 import com.expleague.ml.GridTools;
 import com.expleague.ml.BuildProgressHandler;
-import com.expleague.ml.binarization.algorithms.EqualWidthBinarization;
+import com.expleague.ml.binarization.algorithms.EqualFrequencyBinarization;
 import com.expleague.ml.data.set.VecDataSet;
 import javafx.application.Platform;
 import javafx.scene.control.Label;
@@ -22,8 +22,8 @@ public class BFGridFactory {
             case MEDIAN:
                 res =  GridTools.medianGrid(data, binFactor, buildProgressHandler);
                 break;
-            case EQUAL_WIDTH:
-                res =  EqualWidthBinarization.equalWidthGrid(data, binFactor, buildProgressHandler);
+            case EQUAL_FREQUENCY:
+                res =  EqualFrequencyBinarization.equalFreqGrid(data, binFactor, buildProgressHandler);
                 break;
             case PROBABILITY_FAST:
                 res = probabilityGrid(data, binFactor, true, buildProgressHandler);
@@ -60,7 +60,7 @@ public class BFGridFactory {
         switch (type) {
             case MEDIAN:
                 return binFactor;
-            case EQUAL_WIDTH:
+            case EQUAL_FREQUENCY:
                 return binFactor;
             case PROBABILITY_FAST:
                 return binFactor * data.xdim() * data.xdim();
@@ -83,8 +83,8 @@ public class BFGridFactory {
         switch (type) {
             case MEDIAN:
                 return "Median division";
-            case EQUAL_WIDTH:
-                return "Equal width";
+            case EQUAL_FREQUENCY:
+                return "Equal freq";
             case PROBABILITY_FAST:
                 return "Probability fast";
             case PROBABILITY_SIMPLE:
@@ -116,8 +116,8 @@ public class BFGridFactory {
         switch (raw) {
             case "Median division":
                 return MethodType.MEDIAN;
-            case "Equal width":
-                return MethodType.EQUAL_WIDTH;
+            case "Equal freq":
+                return MethodType.EQUAL_FREQUENCY;
             case "Probability fast":
                 return MethodType.PROBABILITY_FAST;
             case "Probability":
