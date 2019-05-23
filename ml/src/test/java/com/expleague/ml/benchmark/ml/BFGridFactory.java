@@ -3,6 +3,7 @@ package com.expleague.ml.benchmark.ml;
 import com.expleague.ml.BFGrid;
 import com.expleague.ml.GridTools;
 import com.expleague.ml.BuildProgressHandler;
+import com.expleague.ml.binarization.algorithms.EqualWidthBinarization;
 import com.expleague.ml.data.set.VecDataSet;
 import javafx.application.Platform;
 import javafx.scene.control.Label;
@@ -20,6 +21,9 @@ public class BFGridFactory {
         switch (type) {
             case MEDIAN:
                 res =  GridTools.medianGrid(data, binFactor, buildProgressHandler);
+                break;
+            case EQUAL_WIDTH:
+                res =  EqualWidthBinarization.equalWidthGrid(data, binFactor, buildProgressHandler);
                 break;
             case PROBABILITY_FAST:
                 res = probabilityGrid(data, binFactor, true, buildProgressHandler);
@@ -56,6 +60,8 @@ public class BFGridFactory {
         switch (type) {
             case MEDIAN:
                 return binFactor;
+            case EQUAL_WIDTH:
+                return binFactor;
             case PROBABILITY_FAST:
                 return binFactor * data.xdim() * data.xdim();
             case PROBABILITY_SIMPLE:
@@ -77,6 +83,8 @@ public class BFGridFactory {
         switch (type) {
             case MEDIAN:
                 return "Median division";
+            case EQUAL_WIDTH:
+                return "Equal width";
             case PROBABILITY_FAST:
                 return "Probability fast";
             case PROBABILITY_SIMPLE:
@@ -108,6 +116,8 @@ public class BFGridFactory {
         switch (raw) {
             case "Median division":
                 return MethodType.MEDIAN;
+            case "Equal width":
+                return MethodType.EQUAL_WIDTH;
             case "Probability fast":
                 return MethodType.PROBABILITY_FAST;
             case "Probability":
