@@ -10,7 +10,7 @@ import javafx.scene.control.Label;
 public class BFGridFactory {
     public static BFGrid makeGrid(MethodType type, VecDataSet data, int binFactor, BuildProgressHandler buildProgressHandler, Label binTime) {
         long s = System.nanoTime();
-        BFGrid res = null;
+        BFGrid res;
         switch (type) {
             case MEDIAN:
                 res =  GridTools.medianGrid(data, binFactor, buildProgressHandler);

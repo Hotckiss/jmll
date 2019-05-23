@@ -15,6 +15,7 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
@@ -67,7 +68,24 @@ public class BinarizeBenchmark extends Application {
         StackPane root = new StackPane();
 
         GridPane gridpane = BinarizeBenchmarkUIUtils.makeGridPane();
-        BinarizeBenchmarkUIUtils.addInputs(gridpane);
+
+        Label datasetLabel = new Label("Dataset path:");
+        TextField datasetInput = new TextField();
+        Button datasetLoadButton = new Button();
+        datasetLoadButton.setText("Load");
+        BinarizeBenchmarkUIUtils.addDatasetInput(gridpane, datasetLabel, datasetInput, datasetLoadButton);
+
+        Label featuresLabel = new Label("Features columns:");
+        TextField featuresInput = new TextField();
+        Button featuresApplyButton = new Button();
+        featuresApplyButton.setText("Apply");
+        BinarizeBenchmarkUIUtils.addFeaturesInput(gridpane, featuresLabel, featuresInput, featuresApplyButton);
+
+        Label targetColumnLabel = new Label("Target column:");
+        TextField targetInput = new TextField();
+        Button targetApplyButton = new Button();
+        targetApplyButton.setText("Apply");
+        BinarizeBenchmarkUIUtils.addTargetInput(gridpane, targetColumnLabel, targetInput, targetApplyButton);
 
         algorithm1Bar = BinarizeBenchmarkUIUtils.addProgressBar(gridpane, 0);
         algorithm2Bar = BinarizeBenchmarkUIUtils.addProgressBar(gridpane, 1);

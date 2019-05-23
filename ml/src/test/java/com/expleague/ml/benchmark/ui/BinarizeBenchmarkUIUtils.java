@@ -4,6 +4,7 @@ import com.expleague.ml.GridTools;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.scene.chart.*;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextField;
@@ -47,39 +48,31 @@ public class BinarizeBenchmarkUIUtils {
         return gridpane;
     }
 
-    public static void addDatasetInput(GridPane gridPane, Label label, TextField field) {
+    public static void addDatasetInput(GridPane gridPane, Label label, TextField field, Button btn) {
         GridPane.setHalignment(label, HPos.LEFT);
         gridPane.add(label, 0, 0);
         GridPane.setHalignment(field, HPos.LEFT);
-        gridPane.add(field, 1, 0, 3, 1);
+        gridPane.add(field, 1, 0, 2, 1);
+        GridPane.setHalignment(btn, HPos.LEFT);
+        gridPane.add(btn, 3, 0, 3, 1);
     }
 
-    public static void addFeaturesInput(GridPane gridPane, Label label, TextField field) {
+    public static void addFeaturesInput(GridPane gridPane, Label label, TextField field, Button btn) {
         GridPane.setHalignment(label, HPos.LEFT);
         gridPane.add(label, 0, 1);
         GridPane.setHalignment(field, HPos.LEFT);
-        gridPane.add(field, 1, 1, 3, 1);
+        gridPane.add(field, 1, 1, 2, 1);
+        GridPane.setHalignment(btn, HPos.LEFT);
+        gridPane.add(btn, 3, 1, 3, 1);
     }
 
-    public static void addTargetInput(GridPane gridPane, Label label, TextField field) {
+    public static void addTargetInput(GridPane gridPane, Label label, TextField field, Button btn) {
         GridPane.setHalignment(label, HPos.LEFT);
         gridPane.add(label, 0, 2);
         GridPane.setHalignment(field, HPos.LEFT);
-        gridPane.add(field, 1, 2, 3, 1);
-    }
-
-    public static void addInputs(GridPane gridpane) {
-        Label datasetLabel = new Label("Dataset path:");
-        TextField datasetInput = new TextField();
-        BinarizeBenchmarkUIUtils.addDatasetInput(gridpane, datasetLabel, datasetInput);
-
-        Label featuresLabel = new Label("Features to extract:");
-        TextField featuresInput = new TextField();
-        BinarizeBenchmarkUIUtils.addFeaturesInput(gridpane, featuresLabel, featuresInput);
-
-        Label targetColumnLabel = new Label("Target column:");
-        TextField targetInput = new TextField();
-        BinarizeBenchmarkUIUtils.addTargetInput(gridpane, targetColumnLabel, targetInput);
+        gridPane.add(field, 1, 2, 2, 1);
+        GridPane.setHalignment(btn, HPos.LEFT);
+        gridPane.add(btn, 3, 2, 3, 1);
     }
 
     public static void addAlgorithmChart(GridPane gridPane, XYChart.Series series, XYChart.Series seriesT, int index) {
