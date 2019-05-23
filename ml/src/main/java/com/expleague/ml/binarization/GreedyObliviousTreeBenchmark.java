@@ -1,4 +1,4 @@
-package com.expleague.ml.methods.trees;
+package com.expleague.ml.binarization;
 
 import com.expleague.commons.util.ArrayTools;
 import com.expleague.commons.util.Pair;
@@ -10,6 +10,7 @@ import com.expleague.ml.data.set.VecDataSet;
 import com.expleague.ml.loss.StatBasedLoss;
 import com.expleague.ml.loss.WeightedLoss;
 import com.expleague.ml.methods.VecOptimization;
+import com.expleague.ml.methods.trees.BFOptimizationSubset;
 import com.expleague.ml.models.ObliviousTree;
 
 import java.util.ArrayList;

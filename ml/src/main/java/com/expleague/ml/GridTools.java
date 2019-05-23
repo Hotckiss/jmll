@@ -2,6 +2,8 @@ package com.expleague.ml;
 
 import com.expleague.commons.math.AnalyticFunc;
 import com.expleague.commons.math.vectors.Vec;
+import com.expleague.ml.binarization.partitions.PartitionResult;
+import com.expleague.ml.binarization.partitions.PartitionResultBigInt;
 import com.expleague.ml.data.Aggregate;
 import com.expleague.ml.data.set.VecDataSet;
 import com.expleague.commons.math.vectors.impl.idxtrans.ArrayPermutation;
@@ -24,71 +26,6 @@ import java.util.*;
  * Time: 17:42
  */
 public class GridTools {
-  public static class PartitionResult {
-    private int splitPosition;
-    private double score;
-
-    public PartitionResult(int splitPosition, double score) {
-      this.score = score;
-      this.splitPosition = splitPosition;
-    }
-
-    public int getSplitPosition() {
-      return splitPosition;
-    }
-
-    public double getScore() {
-      return score;
-    }
-
-    public void setSplitPosition(int newSplitPosition) {
-      this.splitPosition = newSplitPosition;
-    }
-
-    public void setScore(double newScore) {
-      this.score = newScore;
-    }
-
-    public static PartitionResult makeWorst() {
-      return new PartitionResult(-1, -Double.MAX_VALUE);
-    }
-  }
-
-  public static class PartitionResultBigInt {
-    private int splitPosition;
-    private BigInteger score;
-
-    public PartitionResultBigInt(int splitPosition, BigInteger score) {
-      this.score = score;
-      this.splitPosition = splitPosition;
-    }
-
-    public int getSplitPosition() {
-      return splitPosition;
-    }
-
-    public BigInteger getScore() {
-      return score;
-    }
-
-    public void setSplitPosition(int newSplitPosition) {
-      this.splitPosition = newSplitPosition;
-    }
-
-    public void setScore(BigInteger newScore) {
-      this.score = newScore;
-    }
-
-    public static PartitionResultBigInt makeWorst() {
-      StringBuilder sb = new StringBuilder();
-      sb.append(1);
-      for (int i = 0; i < 1000; i++) {
-        sb.append(0);
-      }
-      return new PartitionResultBigInt(-1, new BigInteger(sb.toString(), 10));
-    }
-  }
-
   public static TIntArrayList insertBorder(final TIntArrayList borders, final int newBorder) {
     final TIntArrayList mergedBorders = new TIntArrayList();
     int i = 0;
@@ -343,7 +280,7 @@ public class GridTools {
 
         //double score = mapperScore(currentMapper);
 
-        double score = lastRes.score - contribution_old1 - contribution_old2 + contribution_new1 + contribution_new2;
+        double score = lastRes.getScore() - contribution_old1 - contribution_old2 + contribution_new1 + contribution_new2;
         //if (Math.abs(score2- score) != 0) {
           //System.out.println("Delta: " + Math.abs(score2 - score));
         //}
@@ -352,7 +289,7 @@ public class GridTools {
           continue;
         }
 
-        if (score > bestRes.score) {
+        if (score > bestRes.getScore()) {
           bestRes.setScore(score);
           bestRes.setSplitPosition(pivot);
         }
@@ -368,7 +305,7 @@ public class GridTools {
           continue;
         }
 
-        if (score > bestRes.score) {
+        if (score > bestRes.getScore()) {
           bestRes.setScore(score);
           bestRes.setSplitPosition(pivot);
         }
@@ -426,14 +363,14 @@ public class GridTools {
 
         //double score = mapperScore(currentMapper);
 
-        double score = lastRes.score - contribution_old1 - contribution_old2 + contribution_new1 + contribution_new2;
+        double score = lastRes.getScore() - contribution_old1 - contribution_old2 + contribution_new1 + contribution_new2;
 
         if (Math.abs(sortedFeature2[pivot] - sortedFeature2[pivot - 1]) < 1e-9) {
           lastRes = new PartitionResult(pivot, score);
           continue;
         }
 
-        if (score > bestRes.score) {
+        if (score > bestRes.getScore()) {
           bestRes.setScore(score);
           bestRes.setSplitPosition(pivot);
         }
@@ -487,7 +424,7 @@ public class GridTools {
         //outMapper(currentMapper);
         //double score2 = mapperScore(currentMapper);
 
-        double score = lastRes.score - contribution_old1_el1 - contribution_old1_el2 -
+        double score = lastRes.getScore() - contribution_old1_el1 - contribution_old1_el2 -
                 contribution_old2_el1 - contribution_old2_el2 +
                 contribution_new1_el1 + contribution_new1_el2 +
                 contribution_new2_el1 + contribution_new2_el2;
@@ -501,7 +438,7 @@ public class GridTools {
           continue;
         }
 
-        if (score > bestRes.score) {
+        if (score > bestRes.getScore()) {
           bestRes.setScore(score);
           bestRes.setSplitPosition(pivot);
         }
@@ -521,7 +458,7 @@ public class GridTools {
           continue;
         }
 
-        if (score > bestRes.score) {
+        if (score > bestRes.getScore()) {
           bestRes.setScore(score);
           bestRes.setSplitPosition(pivot);
         }
@@ -581,19 +518,19 @@ public class GridTools {
 
         //double score = mapperScore(currentMapper);
 
-        double score = lastRes.score - contribution_old1 - contribution_old2 + contribution_new1 + contribution_new2;
+        double score = lastRes.getScore() - contribution_old1 - contribution_old2 + contribution_new1 + contribution_new2;
 
         if (Math.abs(sortedFeature2[pivot] - sortedFeature2[pivot - 1]) < 1e-9) {
           lastRes = new PartitionResult(pivot, score);
           continue;
         }
 
-        if (Math.abs(score - bestRes.score) < 0.1) {
+        if (Math.abs(score - bestRes.getScore()) < 0.1) {
           bestResults.add(new PartitionResult(pivot, score));
         }
 
-        if (score > bestRes.score) {
-          if (Math.abs(score - bestRes.score) > 0.1) {
+        if (score > bestRes.getScore()) {
+          if (Math.abs(score - bestRes.getScore()) > 0.1) {
             bestResults = new ArrayList<>();
             bestResults.add(new PartitionResult(pivot, score));
           }
@@ -650,7 +587,7 @@ public class GridTools {
         //outMapper(currentMapper);
         //double score2 = mapperScore(currentMapper);
 
-        double score = lastRes.score - contribution_old1_el1 - contribution_old1_el2 -
+        double score = lastRes.getScore() - contribution_old1_el1 - contribution_old1_el2 -
                 contribution_old2_el1 - contribution_old2_el2 +
                 contribution_new1_el1 + contribution_new1_el2 +
                 contribution_new2_el1 + contribution_new2_el2;
@@ -664,12 +601,12 @@ public class GridTools {
           continue;
         }
 
-        if (Math.abs(score - bestRes.score) < 0.1) {
+        if (Math.abs(score - bestRes.getScore()) < 0.1) {
           bestResults.add(new PartitionResult(pivot, score));
         }
 
-        if (score > bestRes.score) {
-          if (Math.abs(score - bestRes.score) > 0.1) {
+        if (score > bestRes.getScore()) {
+          if (Math.abs(score - bestRes.getScore()) > 0.1) {
             bestResults = new ArrayList<>();
             bestResults.add(new PartitionResult(pivot, score));
           }
@@ -692,12 +629,12 @@ public class GridTools {
           continue;
         }
 
-        if (Math.abs(score - bestRes.score) < 0.1) {
+        if (Math.abs(score - bestRes.getScore()) < 0.1) {
           bestResults.add(new PartitionResult(pivot, score));
         }
 
-        if (score > bestRes.score) {
-          if (Math.abs(score - bestRes.score) > 0.1) {
+        if (score > bestRes.getScore()) {
+          if (Math.abs(score - bestRes.getScore()) > 0.1) {
             bestResults = new ArrayList<>();
             bestResults.add(new PartitionResult(pivot, score));
           }
@@ -719,7 +656,7 @@ public class GridTools {
       for (int i = 0; i < bestResults.size(); i++) {
         PartitionResult r = bestResults.get(i);
         { // check that border doesn't exist
-          while (bordersPtr < bordersFeature2.size() && bordersFeature2.get(bordersPtr) < r.splitPosition) {
+          while (bordersPtr < bordersFeature2.size() && bordersFeature2.get(bordersPtr) < r.getSplitPosition()) {
             bordersPtr++;
           }
         }
@@ -731,7 +668,7 @@ public class GridTools {
         if (bordersPtr > 0)
           start = bordersFeature2.get(bordersPtr - 1);
 
-        final double scoreRight = Math.log(end - r.splitPosition) + Math.log(r.splitPosition - start);
+        final double scoreRight = Math.log(end - r.getSplitPosition()) + Math.log(r.getSplitPosition() - start);
 
         if (scoreRight > bs) {
           bs = scoreRight;
@@ -800,16 +737,16 @@ public class GridTools {
 
           bestResult = bestPartitionWithMapper_veryFast_improved(binNumberMapper, feature, currentBorders.get(feature_index));
 
-          if (bestFromAll.score < bestResult.score) {
+          if (bestFromAll.getScore() < bestResult.getScore()) {
             bestFromAll = bestResult;
             bf = paired_feature_index;
           }
         }
 
         //System.out.println(bestFromAll.splitPosition);
-        if (bestFromAll.splitPosition > 1) {
+        if (bestFromAll.getSplitPosition() > 1) {
           //System.out.println("BestPaired feature: " + bf);
-          TIntArrayList newBorders = insertBorder(currentBorders.get(feature_index), bestFromAll.splitPosition);
+          TIntArrayList newBorders = insertBorder(currentBorders.get(feature_index), bestFromAll.getSplitPosition());
           currentBorders.set(feature_index, newBorders);
         } else {
           System.out.println();
@@ -920,16 +857,16 @@ public class GridTools {
             bestResult = bestPartition(binNumberMapper, feature, currentBorders.get(feature_index));
           }
 
-          if (bestFromAll.score < bestResult.score) {
+          if (bestFromAll.getScore() < bestResult.getScore()) {
             bestFromAll = bestResult;
             bf = paired_feature_index;
           }
         }
 
         //System.out.println(bestFromAll.splitPosition);
-        if (bestFromAll.splitPosition > 1) {
+        if (bestFromAll.getSplitPosition() > 1) {
           //System.out.println("BestPaired feature: " + bf);
-          TIntArrayList newBorders = insertBorder(currentBorders.get(feature_index), bestFromAll.splitPosition);
+          TIntArrayList newBorders = insertBorder(currentBorders.get(feature_index), bestFromAll.getSplitPosition());
           currentBorders.set(feature_index, newBorders);
         } else {
           System.out.println();
@@ -1061,16 +998,16 @@ public class GridTools {
 
           bestResult = bestPartitionWithMapper_veryFast(binNumberMapper, feature, currentBorders.get(feature_index));
 
-          if (bestFromAll.score < bestResult.score) {
+          if (bestFromAll.getScore() < bestResult.getScore()) {
             bestFromAll = bestResult;
             bf = paired_feature_index;
           }
         }
 
         //System.out.println(bestFromAll.splitPosition);
-        if (bestFromAll.splitPosition > 1) {
+        if (bestFromAll.getSplitPosition() > 1) {
           //System.out.println("BestPaired feature: " + bf);
-          TIntArrayList newBorders = insertBorder(currentBorders.get(feature_index), bestFromAll.splitPosition);
+          TIntArrayList newBorders = insertBorder(currentBorders.get(feature_index), bestFromAll.getSplitPosition());
           currentBorders.set(feature_index, newBorders);
         } else {
           System.out.println();
@@ -1175,16 +1112,16 @@ public class GridTools {
             //bestResult = bestPartition(binNumberMapper, feature, currentBorders.get(feature_index));
           //}
 
-          if (bestResult.score.compareTo(bestFromAll.score) < 0) {
+          if (bestResult.getScore().compareTo(bestFromAll.getScore()) < 0) {
             bestFromAll = bestResult;
             bf = paired_feature_index;
           }
         }
 
         //System.out.println(bestFromAll.splitPosition);
-        if (bestFromAll.splitPosition > 1) {
+        if (bestFromAll.getSplitPosition() > 1) {
           //System.out.println("BestPaired feature: " + bf);
-          TIntArrayList newBorders = insertBorder(currentBorders.get(feature_index), bestFromAll.splitPosition);
+          TIntArrayList newBorders = insertBorder(currentBorders.get(feature_index), bestFromAll.getSplitPosition());
           currentBorders.set(feature_index, newBorders);
         } else {
           System.out.println();
@@ -1296,16 +1233,16 @@ public class GridTools {
             bestResult = bestPartition(binNumberMapper, feature, currentBorders.get(feature_index));
           }
 
-          if (bestFromAll.score < bestResult.score) {
+          if (bestFromAll.getScore() < bestResult.getScore()) {
             bestFromAll = bestResult;
             bf = paired_feature_index;
           }
         }
 
         //System.out.println(bestFromAll.splitPosition);
-        if (bestFromAll.splitPosition > 1) {
+        if (bestFromAll.getSplitPosition() > 1) {
           //System.out.println("BestPaired feature: " + bf);
-          TIntArrayList newBorders = insertBorder(currentBorders.get(feature_index), bestFromAll.splitPosition);
+          TIntArrayList newBorders = insertBorder(currentBorders.get(feature_index), bestFromAll.getSplitPosition());
           currentBorders.set(feature_index, newBorders);
         } else {
           System.out.println();
@@ -1543,7 +1480,7 @@ public class GridTools {
           continue;
         }
 
-        if (score.compareTo(bestRes.score) < 0) {
+        if (score.compareTo(bestRes.getScore()) < 0) {
           bestRes.setScore(score);
           bestRes.setSplitPosition(pivot);
         }
@@ -1558,7 +1495,7 @@ public class GridTools {
           continue;
         }
 
-        if (score.compareTo(bestRes.score) < 0) {
+        if (score.compareTo(bestRes.getScore()) < 0) {
           bestRes.setScore(score);
           bestRes.setSplitPosition(pivot);
         }

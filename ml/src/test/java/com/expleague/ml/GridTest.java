@@ -8,6 +8,7 @@ import com.expleague.commons.math.vectors.impl.idxtrans.ArrayPermutation;
 import com.expleague.commons.math.vectors.impl.mx.VecBasedMx;
 import com.expleague.commons.math.vectors.impl.vectors.ArrayVec;
 import com.expleague.commons.random.FastRandom;
+import com.expleague.ml.binarization.partitions.PartitionResult;
 import com.expleague.ml.data.impl.BinarizedDataSet;
 import com.expleague.ml.data.set.VecDataSet;
 import com.expleague.ml.data.set.impl.VecDataSetImpl;
@@ -317,7 +318,7 @@ public class GridTest extends FileTestCase {
     double[] feature2 = new double[]{1, 2, 3, 4, 5, 6, 7, 8};
     TIntArrayList bordersFeature2 = new TIntArrayList();
     bordersFeature2.add(8); // last border
-    GridTools.PartitionResult result = GridTools.bestPartition(mapper, feature2, bordersFeature2);
+    PartitionResult result = GridTools.bestPartition(mapper, feature2, bordersFeature2);
     assertEquals(2, result.getSplitPosition());
   }
 
@@ -327,7 +328,7 @@ public class GridTest extends FileTestCase {
     double[] feature2 = new double[]{3, 7, 5, 6, 1, 2, 8, 4};
     TIntArrayList bordersFeature2 = new TIntArrayList();
     bordersFeature2.add(8); // last border
-    GridTools.PartitionResult result = GridTools.bestPartition(mapper, feature2, bordersFeature2);
+    PartitionResult result = GridTools.bestPartition(mapper, feature2, bordersFeature2);
     assertEquals(3, result.getSplitPosition());
   }
 

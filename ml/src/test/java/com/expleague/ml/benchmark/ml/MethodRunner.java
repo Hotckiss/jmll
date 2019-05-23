@@ -8,7 +8,7 @@ import com.expleague.ml.loss.L2Reg;
 import com.expleague.ml.loss.SatL2;
 import com.expleague.ml.methods.BootstrapOptimization;
 import com.expleague.ml.methods.GradientBoosting;
-import com.expleague.ml.methods.trees.GreedyObliviousTreeBenchmark;
+import com.expleague.ml.binarization.GreedyObliviousTreeBenchmark;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
 
