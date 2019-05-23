@@ -20,6 +20,9 @@ import gnu.trove.set.hash.TIntHashSet;
 import java.math.BigInteger;
 import java.util.*;
 
+import static com.expleague.ml.binarization.calcers.MapperScoreCalcerBigInt.mapperScoreBigInt;
+import static com.expleague.ml.binarization.utils.BinarizationUtils.firstPartition;
+
 /**
  * User: solar
  * Date: 27.07.12
@@ -982,7 +985,6 @@ public class GridTools {
 
         PartitionResult bestFromAll = PartitionResult.makeWorst();
 
-        int bf = 0;
         for (int paired_feature_index = 0; paired_feature_index < dim; paired_feature_index++) {
           //System.out.println(paired_feature_index);
           buildProgressHandler.step();
@@ -1000,7 +1002,6 @@ public class GridTools {
 
           if (bestFromAll.getScore() < bestResult.getScore()) {
             bestFromAll = bestResult;
-            bf = paired_feature_index;
           }
         }
 
@@ -1420,20 +1421,6 @@ public class GridTools {
     return new BFGridImpl(rows);
   }
 
-
-  public static BigInteger mapperScoreBigInt(HashMap<Integer, HashMap<Integer, Integer>> mapper) {
-    BigInteger score = new BigInteger("1", 10);
-    for (Map.Entry<Integer, HashMap<Integer, Integer>> entry : mapper.entrySet()) {
-      for (Map.Entry<Integer, Integer> entry1 : entry.getValue().entrySet()) {
-        for (int k =0; k < entry1.getValue(); k++) {
-          score = score.multiply(new BigInteger(String.valueOf((entry1.getValue() + 1)), 10));
-        }
-      }
-    }
-
-    return score;
-  }
-
   public static PartitionResultBigInt bestPartitionWithMapperBigInt(final int[] binNumberMapper,
                                                                     final double[] sortedFeature2,
                                                                     final TIntArrayList bordersFeature2) {
@@ -1507,17 +1494,6 @@ public class GridTools {
     return bestRes;
   }
 
-  public static int firstPartition(final TIntArrayList bordersFeature2) {
-    int res = 1;
-    int bordersPtr = 0;
-    while (bordersPtr < bordersFeature2.size() && bordersFeature2.get(bordersPtr) == res) {
-      bordersPtr++;
-      res++;
-    }
-
-    return res;
-  }
-
   /**
    * Finds the best partition of feature2 according to feature1 and current binarization
    * Complexity: O(n^2) worst-case [2 * n^2]
@@ -1545,15 +1521,12 @@ public class GridTools {
 
       double score = calculatePartitionScore_hash(binNumberMapper, sortedFeature2, bordersFeature2, pivot);
       // maximize sum log(1/n), revert after TODO
-      //System.out.println("Score: " + score);
-      //System.out.println();
       if (score > bestScore) {
         bestScore = score;
         bestSplit = pivot;
       }
     }
 
-    //System.out.println("------------------");
     return new PartitionResult(bestSplit, bestScore);
   }
 

@@ -26,6 +26,8 @@ import java.math.BigInteger;
 import java.util.List;
 import java.util.stream.IntStream;
 
+import static com.expleague.ml.binarization.utils.BinarizationUtils.firstPartition;
+
 /**
  * User: solar
  * Date: 12.11.12
@@ -543,14 +545,14 @@ public class GridTest extends FileTestCase {
     TIntArrayList arr = new TIntArrayList();
     arr.add(2);
 
-    assertEquals(1, GridTools.firstPartition(arr));
+    assertEquals(1, firstPartition(arr));
   }
 
   public void testFirstPartition2() {
     TIntArrayList arr = new TIntArrayList();
     arr.add(1);
     arr.add(2);
-    assertEquals(3, GridTools.firstPartition(arr));
+    assertEquals(3, firstPartition(arr));
   }
 
   public void testFirstPartition3() {
@@ -560,12 +562,12 @@ public class GridTest extends FileTestCase {
     arr.add(3);
     arr.add(4);
     arr.add(6);
-    assertEquals(5, GridTools.firstPartition(arr));
+    assertEquals(5, firstPartition(arr));
   }
 
   public void testFirstPartition4() {
     TIntArrayList arr = new TIntArrayList();
-    assertEquals(1, GridTools.firstPartition(arr));
+    assertEquals(1, firstPartition(arr));
   }
 
   public void testProbabilityBinarizeCmp7() {
