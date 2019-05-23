@@ -27,6 +27,8 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 import static com.expleague.ml.binarization.utils.BinarizationUtils.firstPartition;
+import static com.expleague.ml.binarization.utils.BinarizationUtils.insertBorder;
+import static com.expleague.ml.binarization.utils.MappersUtils.buildBinsMapper;
 
 /**
  * User: solar
@@ -253,7 +255,7 @@ public class GridTest extends FileTestCase {
   public void testInsertBorder() {
     TIntArrayList borders = new TIntArrayList();
     borders.add(new int[]{1, 3, 5, 7, 9});
-    TIntArrayList mergedBorders = GridTools.insertBorder(borders, 2);
+    TIntArrayList mergedBorders = insertBorder(borders, 2);
     assertEquals(2, mergedBorders.get(1));
     assertEquals(6, mergedBorders.size());
   }
@@ -345,7 +347,7 @@ public class GridTest extends FileTestCase {
     bordersf1.add(4);
     bordersf1.add(8);
 
-    int[] actual = GridTools.buildBinsMapper(bordersf1, sortedf1, sortedf2);
+    int[] actual = buildBinsMapper(bordersf1, sortedf1, sortedf2);
     int[] expected = new int[]{0, 1, 1, 1, 0, 0, 1, 0};
 
     for (int i = 0; i < actual.length; i++) {
@@ -364,7 +366,7 @@ public class GridTest extends FileTestCase {
     bordersf1.add(4);
     bordersf1.add(8);
 
-    int[] actual = GridTools.buildBinsMapper(bordersf1, sortedf1, sortedf2);
+    int[] actual = buildBinsMapper(bordersf1, sortedf1, sortedf2);
     int[] expected = new int[]{0, 0, 0, 0, 1, 1, 1, 1};
 
     for (int i = 0; i < actual.length; i++) {

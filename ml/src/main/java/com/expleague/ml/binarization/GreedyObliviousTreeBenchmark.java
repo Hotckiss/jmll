@@ -4,7 +4,7 @@ import com.expleague.commons.util.ArrayTools;
 import com.expleague.commons.util.Pair;
 import com.expleague.ml.BFGrid;
 import com.expleague.ml.Binarize;
-import com.expleague.ml.GridUtils;
+import com.expleague.ml.binarization.utils.GridUtils;
 import com.expleague.ml.data.impl.BinarizedDataSet;
 import com.expleague.ml.data.set.VecDataSet;
 import com.expleague.ml.loss.StatBasedLoss;

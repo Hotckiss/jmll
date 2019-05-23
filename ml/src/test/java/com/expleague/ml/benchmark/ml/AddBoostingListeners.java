@@ -5,7 +5,7 @@ import com.expleague.commons.math.Trans;
 import com.expleague.commons.math.vectors.Vec;
 import com.expleague.commons.math.vectors.VecTools;
 import com.expleague.commons.math.vectors.impl.vectors.ArrayVec;
-import com.expleague.ml.GridUtils;
+import com.expleague.ml.binarization.utils.GridUtils;
 import com.expleague.ml.ProgressHandler;
 import com.expleague.ml.TargetFunc;
 import com.expleague.ml.benchmark.calcers.BenchmarkLearnScoreCalcer;
@@ -21,9 +21,6 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
 
 import java.io.PrintWriter;
-import java.lang.management.PlatformLoggingMXBean;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.function.Consumer;

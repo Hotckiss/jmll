@@ -2,7 +2,6 @@ package com.expleague.ml.impl;
 
 import com.expleague.commons.math.vectors.Vec;
 import com.expleague.ml.BFGrid;
-import com.expleague.ml.GridUtils;
 
 import java.util.Arrays;
 
