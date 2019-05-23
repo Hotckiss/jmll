@@ -19,10 +19,8 @@ public class BinarizeBenchmarkUIUtils {
         gridpane.setHgap(16);
         gridpane.setVgap(10);
 
-        RowConstraints row0 = new RowConstraints(50);
-        RowConstraints row1 = new RowConstraints(50);
-        RowConstraints row2 = new RowConstraints(50);
-        RowConstraints row3 = new RowConstraints(300);
+        RowConstraints row7 = new RowConstraints(300);
+        RowConstraints row9 = new RowConstraints(300);
         ColumnConstraints column1 = new ColumnConstraints(100);
         ColumnConstraints column2 = new ColumnConstraints(100);
         ColumnConstraints column3 = new ColumnConstraints(100);
@@ -42,7 +40,8 @@ public class BinarizeBenchmarkUIUtils {
         column2.setHgrow(Priority.ALWAYS);
         gridpane.getColumnConstraints().addAll(column1, column2, column3, column4, column5, column6, column7, column8,
                 column9,column10,column11,column12,column13,column14,column15,column16);
-        //gridpane.getRowConstraints().addAll(row0, row1, row2, row3);
+        gridpane.getRowConstraints().addAll(new RowConstraints(), new RowConstraints(), new RowConstraints(), new RowConstraints(), new RowConstraints(),
+                new RowConstraints(), row7, new RowConstraints(), row9, new RowConstraints());
 
         return gridpane;
     }
@@ -132,5 +131,29 @@ public class BinarizeBenchmarkUIUtils {
         gridPane.add(barChart, index * 4, 8, 4, 1);
 
         return barChart;
+    }
+
+    public static Label addScore(GridPane gridpane, int index) {
+        Label binLabel = new Label("Best score:");
+        GridPane.setHalignment(binLabel, HPos.CENTER);
+        gridpane.add(binLabel, index * 4 + 1, 7);
+
+        Label timeLabel = new Label();
+        GridPane.setHalignment(timeLabel, HPos.LEFT);
+        gridpane.add(timeLabel, index * 4 + 2, 7);
+
+        return timeLabel;
+    }
+
+    public static Label addBinsCount(GridPane gridpane, int index) {
+        Label binLabel = new Label("Total bins:");
+        GridPane.setHalignment(binLabel, HPos.CENTER);
+        gridpane.add(binLabel, index * 4 + 1, 9);
+
+        Label timeLabel = new Label();
+        GridPane.setHalignment(timeLabel, HPos.LEFT);
+        gridpane.add(timeLabel, index * 4 + 2, 9);
+
+        return timeLabel;
     }
 }

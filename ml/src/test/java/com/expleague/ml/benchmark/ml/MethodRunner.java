@@ -47,7 +47,9 @@ public class MethodRunner {
                         BuildProgressHandler buildProgressHandler,
                         int index,
                         XYChart.Series barData,
-                        Label binTime) {
+                        Label binTime,
+                        Label scoreLabel,
+                        Label binsCountLabel) {
 
         this.logFileName = logFileName;
         this.dataset = dataset;

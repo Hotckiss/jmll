@@ -62,10 +62,10 @@ public class BinarizeBenchmark extends Application {
     private LineChart<Number,Number> algorithm3Chart = null;
     private LineChart<Number,Number> algorithm4Chart = null;
 
-    private BarChart<String,Number> bar1Chart = null;
-    private BarChart<String,Number> bar2Chart = null;
-    private BarChart<String,Number> bar3Chart = null;
-    private BarChart<String,Number> bar4Chart = null;
+    private BarChart bar1Chart = null;
+    private BarChart bar2Chart = null;
+    private BarChart bar3Chart = null;
+    private BarChart bar4Chart = null;
 
     private Label algorithm1FinalScore = new Label();
     private Label algorithm2FinalScore = new Label();
@@ -176,7 +176,9 @@ public class BinarizeBenchmark extends Application {
                             new BuildProgressHandler(algorithm1Bar, BFGridFactory.getStepsCount(method1, dataset.vecData(), 32)),
                             0,
                             barsUsageSeries1,
-                            algorithm1BinTime).run();
+                            algorithm1BinTime,
+                            algorithm1FinalScore,
+                            algorithm1TotalBins).run();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -198,7 +200,9 @@ public class BinarizeBenchmark extends Application {
                             new BuildProgressHandler(algorithm2Bar, BFGridFactory.getStepsCount(method2, dataset.vecData(), 32)),
                             1,
                             barsUsageSeries2,
-                            algorithm2BinTime).run();
+                            algorithm2BinTime,
+                            algorithm2FinalScore,
+                            algorithm2TotalBins).run();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -220,7 +224,7 @@ public class BinarizeBenchmark extends Application {
                             new BuildProgressHandler(algorithm3Bar, BFGridFactory.getStepsCount(method3, dataset.vecData(), 32)),
                             2,
                             barsUsageSeries3,
-                            algorithm3BinTime).run();
+                            algorithm3BinTime, algorithm3FinalScore, algorithm3TotalBins).run();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -242,7 +246,7 @@ public class BinarizeBenchmark extends Application {
                             new BuildProgressHandler(algorithm4Bar, BFGridFactory.getStepsCount(method4, dataset.vecData(), 32)),
                             3,
                             barsUsageSeries4,
-                            algorithm4BinTime).run();
+                            algorithm4BinTime, algorithm4FinalScore, algorithm4TotalBins).run();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -280,8 +284,19 @@ public class BinarizeBenchmark extends Application {
         box2.setOnAction(event -> method2 = BFGridFactory.getAlgorithmType(box2.getValue().toString()));
         box3.setOnAction(event -> method3 = BFGridFactory.getAlgorithmType(box3.getValue().toString()));
         box4.setOnAction(event -> method4 = BFGridFactory.getAlgorithmType(box4.getValue().toString()));
+
+        algorithm1FinalScore = BinarizeBenchmarkUIUtils.addScore(gridpane, 0);
+        algorithm2FinalScore = BinarizeBenchmarkUIUtils.addScore(gridpane, 1);
+        algorithm3FinalScore = BinarizeBenchmarkUIUtils.addScore(gridpane, 2);
+        algorithm4FinalScore = BinarizeBenchmarkUIUtils.addScore(gridpane, 3);
+
+        algorithm1TotalBins = BinarizeBenchmarkUIUtils.addBinsCount(gridpane, 0);
+        algorithm2TotalBins = BinarizeBenchmarkUIUtils.addBinsCount(gridpane, 1);
+        algorithm3TotalBins = BinarizeBenchmarkUIUtils.addBinsCount(gridpane, 2);
+        algorithm4TotalBins = BinarizeBenchmarkUIUtils.addBinsCount(gridpane, 3);
+
         root.getChildren().add(gridpane);
-        primaryStage.setScene(new Scene(root, 1920, 1080));
+        primaryStage.setScene(new Scene(root, 1920, 900));
         primaryStage.show();
     }
 }
