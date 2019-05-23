@@ -26,6 +26,7 @@ import java.math.BigInteger;
 import java.util.List;
 import java.util.stream.IntStream;
 
+import static com.expleague.ml.binarization.calcers.PartitionScoreCalcers.calculatePartitionScore;
 import static com.expleague.ml.binarization.utils.BinarizationUtils.firstPartition;
 import static com.expleague.ml.binarization.utils.BinarizationUtils.insertBorder;
 import static com.expleague.ml.binarization.utils.MappersUtils.buildBinsMapper;
@@ -267,7 +268,7 @@ public class GridTest extends FileTestCase {
     TIntArrayList bordersFeature2 = new TIntArrayList();
     bordersFeature2.add(8); // last border
     int newBorder = 2;
-    double score1 = GridTools.calculatePartitionScore(mapper, feature2, bordersFeature2, newBorder);
+    double score1 = calculatePartitionScore(mapper, feature2, bordersFeature2, newBorder);
     assertEquals(-8.317, score1, 0.001);
   }
 
@@ -278,7 +279,7 @@ public class GridTest extends FileTestCase {
     TIntArrayList bordersFeature2 = new TIntArrayList();
     bordersFeature2.add(8); // last border
     int newBorder = 3;
-    double score1 = GridTools.calculatePartitionScore(mapper, feature2, bordersFeature2, newBorder);
+    double score1 = calculatePartitionScore(mapper, feature2, bordersFeature2, newBorder);
     System.out.println(score1);
     assertEquals(-8.841, score1, 0.001);
   }
@@ -290,7 +291,7 @@ public class GridTest extends FileTestCase {
     TIntArrayList bordersFeature2 = new TIntArrayList();
     bordersFeature2.add(8); // last border
     int newBorder = 1;
-    double score1 = GridTools.calculatePartitionScore(mapper, feature2, bordersFeature2, newBorder);
+    double score1 = calculatePartitionScore(mapper, feature2, bordersFeature2, newBorder);
     assertEquals(-8.841, score1, 0.001);
   }
 
@@ -301,7 +302,7 @@ public class GridTest extends FileTestCase {
     TIntArrayList bordersFeature2 = new TIntArrayList();
     bordersFeature2.add(8); // last border
     int newBorder = 4;
-    double score1 = GridTools.calculatePartitionScore(mapper, feature2, bordersFeature2, newBorder);
+    double score1 = calculatePartitionScore(mapper, feature2, bordersFeature2, newBorder);
     assertEquals(-11.09, score1, 0.001);
   }
 
@@ -312,7 +313,7 @@ public class GridTest extends FileTestCase {
     TIntArrayList bordersFeature2 = new TIntArrayList();
     bordersFeature2.add(8); // last border
     int newBorder = 6;
-    double score1 = GridTools.calculatePartitionScore(mapper, feature2, bordersFeature2, newBorder);
+    double score1 = calculatePartitionScore(mapper, feature2, bordersFeature2, newBorder);
     assertEquals(-6.591, score1, 0.001);
   }
 
