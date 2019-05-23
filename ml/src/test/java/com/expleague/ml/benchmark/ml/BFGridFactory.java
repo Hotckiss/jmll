@@ -67,4 +67,55 @@ public class BFGridFactory {
         return binFactor;
     }
 
+    public static String getAlgorithmName(MethodType type) {
+        switch (type) {
+            case MEDIAN:
+                return "Median division";
+            case PROBABILITY_FAST:
+                return "Probability fast";
+            case PROBABILITY_SIMPLE:
+                return "Probability";
+            case PROBABILITY_BIG_INT:
+                return "Probability + BigInteger";
+            case PROBABILITY_MIXED:
+                return "Probability + median warming";
+            case PROBABILITY_PRESORT:
+                return "Probability + presorting features";
+            case PROBABILITY_MEDIAN:
+                return "Probability with median best";
+        }
+
+        return "Median division";
+    }
+
+    public static String[] getAlgorithmNames() {
+        String[] res = new String[MethodType.values().length];
+        int ptr = 0;
+        for (MethodType type : MethodType.values()) {
+            res[ptr++] = getAlgorithmName(type);
+        }
+
+        return res;
+    }
+
+    public static MethodType getAlgorithmType(String raw) {
+        switch (raw) {
+            case "Median division":
+                return MethodType.MEDIAN;
+            case "Probability fast":
+                return MethodType.PROBABILITY_FAST;
+            case "Probability":
+                return MethodType.PROBABILITY_SIMPLE;
+            case "Probability + BigInteger":
+                return MethodType.PROBABILITY_BIG_INT;
+            case "Probability + median warming":
+                return MethodType.PROBABILITY_MIXED;
+            case "Probability + presorting features":
+                return MethodType.PROBABILITY_PRESORT;
+            case "Probability with median best":
+                return MethodType.PROBABILITY_MEDIAN;
+            default:
+                return MethodType.MEDIAN;
+        }
+    }
 }

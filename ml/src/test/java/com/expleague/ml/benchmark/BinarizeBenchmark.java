@@ -9,13 +9,12 @@ import com.expleague.ml.benchmark.ui.BinarizeBenchmarkUIUtils;
 import com.expleague.ml.data.tools.Pool;
 import com.expleague.ml.testUtils.TestResourceLoader;
 import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.scene.Scene;
 import javafx.scene.chart.XYChart;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ProgressBar;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
@@ -47,6 +46,16 @@ public class BinarizeBenchmark extends Application {
     private XYChart.Series barsUsageSeries2 = new XYChart.Series();
     private XYChart.Series barsUsageSeries3 = new XYChart.Series();
     private XYChart.Series barsUsageSeries4 = new XYChart.Series();
+
+    private ComboBox box1 = new ComboBox();
+    private ComboBox box2 = new ComboBox();
+    private ComboBox box3 = new ComboBox();
+    private ComboBox box4 = new ComboBox();
+
+    private MethodType method1 = MethodType.MEDIAN;
+    private MethodType method2 = MethodType.MEDIAN;
+    private MethodType method3 = MethodType.MEDIAN;
+    private MethodType method4 = MethodType.MEDIAN;
 
     private static synchronized void loadDataSet() {
         try {
@@ -107,7 +116,7 @@ public class BinarizeBenchmark extends Application {
                     new MethodRunner("Algorithm1Log.txt",
                             dataset,
                             new FastRandom(1),
-                            MethodType.MEDIAN,
+                            method1,
                             0.2,
                             series1,
                             series1T,
@@ -115,7 +124,7 @@ public class BinarizeBenchmark extends Application {
                             6,
                             2000,
                             0.005,
-                            new BuildProgressHandler(algorithm1Bar, BFGridFactory.getStepsCount(MethodType.MEDIAN, dataset.vecData(), 32)),
+                            new BuildProgressHandler(algorithm1Bar, BFGridFactory.getStepsCount(method1, dataset.vecData(), 32)),
                             0,
                             barsUsageSeries1,
                             algorithm1BinTime).run();
@@ -129,7 +138,7 @@ public class BinarizeBenchmark extends Application {
                     new MethodRunner("Algorithm2Log.txt",
                             dataset,
                             new FastRandom(1),
-                            MethodType.PROBABILITY_PRESORT,
+                            method2,
                             0.2,
                             series2,
                             series2T,
@@ -137,7 +146,7 @@ public class BinarizeBenchmark extends Application {
                             6,
                             2000,
                             0.005,
-                            new BuildProgressHandler(algorithm2Bar, BFGridFactory.getStepsCount(MethodType.PROBABILITY_PRESORT, dataset.vecData(), 32)),
+                            new BuildProgressHandler(algorithm2Bar, BFGridFactory.getStepsCount(method2, dataset.vecData(), 32)),
                             1,
                             barsUsageSeries2,
                             algorithm2BinTime).run();
@@ -151,7 +160,7 @@ public class BinarizeBenchmark extends Application {
                     new MethodRunner("Algorithm3Log.txt",
                             dataset,
                             new FastRandom(1),
-                            MethodType.PROBABILITY_FAST,
+                            method3,
                             0.2,
                             series3,
                             series3T,
@@ -159,7 +168,7 @@ public class BinarizeBenchmark extends Application {
                             6,
                             2000,
                             0.005,
-                            new BuildProgressHandler(algorithm3Bar, BFGridFactory.getStepsCount(MethodType.PROBABILITY_PRESORT, dataset.vecData(), 32)),
+                            new BuildProgressHandler(algorithm3Bar, BFGridFactory.getStepsCount(method3, dataset.vecData(), 32)),
                             2,
                             barsUsageSeries3,
                             algorithm3BinTime).run();
@@ -173,7 +182,7 @@ public class BinarizeBenchmark extends Application {
                     new MethodRunner("Algorithm4Log.txt",
                             dataset,
                             new FastRandom(1),
-                            MethodType.PROBABILITY_MEDIAN,
+                            method4,
                             0.2,
                             series4,
                             series4T,
@@ -181,7 +190,7 @@ public class BinarizeBenchmark extends Application {
                             6,
                             2000,
                             0.005,
-                            new BuildProgressHandler(algorithm4Bar, BFGridFactory.getStepsCount(MethodType.PROBABILITY_PRESORT, dataset.vecData(), 32)),
+                            new BuildProgressHandler(algorithm4Bar, BFGridFactory.getStepsCount(method4, dataset.vecData(), 32)),
                             3,
                             barsUsageSeries4,
                             algorithm4BinTime).run();
@@ -214,6 +223,14 @@ public class BinarizeBenchmark extends Application {
         BinarizeBenchmarkUIUtils.addBinsChartUsage(gridpane, barsUsageSeries3, 2);
         BinarizeBenchmarkUIUtils.addBinsChartUsage(gridpane, barsUsageSeries4, 3);
 
+        box1 = BinarizeBenchmarkUIUtils.addAlgorithmSelection(gridpane, 0);
+        box2 = BinarizeBenchmarkUIUtils.addAlgorithmSelection(gridpane, 1);
+        box3 = BinarizeBenchmarkUIUtils.addAlgorithmSelection(gridpane, 2);
+        box4 = BinarizeBenchmarkUIUtils.addAlgorithmSelection(gridpane, 3);
+        box1.setOnAction(event -> method1 = BFGridFactory.getAlgorithmType(box1.getValue().toString()));
+        box2.setOnAction(event -> method2 = BFGridFactory.getAlgorithmType(box2.getValue().toString()));
+        box3.setOnAction(event -> method3 = BFGridFactory.getAlgorithmType(box3.getValue().toString()));
+        box4.setOnAction(event -> method4 = BFGridFactory.getAlgorithmType(box4.getValue().toString()));
         root.getChildren().add(gridpane);
         primaryStage.setScene(new Scene(root, 1920, 900));
         primaryStage.show();

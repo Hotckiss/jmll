@@ -1,13 +1,12 @@
 package com.expleague.ml.benchmark.ui;
 
 import com.expleague.ml.GridTools;
+import com.expleague.ml.benchmark.ml.BFGridFactory;
+import javafx.collections.FXCollections;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.scene.chart.*;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ProgressBar;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
@@ -18,7 +17,7 @@ public class BinarizeBenchmarkUIUtils {
         GridPane gridpane = new GridPane();
         gridpane.setPadding(new Insets(5));
         gridpane.setHgap(16);
-        gridpane.setVgap(7);
+        gridpane.setVgap(10);
 
         RowConstraints row0 = new RowConstraints(50);
         RowConstraints row1 = new RowConstraints(50);
@@ -84,7 +83,7 @@ public class BinarizeBenchmarkUIUtils {
         lineChart.setStyle(".chart-series-line { -fx-stroke-width: 1px; }");
         lineChart.getData().add(series);
         lineChart.getData().add(seriesT);
-        gridPane.add(lineChart, index * 4, 5, 4, 1);
+        gridPane.add(lineChart, index * 4, 6, 4, 1);
     }
 
     public static ProgressBar addProgressBar(GridPane gridpane, int index) {
@@ -98,6 +97,17 @@ public class BinarizeBenchmarkUIUtils {
         return algorithmBar;
     }
 
+    public static ComboBox addAlgorithmSelection(GridPane gridpane, int index) {
+        Label binLabel = new Label("Algorithm:");
+        GridPane.setHalignment(binLabel, HPos.CENTER);
+        gridpane.add(binLabel, index * 4 + 1, 5);
+        ComboBox<String> box = new ComboBox<>(FXCollections.observableArrayList(BFGridFactory.getAlgorithmNames()));
+        GridPane.setHalignment(box, HPos.LEFT);
+        gridpane.add(box, index * 4 + 2, 5, 2, 1);
+
+        return box;
+    }
+
     public static Label addBinarizeTime(GridPane gridpane, int index) {
         Label binLabel = new Label("Time:");
         GridPane.setHalignment(binLabel, HPos.CENTER);
@@ -105,7 +115,7 @@ public class BinarizeBenchmarkUIUtils {
 
         Label timeLabel = new Label();
         GridPane.setHalignment(timeLabel, HPos.LEFT);
-        gridpane.add(timeLabel, index * 4 + 3, 4);
+        gridpane.add(timeLabel, index * 4 + 3, 4, 2, 1);
 
         return timeLabel;
     }
@@ -117,6 +127,6 @@ public class BinarizeBenchmarkUIUtils {
         barChart.setTitle("Bins usage");
         barChart.setStyle(".chart-series-line { -fx-stroke-width: 1px; }");
         barChart.getData().add(bars);
-        gridPane.add(barChart, index * 4, 6, 4, 1);
+        gridPane.add(barChart, index * 4, 7, 4, 1);
     }
 }

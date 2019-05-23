@@ -7,7 +7,7 @@ public class GridUtils {
     public static HashMap<Integer, HashMap<Integer, Integer>> counts = new HashMap<>();
     public static int total = 0;
 
-    public static void inc(int binNo, int algorithmIndex) {
+    public synchronized static void inc(int binNo, int algorithmIndex) {
         HashMap<Integer, Integer> algoMap = counts.get(algorithmIndex);
         if (algoMap == null) {
             counts.put(algorithmIndex, new HashMap<>());

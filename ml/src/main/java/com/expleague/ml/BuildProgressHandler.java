@@ -7,7 +7,7 @@ import javafx.scene.control.ProgressBar;
 public class BuildProgressHandler {
     private ProgressBar progressBar;
     private int stepsCount;
-    private int curStep = 0;
+    private int curStep;
 
     public BuildProgressHandler(ProgressBar progressBar) {
         this.progressBar = progressBar;
@@ -21,7 +21,7 @@ public class BuildProgressHandler {
         this.curStep = 0;
     }
 
-    public void update(double progress) {
+    public synchronized void update(double progress) {
         if (progressBar == null) return;
 
         Platform.runLater(() -> {
@@ -29,7 +29,7 @@ public class BuildProgressHandler {
         });
     }
 
-    public void step() {
+    public synchronized void step() {
         curStep++;
         if (progressBar == null) return;
         Platform.runLater(() -> {
