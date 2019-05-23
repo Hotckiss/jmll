@@ -10,6 +10,7 @@ import com.expleague.ml.data.set.VecDataSet;
 import com.expleague.ml.func.Ensemble;
 import javafx.application.Platform;
 import javafx.scene.chart.XYChart;
+import javafx.scene.control.Label;
 
 import java.io.PrintWriter;
 
@@ -21,14 +22,16 @@ public class BenchmarkValidateScoreCalcer implements ProgressHandler {
     private final PrintWriter printWriter;
     private int index = 0;
     private XYChart.Series series;
+    private Label score;
 
-    public BenchmarkValidateScoreCalcer(final String message, final VecDataSet ds, final TargetFunc target, final PrintWriter printWriter, XYChart.Series series) {
+    public BenchmarkValidateScoreCalcer(final String message, final VecDataSet ds, final TargetFunc target, final PrintWriter printWriter, XYChart.Series series, Label score) {
         this.message = message;
         this.ds = ds;
         this.target = target;
         this.printWriter = printWriter;
         this.series = series;
         current = new ArrayVec(ds.length());
+        this.score = score;
     }
 
     private double min = 1e10;
@@ -58,6 +61,7 @@ public class BenchmarkValidateScoreCalcer implements ProgressHandler {
         System.out.print(" best = " + min);
         printWriter.print(" best = " + min);
         Platform.runLater(() -> {
+            score.setText(String.valueOf(min));
             series.getData().add(new XYChart.Data(index, min));
         });
 

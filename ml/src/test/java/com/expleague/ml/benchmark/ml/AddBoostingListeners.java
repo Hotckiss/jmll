@@ -18,6 +18,7 @@ import com.expleague.ml.loss.L2;
 import com.expleague.ml.methods.GradientBoosting;
 import javafx.application.Platform;
 import javafx.scene.chart.XYChart;
+import javafx.scene.control.Label;
 
 import java.io.PrintWriter;
 import java.lang.management.PlatformLoggingMXBean;
@@ -33,16 +34,24 @@ public class AddBoostingListeners<GlobalLoss extends TargetFunc> {
     private Consumer<Trans> modelPrinter;
     private Consumer<Trans> qualityCalcer;
     private Consumer counter;
+    private Label score;
+    private Label binsCount;
+
     public AddBoostingListeners(final GradientBoosting<GlobalLoss> boosting,
-                         final GlobalLoss loss,
-                         final Pool<?> dataset,
-                         final Pool<?> _learn,
-                         final Pool<?> _validate,
-                         final PrintWriter printWriter,
-                         XYChart.Series series,
-                         XYChart.Series seriesT,
-                         XYChart.Series barData,
-                         int index) {
+                                final GlobalLoss loss,
+                                final Pool<?> dataset,
+                                final Pool<?> _learn,
+                                final Pool<?> _validate,
+                                final PrintWriter printWriter,
+                                XYChart.Series series,
+                                XYChart.Series seriesT,
+                                XYChart.Series barData,
+                                int index,
+                                Label score,
+                                Label binsCount) {
+        this.score = score;
+        this.binsCount = binsCount;
+
         final Consumer counter = new ProgressHandler() {
             int index = 0;
 
@@ -53,7 +62,7 @@ public class AddBoostingListeners<GlobalLoss extends TargetFunc> {
             }
         };
         final BenchmarkLearnScoreCalcer learnListener = new BenchmarkLearnScoreCalcer(/*"\tlearn:\t"*/"\t", _learn.vecData(), _learn.target(L2.class), printWriter, seriesT);
-        final BenchmarkValidateScoreCalcer validateListener = new BenchmarkValidateScoreCalcer(/*"\ttest:\t"*/"\t", _validate.vecData(), _validate.target(L2.class), printWriter, series);
+        final BenchmarkValidateScoreCalcer validateListener = new BenchmarkValidateScoreCalcer(/*"\ttest:\t"*/"\t", _validate.vecData(), _validate.target(L2.class), printWriter, series, score);
         final Consumer<Trans> modelPrinter = new BenchmarkModelPrinter();
         final Consumer<Trans> qualityCalcer = new BenchmarkQualityCalcer(printWriter, dataset);
         this.counter = counter;
@@ -85,6 +94,7 @@ public class AddBoostingListeners<GlobalLoss extends TargetFunc> {
         }
         Arrays.sort(binsUsage);
 
+        Platform.runLater(() -> binsCount.setText(String.valueOf(binsUsage.length)));
         for (int i = 0; i < binsUsage.length; i++) {
             final int ii = i;
             Platform.runLater(() -> barData.getData().add(new XYChart.Data(String.valueOf(ii), binsUsage[ii])));

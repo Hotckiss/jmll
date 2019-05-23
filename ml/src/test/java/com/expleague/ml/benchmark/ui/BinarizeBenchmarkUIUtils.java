@@ -140,7 +140,7 @@ public class BinarizeBenchmarkUIUtils {
 
         Label timeLabel = new Label();
         GridPane.setHalignment(timeLabel, HPos.LEFT);
-        gridpane.add(timeLabel, index * 4 + 2, 7);
+        gridpane.add(timeLabel, index * 4 + 2, 7, 2, 1);
 
         return timeLabel;
     }
@@ -152,7 +152,7 @@ public class BinarizeBenchmarkUIUtils {
 
         Label timeLabel = new Label();
         GridPane.setHalignment(timeLabel, HPos.LEFT);
-        gridpane.add(timeLabel, index * 4 + 2, 9);
+        gridpane.add(timeLabel, index * 4 + 2, 9, 2, 1);
 
         return timeLabel;
     }

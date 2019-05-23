@@ -32,6 +32,8 @@ public class MethodRunner {
     private int index;
     private XYChart.Series barData;
     private Label binTime;
+    private Label scoreLabel;
+    private Label binsCountLabel;
 
     public MethodRunner(String logFileName,
                         Pool<?> dataset,
@@ -66,6 +68,8 @@ public class MethodRunner {
         this.index = index;
         this.barData = barData;
         this.binTime = binTime;
+        this.scoreLabel = scoreLabel;
+        this.binsCountLabel = binsCountLabel;
     }
 
     public void run() throws Exception {
@@ -80,7 +84,7 @@ public class MethodRunner {
                 L2Reg.class, iterationsCount, step
         );
 
-        new AddBoostingListeners<>(boosting, local_learn.target(SatL2.class), dataset, local_learn, local_validate, logger, convergeSeries, convergeSeriesTrain, barData, index);
+        new AddBoostingListeners<>(boosting, local_learn.target(SatL2.class), dataset, local_learn, local_validate, logger, convergeSeries, convergeSeriesTrain, barData, index, scoreLabel, binsCountLabel);
         logger.close();
     }
 }
