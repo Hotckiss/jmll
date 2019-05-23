@@ -80,7 +80,12 @@ public class GridTools {
     }
 
     public static PartitionResultBigInt makeWorst() {
-      return new PartitionResultBigInt(-1, new BigInteger("1000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", 10));
+      StringBuilder sb = new StringBuilder();
+      sb.append(1);
+      for (int i = 0; i < 1000; i++) {
+        sb.append(0);
+      }
+      return new PartitionResultBigInt(-1, new BigInteger(sb.toString(), 10));
     }
   }
 
@@ -707,7 +712,6 @@ public class GridTools {
     if (bestResults.size() == 1) {
       return bestRes;
     } else {
-      System.out.println("xxx");
       //final double scoreRight = Math.log(end - split) + Math.log(split - start);
       bordersPtr = 0;
       double bs = -Double.MAX_VALUE;
@@ -760,9 +764,9 @@ public class GridTools {
     }
 
     for(int iters = 0; iters < binFactor; iters++) {
-      System.out.println("Iter: " + iters);
+      //System.out.println("Iter: " + iters);
       for (int feature_index = 0; feature_index < dim; feature_index++) {
-        System.out.print("Feature: " + feature_index + " ");
+        //System.out.print("Feature: " + feature_index + " ");
         final double[] feature = new double[ds.length()];
         final ArrayPermutation permutation = new ArrayPermutation(ds.order(feature_index));
         final int[] order = permutation.direct();
@@ -804,7 +808,7 @@ public class GridTools {
 
         //System.out.println(bestFromAll.splitPosition);
         if (bestFromAll.splitPosition > 1) {
-          System.out.println("BestPaired feature: " + bf);
+          //System.out.println("BestPaired feature: " + bf);
           TIntArrayList newBorders = insertBorder(currentBorders.get(feature_index), bestFromAll.splitPosition);
           currentBorders.set(feature_index, newBorders);
         } else {
@@ -875,9 +879,9 @@ public class GridTools {
     }
 
     for(int iters = 0; iters < binFactor; iters++) {
-      System.out.println("Iter: " + iters);
+      //System.out.println("Iter: " + iters);
       for (int feature_index = 0; feature_index < dim; feature_index++) {
-        System.out.print("Feature: " + feature_index + " ");
+        //System.out.print("Feature: " + feature_index + " ");
         final double[] feature = new double[ds.length()];
         final ArrayPermutation permutation = new ArrayPermutation(ds.order(feature_index));
         final int[] order = permutation.direct();
@@ -924,7 +928,7 @@ public class GridTools {
 
         //System.out.println(bestFromAll.splitPosition);
         if (bestFromAll.splitPosition > 1) {
-          System.out.println("BestPaired feature: " + bf);
+          //System.out.println("BestPaired feature: " + bf);
           TIntArrayList newBorders = insertBorder(currentBorders.get(feature_index), bestFromAll.splitPosition);
           currentBorders.set(feature_index, newBorders);
         } else {
@@ -1026,9 +1030,9 @@ public class GridTools {
     }
 
     for(int iters = 0; iters < binFactor; iters++) {
-      System.out.println("Iter: " + iters);
+      //System.out.println("Iter: " + iters);
       for (int feature_index = 0; feature_index < dim; feature_index++) {
-        System.out.print("Feature: " + feature_index + " ");
+        //System.out.print("Feature: " + feature_index + " ");
         final double[] feature = sortedFeatures.get(feature_index).sortedFeature;
         final int[] order = orders.get(feature_index).permutation;
         final int[] reverse = reverces.get(feature_index).permutation;
@@ -1065,7 +1069,7 @@ public class GridTools {
 
         //System.out.println(bestFromAll.splitPosition);
         if (bestFromAll.splitPosition > 1) {
-          System.out.println("BestPaired feature: " + bf);
+          //System.out.println("BestPaired feature: " + bf);
           TIntArrayList newBorders = insertBorder(currentBorders.get(feature_index), bestFromAll.splitPosition);
           currentBorders.set(feature_index, newBorders);
         } else {
@@ -1129,9 +1133,9 @@ public class GridTools {
     }
 
     for(int iters = 0; iters < binFactor; iters++) {
-      System.out.println("Iter: " + iters);
+      //System.out.println("Iter: " + iters);
       for (int feature_index = 0; feature_index < dim; feature_index++) {
-        System.out.println("Feature: " + feature_index + " ");
+        //System.out.println("Feature: " + feature_index + " ");
         final double[] feature = new double[ds.length()];
         final ArrayPermutation permutation = new ArrayPermutation(ds.order(feature_index));
         final int[] order = permutation.direct();
@@ -1166,13 +1170,12 @@ public class GridTools {
 
           //if (useFastAlgorithm) {
             bestResult = bestPartitionWithMapperBigInt(binNumberMapper, feature, currentBorders.get(feature_index));
-          System.out.println("Best" + bestResult.splitPosition);
+          //System.out.println("Best" + bestResult.splitPosition);
           //} else {
             //bestResult = bestPartition(binNumberMapper, feature, currentBorders.get(feature_index));
           //}
 
           if (bestResult.score.compareTo(bestFromAll.score) < 0) {
-              System.out.println("xxxx");
             bestFromAll = bestResult;
             bf = paired_feature_index;
           }
@@ -1180,7 +1183,7 @@ public class GridTools {
 
         //System.out.println(bestFromAll.splitPosition);
         if (bestFromAll.splitPosition > 1) {
-          System.out.println("BestPaired feature: " + bf);
+          //System.out.println("BestPaired feature: " + bf);
           TIntArrayList newBorders = insertBorder(currentBorders.get(feature_index), bestFromAll.splitPosition);
           currentBorders.set(feature_index, newBorders);
         } else {
@@ -1244,9 +1247,9 @@ public class GridTools {
     }
 
     for(int iters = 0; iters < binFactor; iters++) {
-      System.out.println("Iter: " + iters);
+      //System.out.println("Iter: " + iters);
       for (int feature_index = 0; feature_index < dim; feature_index++) {
-        System.out.print("Feature: " + feature_index + " ");
+        //System.out.print("Feature: " + feature_index + " ");
         final double[] feature = new double[ds.length()];
         final ArrayPermutation permutation = new ArrayPermutation(ds.order(feature_index));
         final int[] order = permutation.direct();
@@ -1301,7 +1304,7 @@ public class GridTools {
 
         //System.out.println(bestFromAll.splitPosition);
         if (bestFromAll.splitPosition > 1) {
-          System.out.println("BestPaired feature: " + bf);
+          //System.out.println("BestPaired feature: " + bf);
           TIntArrayList newBorders = insertBorder(currentBorders.get(feature_index), bestFromAll.splitPosition);
           currentBorders.set(feature_index, newBorders);
         } else {

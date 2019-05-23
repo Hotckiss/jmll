@@ -13,6 +13,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.scene.Scene;
+import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
@@ -56,6 +57,11 @@ public class BinarizeBenchmark extends Application {
     private MethodType method2 = MethodType.MEDIAN;
     private MethodType method3 = MethodType.MEDIAN;
     private MethodType method4 = MethodType.MEDIAN;
+
+    private LineChart<Number,Number> algorithm1Chart = null;
+    private LineChart<Number,Number> algorithm2Chart = null;
+    private LineChart<Number,Number> algorithm3Chart = null;
+    private LineChart<Number,Number> algorithm4Chart = null;
 
     private static synchronized void loadDataSet() {
         try {
@@ -208,10 +214,10 @@ public class BinarizeBenchmark extends Application {
         series2T.setName("Algorithm 2 train");
         series3T.setName("Algorithm 3 train");
         series4T.setName("Algorithm 4 train");
-        BinarizeBenchmarkUIUtils.addAlgorithmChart(gridpane, series1, series1T, 0);
-        BinarizeBenchmarkUIUtils.addAlgorithmChart(gridpane, series2, series2T, 1);
-        BinarizeBenchmarkUIUtils.addAlgorithmChart(gridpane, series3, series3T, 2);
-        BinarizeBenchmarkUIUtils.addAlgorithmChart(gridpane, series4, series4T, 3);
+        algorithm1Chart = BinarizeBenchmarkUIUtils.addAlgorithmChart(gridpane, series1, series1T, 0);
+        algorithm2Chart = BinarizeBenchmarkUIUtils.addAlgorithmChart(gridpane, series2, series2T, 1);
+        algorithm3Chart = BinarizeBenchmarkUIUtils.addAlgorithmChart(gridpane, series3, series3T, 2);
+        algorithm2Chart = BinarizeBenchmarkUIUtils.addAlgorithmChart(gridpane, series4, series4T, 3);
 
         barsUsageSeries1.setName("Bars usage 1");
         barsUsageSeries2.setName("Bars usage 2");

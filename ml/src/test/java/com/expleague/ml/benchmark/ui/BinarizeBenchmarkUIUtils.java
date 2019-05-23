@@ -74,7 +74,7 @@ public class BinarizeBenchmarkUIUtils {
         gridPane.add(btn, 3, 2, 3, 1);
     }
 
-    public static void addAlgorithmChart(GridPane gridPane, XYChart.Series series, XYChart.Series seriesT, int index) {
+    public static LineChart<Number,Number> addAlgorithmChart(GridPane gridPane, XYChart.Series series, XYChart.Series seriesT, int index) {
         final NumberAxis xAxis = new NumberAxis("Iteration", 0, 2000, 250);
         final NumberAxis yAxis = new NumberAxis();
         final LineChart<Number,Number> lineChart = new LineChart<>(xAxis, yAxis);
@@ -84,6 +84,8 @@ public class BinarizeBenchmarkUIUtils {
         lineChart.getData().add(series);
         lineChart.getData().add(seriesT);
         gridPane.add(lineChart, index * 4, 6, 4, 1);
+
+        return lineChart;
     }
 
     public static ProgressBar addProgressBar(GridPane gridpane, int index) {
