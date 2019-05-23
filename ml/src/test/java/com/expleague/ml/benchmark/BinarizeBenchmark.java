@@ -67,6 +67,16 @@ public class BinarizeBenchmark extends Application {
     private BarChart<String,Number> bar3Chart = null;
     private BarChart<String,Number> bar4Chart = null;
 
+    private Label algorithm1FinalScore = new Label();
+    private Label algorithm2FinalScore = new Label();
+    private Label algorithm3FinalScore = new Label();
+    private Label algorithm4FinalScore = new Label();
+
+    private Label algorithm1TotalBins = new Label();
+    private Label algorithm2TotalBins = new Label();
+    private Label algorithm3TotalBins = new Label();
+    private Label algorithm4TotalBins = new Label();
+
     private static synchronized void loadDataSet() {
         try {
             dataset = TestResourceLoader.loadPool("features.txt");
@@ -271,7 +281,7 @@ public class BinarizeBenchmark extends Application {
         box3.setOnAction(event -> method3 = BFGridFactory.getAlgorithmType(box3.getValue().toString()));
         box4.setOnAction(event -> method4 = BFGridFactory.getAlgorithmType(box4.getValue().toString()));
         root.getChildren().add(gridpane);
-        primaryStage.setScene(new Scene(root, 1920, 900));
+        primaryStage.setScene(new Scene(root, 1920, 1080));
         primaryStage.show();
     }
 }

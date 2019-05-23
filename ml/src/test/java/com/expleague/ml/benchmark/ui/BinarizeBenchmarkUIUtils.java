@@ -129,7 +129,7 @@ public class BinarizeBenchmarkUIUtils {
         barChart.setTitle("Bins usage");
         barChart.setStyle(".chart-series-line { -fx-stroke-width: 1px; }");
         barChart.getData().add(bars);
-        gridPane.add(barChart, index * 4, 7, 4, 1);
+        gridPane.add(barChart, index * 4, 8, 4, 1);
 
         return barChart;
     }
