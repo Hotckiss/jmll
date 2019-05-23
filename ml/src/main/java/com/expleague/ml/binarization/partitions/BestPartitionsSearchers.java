@@ -2,10 +2,13 @@ package com.expleague.ml.binarization.partitions;
 
 import gnu.trove.list.array.TIntArrayList;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import static com.expleague.ml.binarization.calcers.MapperScoreCalcerBigInt.mapperScoreBigInt;
+import static com.expleague.ml.binarization.calcers.PartitionScoreCalcers.calculatePartitionScore_hash;
 import static com.expleague.ml.binarization.utils.BinarizationUtils.firstPartition;
 import static com.expleague.ml.binarization.utils.MappersUtils.mapperScore;
 import static com.expleague.ml.binarization.utils.MappersUtils.partitionCountersMapper;
@@ -448,5 +451,114 @@ public class BestPartitionsSearchers {
             }
             return res;
         }
+    }
+
+    public static PartitionResultBigInt bestPartitionWithMapperBigInt(final int[] binNumberMapper,
+                                                                      final double[] sortedFeature2,
+                                                                      final TIntArrayList bordersFeature2) {
+        int startPivot = firstPartition(bordersFeature2);
+        //System.out.println("First pivot: " + startPivot);
+        int bordersPtr = 0;
+        HashMap<Integer, HashMap<Integer, Integer>> currentMapper = partitionCountersMapper(binNumberMapper, sortedFeature2, bordersFeature2, startPivot);
+        PartitionResultBigInt bestRes = new PartitionResultBigInt(startPivot, mapperScoreBigInt(currentMapper));
+        PartitionResultBigInt lastRes = new PartitionResultBigInt(startPivot, mapperScoreBigInt(currentMapper));
+
+        for (int pivot = startPivot + 1; pivot < binNumberMapper.length; pivot++) {
+            { // check that border doesn't exist
+                while (bordersPtr < bordersFeature2.size() && bordersFeature2.get(bordersPtr) < pivot) {
+                    bordersPtr++;
+                }
+                if (bordersPtr < bordersFeature2.size() && bordersFeature2.get(bordersPtr) == pivot) {
+                    continue;
+                }
+            }
+            //System.out.println("Pivot: " + pivot);
+            // only one element has change bin number in second feature
+            if (pivot == lastRes.getSplitPosition() + 1) {
+
+                int movedElementBinInFeature1 = binNumberMapper[pivot - 1];
+                int movedElementBinInFeature2 = bordersPtr + 1;
+                //System.out.println("F1: " + movedElementBinInFeature1 + " F2: " + movedElementBinInFeature2);
+                //System.out.println("Keys: " + currentMapper.keySet());
+                //decrement for old bin
+                int value_old = currentMapper.get(movedElementBinInFeature2).get(movedElementBinInFeature1);
+                if (value_old == 1) {
+                    currentMapper.get(movedElementBinInFeature2).remove(movedElementBinInFeature1);
+                } else {
+                    currentMapper.get(movedElementBinInFeature2).put(movedElementBinInFeature1, value_old - 1);
+                }
+
+                //increment for new bin
+                Integer value_old1 = currentMapper.get(movedElementBinInFeature2 - 1).get(movedElementBinInFeature1);
+                currentMapper.get(movedElementBinInFeature2 - 1).put(movedElementBinInFeature1, (value_old1 == null ? 1 : value_old1 + 1));
+
+                BigInteger score = mapperScoreBigInt(currentMapper);
+
+                if (Math.abs(sortedFeature2[pivot] - sortedFeature2[pivot - 1]) < 1e-9) {
+                    lastRes = new PartitionResultBigInt(pivot, score);
+                    continue;
+                }
+
+                if (score.compareTo(bestRes.getScore()) < 0) {
+                    bestRes.setScore(score);
+                    bestRes.setSplitPosition(pivot);
+                }
+
+                lastRes = new PartitionResultBigInt(pivot, score);
+            } else {
+                currentMapper = partitionCountersMapper(binNumberMapper, sortedFeature2, bordersFeature2, pivot);
+                BigInteger score = mapperScoreBigInt(currentMapper);
+
+                if (Math.abs(sortedFeature2[pivot] - sortedFeature2[pivot - 1]) < 1e-9) {
+                    lastRes = new PartitionResultBigInt(pivot, score);
+                    continue;
+                }
+
+                if (score.compareTo(bestRes.getScore()) < 0) {
+                    bestRes.setScore(score);
+                    bestRes.setSplitPosition(pivot);
+                }
+
+                lastRes = new PartitionResultBigInt(pivot, score);
+            }
+        }
+
+        return bestRes;
+    }
+
+    /**
+     * Finds the best partition of feature2 according to feature1 and current binarization
+     * Complexity: O(n^2) worst-case [2 * n^2]
+     * @param binNumberMapper
+     * @param sortedFeature2
+     * @param bordersFeature2
+     * @return best border and score
+     */
+    public static PartitionResult bestPartition(final int[] binNumberMapper,
+                                                final double[] sortedFeature2,
+                                                final TIntArrayList bordersFeature2) {
+        double bestScore = -Double.MAX_VALUE;
+        int bestSplit = -1;
+        int bordersPtr = 0;
+        for (int pivot = 1; pivot < binNumberMapper.length; pivot++) {
+            // check that border doesn't exist
+            {
+                while (bordersPtr < bordersFeature2.size() && bordersFeature2.get(bordersPtr) < pivot) {
+                    bordersPtr++;
+                }
+                if (bordersPtr < bordersFeature2.size() && bordersFeature2.get(bordersPtr) == pivot) {
+                    continue;
+                }
+            }
+
+            double score = calculatePartitionScore_hash(binNumberMapper, sortedFeature2, bordersFeature2, pivot);
+            // maximize sum log(1/n), revert after TODO
+            if (score > bestScore) {
+                bestScore = score;
+                bestSplit = pivot;
+            }
+        }
+
+        return new PartitionResult(bestSplit, bestScore);
     }
 }

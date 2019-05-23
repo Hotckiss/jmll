@@ -7,6 +7,12 @@ import com.expleague.ml.data.set.VecDataSet;
 import javafx.application.Platform;
 import javafx.scene.control.Label;
 
+import static com.expleague.ml.binarization.algorithms.NaiveProbabilityGrid.probabilityGrid;
+import static com.expleague.ml.binarization.algorithms.ProbabilityGridBigInt.probabilityGrid_bigInt;
+import static com.expleague.ml.binarization.algorithms.ProbabilityGridMedianWarming.probabilityGrid_mixed;
+import static com.expleague.ml.binarization.algorithms.ProbabilityGridPresort.probabilityGrid_presort;
+import static com.expleague.ml.binarization.algorithms.ProbabilityGridWithMedianBest.probabilityGridMedian;
+
 public class BFGridFactory {
     public static BFGrid makeGrid(MethodType type, VecDataSet data, int binFactor, BuildProgressHandler buildProgressHandler, Label binTime) {
         long s = System.nanoTime();
@@ -16,22 +22,22 @@ public class BFGridFactory {
                 res =  GridTools.medianGrid(data, binFactor, buildProgressHandler);
                 break;
             case PROBABILITY_FAST:
-                res = GridTools.probabilityGrid(data, binFactor, true, buildProgressHandler);
+                res = probabilityGrid(data, binFactor, true, buildProgressHandler);
                 break;
             case PROBABILITY_SIMPLE:
-                res = GridTools.probabilityGrid(data, binFactor, false, buildProgressHandler);
+                res = probabilityGrid(data, binFactor, false, buildProgressHandler);
                 break;
             case PROBABILITY_BIG_INT:
-                res = GridTools.probabilityGrid_bigInt(data, binFactor, buildProgressHandler);
+                res = probabilityGrid_bigInt(data, binFactor, buildProgressHandler);
                 break;
             case PROBABILITY_MIXED:
-                res = GridTools.probabilityGrid_mixed(data, binFactor, true, buildProgressHandler);
+                res = probabilityGrid_mixed(data, binFactor, true, buildProgressHandler);
                 break;
             case PROBABILITY_PRESORT:
-                res = GridTools.probabilityGrid_presort(data, binFactor, buildProgressHandler);
+                res = probabilityGrid_presort(data, binFactor, buildProgressHandler);
                 break;
             case PROBABILITY_MEDIAN:
-                res = GridTools.probabilityGridMedian(data, binFactor, buildProgressHandler);
+                res = probabilityGridMedian(data, binFactor, buildProgressHandler);
                 break;
             default:
                 res =  GridTools.medianGrid(data, binFactor, buildProgressHandler);

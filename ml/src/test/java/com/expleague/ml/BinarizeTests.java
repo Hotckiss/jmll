@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import static com.expleague.commons.math.MathTools.sqr;
+import static com.expleague.ml.binarization.algorithms.NaiveProbabilityGrid.probabilityGrid;
+import static com.expleague.ml.binarization.algorithms.ProbabilityGridWithMedianBest.probabilityGridMedian;
 import static java.lang.Math.log;
 
 /**
@@ -94,7 +96,7 @@ public class BinarizeTests extends GridTest {
         Pool<?> local_validate = split_local_all.get(1);
 
         final GradientBoosting<SatL2> boosting = new GradientBoosting<SatL2>(
-                new BootstrapOptimization<>(new GreedyObliviousTree<>(GridTools.probabilityGridMedian(local_learn.vecData(), 32, new BuildProgressHandler(null)), 6), rand),
+                new BootstrapOptimization<>(new GreedyObliviousTree<>(probabilityGridMedian(local_learn.vecData(), 32, new BuildProgressHandler(null)), 6), rand),
                 L2Reg.class, 2000, 0.005
         );
         new addBoostingListeners<>(boosting, local_learn.target(SatL2.class), local_learn, local_validate, printWriter);
@@ -121,7 +123,7 @@ public class BinarizeTests extends GridTest {
         Pool<?> local_validate = split_local_all.get(1);
 
         final GradientBoosting<SatL2> boosting = new GradientBoosting<SatL2>(
-                new BootstrapOptimization<>(new GreedyObliviousTree<>(GridTools.probabilityGridMedian(local_learn.vecData(), 32, new BuildProgressHandler(null)), 6), rand),
+                new BootstrapOptimization<>(new GreedyObliviousTree<>(probabilityGridMedian(local_learn.vecData(), 32, new BuildProgressHandler(null)), 6), rand),
                 L2Reg.class, 2000, 0.005
         );
         new addBoostingListeners<>(boosting, local_learn.target(SatL2.class), local_learn, local_validate, printWriter);
@@ -148,7 +150,7 @@ public class BinarizeTests extends GridTest {
         Pool<?> local_validate = split_local_all.get(1);
 
         final GradientBoosting<SatL2> boosting = new GradientBoosting<SatL2>(
-                new BootstrapOptimization<>(new GreedyObliviousTree<>(GridTools.probabilityGrid(local_learn.vecData(), 32, true, new BuildProgressHandler(null)), 6), rand),
+                new BootstrapOptimization<>(new GreedyObliviousTree<>(probabilityGrid(local_learn.vecData(), 32, true, new BuildProgressHandler(null)), 6), rand),
                 L2Reg.class, 2000, 0.005
         );
         new addBoostingListeners<>(boosting, local_learn.target(SatL2.class), local_learn, local_validate, printWriter);
@@ -175,7 +177,7 @@ public class BinarizeTests extends GridTest {
         Pool<?> local_validate = split_local_all.get(1);
 
         final GradientBoosting<SatL2> boosting = new GradientBoosting<SatL2>(
-                new BootstrapOptimization<>(new GreedyObliviousTree<>(GridTools.probabilityGrid(local_learn.vecData(), 32, true, new BuildProgressHandler(null)), 6), rand),
+                new BootstrapOptimization<>(new GreedyObliviousTree<>(probabilityGrid(local_learn.vecData(), 32, true, new BuildProgressHandler(null)), 6), rand),
                 L2Reg.class, 2000, 0.005
         );
         new addBoostingListeners<>(boosting, local_learn.target(SatL2.class), local_learn, local_validate, printWriter);
@@ -202,7 +204,7 @@ public class BinarizeTests extends GridTest {
         Pool<?> local_validate = split_local_all.get(1);
 
         final GradientBoosting<SatL2> boosting = new GradientBoosting<SatL2>(
-                new BootstrapOptimization<>(new GreedyObliviousTree<>(GridTools.probabilityGrid(local_learn.vecData(), 32, true, new BuildProgressHandler(null)), 6), rand),
+                new BootstrapOptimization<>(new GreedyObliviousTree<>(probabilityGrid(local_learn.vecData(), 32, true, new BuildProgressHandler(null)), 6), rand),
                 L2Reg.class, 2000, 0.005
         );
         new addBoostingListeners<>(boosting, local_learn.target(SatL2.class), local_learn, local_validate, printWriter);
@@ -229,7 +231,7 @@ public class BinarizeTests extends GridTest {
         Pool<?> local_validate = split_local_all.get(1);
 
         final GradientBoosting<SatL2> boosting = new GradientBoosting<SatL2>(
-                new BootstrapOptimization<>(new GreedyObliviousTree<>(GridTools.probabilityGrid(local_learn.vecData(), 32, true, new BuildProgressHandler(null)), 6), rand),
+                new BootstrapOptimization<>(new GreedyObliviousTree<>(probabilityGrid(local_learn.vecData(), 32, true, new BuildProgressHandler(null)), 6), rand),
                 L2Reg.class, 2000, 0.005
         );
         new addBoostingListeners<>(boosting, local_learn.target(SatL2.class), local_learn, local_validate, printWriter);
@@ -256,7 +258,7 @@ public class BinarizeTests extends GridTest {
         Pool<?> local_validate = split_local_all.get(1);
 
         final GradientBoosting<SatL2> boosting = new GradientBoosting<SatL2>(
-                new BootstrapOptimization<>(new GreedyObliviousTree<>(GridTools.probabilityGrid(local_learn.vecData(), 32, true, new BuildProgressHandler(null)), 6), rand),
+                new BootstrapOptimization<>(new GreedyObliviousTree<>(probabilityGrid(local_learn.vecData(), 32, true, new BuildProgressHandler(null)), 6), rand),
                 L2Reg.class, 2000, 0.005
         );
         new addBoostingListeners<>(boosting, local_learn.target(SatL2.class), local_learn, local_validate, printWriter);
@@ -283,7 +285,7 @@ public class BinarizeTests extends GridTest {
         Pool<?> local_validate = split_local_all.get(1);
 
         final GradientBoosting<SatL2> boosting = new GradientBoosting<SatL2>(
-                new BootstrapOptimization<>(new GreedyObliviousTree<>(GridTools.probabilityGrid(local_learn.vecData(), 32, true, new BuildProgressHandler(null)), 6), rand),
+                new BootstrapOptimization<>(new GreedyObliviousTree<>(probabilityGrid(local_learn.vecData(), 32, true, new BuildProgressHandler(null)), 6), rand),
                 L2Reg.class, 2000, 0.005
         );
         new addBoostingListeners<>(boosting, local_learn.target(SatL2.class), local_learn, local_validate, printWriter);
@@ -589,7 +591,7 @@ public class BinarizeTests extends GridTest {
         Pool<?> local_validate = split_local_all.get(1);
 
         final GradientBoosting<SatL2> boosting = new GradientBoosting<SatL2>(
-                new BootstrapOptimization<>(new GreedyObliviousTree<>(GridTools.probabilityGrid(local_learn.vecData(), 32, true, new BuildProgressHandler(null)), 6), rand),
+                new BootstrapOptimization<>(new GreedyObliviousTree<>(probabilityGrid(local_learn.vecData(), 32, true, new BuildProgressHandler(null)), 6), rand),
                 L2Reg.class, 2000, 0.005
         );
         new addBoostingListeners<>(boosting, local_learn.target(SatL2.class), local_learn, local_validate, printWriter);
@@ -691,7 +693,7 @@ public class BinarizeTests extends GridTest {
         Pool<?> local_validate = split_local_all.get(1);
 
         final GradientBoosting<SatL2> boosting = new GradientBoosting<SatL2>(
-                new BootstrapOptimization<>(new GreedyObliviousTree<>(GridTools.probabilityGrid(local_learn.vecData(), 32, true, new BuildProgressHandler(null)), 6), rand),
+                new BootstrapOptimization<>(new GreedyObliviousTree<>(probabilityGrid(local_learn.vecData(), 32, true, new BuildProgressHandler(null)), 6), rand),
                 L2Reg.class, 2000, 0.005
         );
         new addBoostingListeners<>(boosting, local_learn.target(SatL2.class), local_learn, local_validate, printWriter);
@@ -770,7 +772,7 @@ public class BinarizeTests extends GridTest {
         Pool<?> local_validate = split_local_all.get(1);
 
         final GradientBoosting<SatL2> boosting = new GradientBoosting<SatL2>(
-                new BootstrapOptimization<>(new GreedyObliviousTree<>(GridTools.probabilityGrid(local_learn.vecData(), 32, true, new BuildProgressHandler(null)), 6), rand),
+                new BootstrapOptimization<>(new GreedyObliviousTree<>(probabilityGrid(local_learn.vecData(), 32, true, new BuildProgressHandler(null)), 6), rand),
                 L2Reg.class, 2000, 0.005
         );
         new addBoostingListeners<>(boosting, local_learn.target(SatL2.class), local_learn, local_validate, printWriter);
