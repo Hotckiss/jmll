@@ -122,7 +122,7 @@ public class BinarizeBenchmarkUIUtils {
         return timeLabel;
     }
 
-    public static void addBinsChartUsage(GridPane gridPane, XYChart.Series bars, int index) {
+    public static BarChart addBinsChartUsage(GridPane gridPane, XYChart.Series bars, int index) {
         final CategoryAxis xAxis = new CategoryAxis();
         final NumberAxis yAxis = new NumberAxis();
         final BarChart<String,Number> barChart = new BarChart<>(xAxis, yAxis);
@@ -130,5 +130,7 @@ public class BinarizeBenchmarkUIUtils {
         barChart.setStyle(".chart-series-line { -fx-stroke-width: 1px; }");
         barChart.getData().add(bars);
         gridPane.add(barChart, index * 4, 7, 4, 1);
+
+        return barChart;
     }
 }

@@ -9,10 +9,9 @@ import com.expleague.ml.benchmark.ui.BinarizeBenchmarkUIUtils;
 import com.expleague.ml.data.tools.Pool;
 import com.expleague.ml.testUtils.TestResourceLoader;
 import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.scene.Scene;
+import javafx.scene.chart.BarChart;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
@@ -62,6 +61,11 @@ public class BinarizeBenchmark extends Application {
     private LineChart<Number,Number> algorithm2Chart = null;
     private LineChart<Number,Number> algorithm3Chart = null;
     private LineChart<Number,Number> algorithm4Chart = null;
+
+    private BarChart<String,Number> bar1Chart = null;
+    private BarChart<String,Number> bar2Chart = null;
+    private BarChart<String,Number> bar3Chart = null;
+    private BarChart<String,Number> bar4Chart = null;
 
     private static synchronized void loadDataSet() {
         try {
@@ -117,6 +121,35 @@ public class BinarizeBenchmark extends Application {
         gridpane.add(runButt, 1, 3);
 
         runButt.setOnAction(event -> {
+            final String name1 = BFGridFactory.getAlgorithmName(method1);
+            final String name2 = BFGridFactory.getAlgorithmName(method2);
+            final String name3 = BFGridFactory.getAlgorithmName(method3);
+            final String name4 = BFGridFactory.getAlgorithmName(method4);
+
+            algorithm1Chart.setTitle(name1 + " score");
+            algorithm2Chart.setTitle(name2 + " score");
+            algorithm3Chart.setTitle(name3 + " score");
+            algorithm4Chart.setTitle(name4 + " score");
+
+            series1.setName(name1 + " validate");
+            series2.setName(name2 + " validate");
+            series3.setName(name3 + " validate");
+            series4.setName(name4 + " validate");
+            series1T.setName(name1 + " train");
+            series2T.setName(name2 + " train");
+            series3T.setName(name3 + " train");
+            series4T.setName(name4 + " train");
+
+            barsUsageSeries1.setName(name1 + " bins usage");
+            barsUsageSeries2.setName(name2 + " bins usage");
+            barsUsageSeries3.setName(name3 + " bins usage");
+            barsUsageSeries4.setName(name4 + " bins usage");
+
+            bar1Chart.setTitle(name1 + " bins usage");
+            bar2Chart.setTitle(name2 + " bins usage");
+            bar3Chart.setTitle(name3 + " bins usage");
+            bar4Chart.setTitle(name4 + " bins usage");
+
             new Thread(() -> {
                 try {
                     new MethodRunner("Algorithm1Log.txt",
@@ -217,17 +250,17 @@ public class BinarizeBenchmark extends Application {
         algorithm1Chart = BinarizeBenchmarkUIUtils.addAlgorithmChart(gridpane, series1, series1T, 0);
         algorithm2Chart = BinarizeBenchmarkUIUtils.addAlgorithmChart(gridpane, series2, series2T, 1);
         algorithm3Chart = BinarizeBenchmarkUIUtils.addAlgorithmChart(gridpane, series3, series3T, 2);
-        algorithm2Chart = BinarizeBenchmarkUIUtils.addAlgorithmChart(gridpane, series4, series4T, 3);
+        algorithm4Chart = BinarizeBenchmarkUIUtils.addAlgorithmChart(gridpane, series4, series4T, 3);
 
-        barsUsageSeries1.setName("Bars usage 1");
-        barsUsageSeries2.setName("Bars usage 2");
-        barsUsageSeries3.setName("Bars usage 3");
-        barsUsageSeries4.setName("Bars usage 4");
+        barsUsageSeries1.setName("Bins usage 1");
+        barsUsageSeries2.setName("Bins usage 2");
+        barsUsageSeries3.setName("Bins usage 3");
+        barsUsageSeries4.setName("Bins usage 4");
 
-        BinarizeBenchmarkUIUtils.addBinsChartUsage(gridpane, barsUsageSeries1, 0);
-        BinarizeBenchmarkUIUtils.addBinsChartUsage(gridpane, barsUsageSeries2, 1);
-        BinarizeBenchmarkUIUtils.addBinsChartUsage(gridpane, barsUsageSeries3, 2);
-        BinarizeBenchmarkUIUtils.addBinsChartUsage(gridpane, barsUsageSeries4, 3);
+        bar1Chart = BinarizeBenchmarkUIUtils.addBinsChartUsage(gridpane, barsUsageSeries1, 0);
+        bar2Chart = BinarizeBenchmarkUIUtils.addBinsChartUsage(gridpane, barsUsageSeries2, 1);
+        bar3Chart = BinarizeBenchmarkUIUtils.addBinsChartUsage(gridpane, barsUsageSeries3, 2);
+        bar4Chart = BinarizeBenchmarkUIUtils.addBinsChartUsage(gridpane, barsUsageSeries4, 3);
 
         box1 = BinarizeBenchmarkUIUtils.addAlgorithmSelection(gridpane, 0);
         box2 = BinarizeBenchmarkUIUtils.addAlgorithmSelection(gridpane, 1);
