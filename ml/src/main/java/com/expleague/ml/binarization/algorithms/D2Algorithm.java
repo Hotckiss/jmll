@@ -100,14 +100,18 @@ public class D2Algorithm {
     }
 
     private void binarizeFeatureRec(double[] rawFeature, int l, int r, int f) {
+        System.out.println("1");
         if (binsCount > 8) {
             return;
         }
+
+        System.out.println("1");
 
         if (r - l <= 14) {
             return;
         }
 
+        System.out.println("1");
         double bestScore = Double.MAX_VALUE;
         int bestSplit = -1;
         int updatesCount = 0;
@@ -122,6 +126,7 @@ public class D2Algorithm {
             return;
         }
 
+        System.out.println("1");
         for (int p = l; p < r; p++) {
             if (borders[f].contains(p)) {
                 continue;
@@ -136,15 +141,15 @@ public class D2Algorithm {
             } else if (score > bestScore) {
                 updatesCount = 10;
             }
+        }
 
-            if (updatesCount == 1) {
-                return;
-            }
-
+        if (updatesCount == 1) {
+            return;
         }
 
         borders[f].add(bestSplit);
         binsCount++;
+        System.out.println(bestSplit);
         binarizeFeatureRec(rawFeature, l, bestSplit, f);
         binarizeFeatureRec(rawFeature, bestSplit, r, f);
     }

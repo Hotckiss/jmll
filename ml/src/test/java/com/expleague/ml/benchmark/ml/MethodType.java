@@ -10,5 +10,6 @@ public enum MethodType {
     PROBABILITY_MEDIAN,
     EQUAL_FREQUENCY,
     EQUAL_WIDTH,
-    MDLP
+    MDLP,
+    D2
 }

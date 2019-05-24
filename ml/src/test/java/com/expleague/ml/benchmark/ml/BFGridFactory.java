@@ -3,6 +3,7 @@ package com.expleague.ml.benchmark.ml;
 import com.expleague.ml.BFGrid;
 import com.expleague.ml.GridTools;
 import com.expleague.ml.BuildProgressHandler;
+import com.expleague.ml.binarization.algorithms.D2Algorithm;
 import com.expleague.ml.binarization.algorithms.EntropyDiscretization;
 import com.expleague.ml.binarization.algorithms.EqualFrequencyBinarization;
 import com.expleague.ml.binarization.algorithms.EqualWidthBinarization;
@@ -34,6 +35,9 @@ public class BFGridFactory {
                 break;
             case MDLP:
                 res = new EntropyDiscretization(pool, binFactor).fit();
+                break;
+            case D2:
+                res = new D2Algorithm(pool, binFactor).fit();
                 break;
             case PROBABILITY_FAST:
                 res = probabilityGrid(data, binFactor, true, buildProgressHandler);
@@ -76,6 +80,8 @@ public class BFGridFactory {
                 return binFactor;
             case MDLP:
                 return data.xdim();
+            case D2:
+                return data.xdim();
             case PROBABILITY_FAST:
                 return binFactor * data.xdim() * data.xdim();
             case PROBABILITY_SIMPLE:
@@ -103,6 +109,8 @@ public class BFGridFactory {
                 return "Equal width";
             case MDLP:
                 return "MDLP";
+            case D2:
+                return "D2";
             case PROBABILITY_FAST:
                 return "Probability fast";
             case PROBABILITY_SIMPLE:
@@ -140,6 +148,8 @@ public class BFGridFactory {
                 return MethodType.EQUAL_WIDTH;
             case "MDLP":
                 return MethodType.MDLP;
+            case "D2":
+                return MethodType.D2;
             case "Probability fast":
                 return MethodType.PROBABILITY_FAST;
             case "Probability":
