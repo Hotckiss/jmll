@@ -11,13 +11,13 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-public class EntropyDiscretization {
+public class D2Algorithm {
     private Pool<?> learn;
     private int binFactor;
     private int[] classes;
     private TIntArrayList[] borders;
 
-    public EntropyDiscretization(Pool<?> learn, int binFactor) {
+    public D2Algorithm(Pool<?> learn, int binFactor) {
         this.learn = learn;
         this.binFactor = binFactor;
 

@@ -80,7 +80,7 @@ public class MethodRunner {
         Pool<?> local_validate = split_local_all.get(1);
 
         final GradientBoosting<SatL2> boosting = new GradientBoosting<>(
-                new BootstrapOptimization<>(new GreedyObliviousTreeBenchmark<>(BFGridFactory.makeGrid(type, local_learn.vecData(), binFactor, buildProgressHandler, binTime), treeDepth, index), rng),
+                new BootstrapOptimization<>(new GreedyObliviousTreeBenchmark<>(BFGridFactory.makeGrid(type, local_learn, binFactor, buildProgressHandler, binTime), treeDepth, index), rng),
                 L2Reg.class, iterationsCount, step
         );
 

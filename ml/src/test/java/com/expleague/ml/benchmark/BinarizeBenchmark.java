@@ -6,6 +6,7 @@ import com.expleague.ml.benchmark.ml.BFGridFactory;
 import com.expleague.ml.benchmark.ml.MethodRunner;
 import com.expleague.ml.benchmark.ml.MethodType;
 import com.expleague.ml.benchmark.ui.BinarizeBenchmarkUIUtils;
+import com.expleague.ml.binarization.algorithms.EntropyDiscretization;
 import com.expleague.ml.data.tools.Pool;
 import com.expleague.ml.testUtils.TestResourceLoader;
 import javafx.application.Application;

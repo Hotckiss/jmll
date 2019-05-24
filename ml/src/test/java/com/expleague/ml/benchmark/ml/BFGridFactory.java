@@ -3,9 +3,11 @@ package com.expleague.ml.benchmark.ml;
 import com.expleague.ml.BFGrid;
 import com.expleague.ml.GridTools;
 import com.expleague.ml.BuildProgressHandler;
+import com.expleague.ml.binarization.algorithms.EntropyDiscretization;
 import com.expleague.ml.binarization.algorithms.EqualFrequencyBinarization;
 import com.expleague.ml.binarization.algorithms.EqualWidthBinarization;
 import com.expleague.ml.data.set.VecDataSet;
+import com.expleague.ml.data.tools.Pool;
 import javafx.application.Platform;
 import javafx.scene.control.Label;
 
@@ -16,7 +18,8 @@ import static com.expleague.ml.binarization.algorithms.ProbabilityGridPresort.pr
 import static com.expleague.ml.binarization.algorithms.ProbabilityGridWithMedianBest.probabilityGridMedian;
 
 public class BFGridFactory {
-    public static BFGrid makeGrid(MethodType type, VecDataSet data, int binFactor, BuildProgressHandler buildProgressHandler, Label binTime) {
+    public static BFGrid makeGrid(MethodType type, Pool<?> pool, int binFactor, BuildProgressHandler buildProgressHandler, Label binTime) {
+        VecDataSet data = pool.vecData();
         long s = System.nanoTime();
         BFGrid res;
         switch (type) {
@@ -28,6 +31,9 @@ public class BFGridFactory {
                 break;
             case EQUAL_WIDTH:
                 res =  EqualWidthBinarization.equalWidthGrid(data, binFactor, buildProgressHandler);
+                break;
+            case MDLP:
+                res = new EntropyDiscretization(pool, binFactor).fit();
                 break;
             case PROBABILITY_FAST:
                 res = probabilityGrid(data, binFactor, true, buildProgressHandler);
@@ -68,6 +74,8 @@ public class BFGridFactory {
                 return binFactor;
             case EQUAL_WIDTH:
                 return binFactor;
+            case MDLP:
+                return data.xdim();
             case PROBABILITY_FAST:
                 return binFactor * data.xdim() * data.xdim();
             case PROBABILITY_SIMPLE:
@@ -93,6 +101,8 @@ public class BFGridFactory {
                 return "Equal freq";
             case EQUAL_WIDTH:
                 return "Equal width";
+            case MDLP:
+                return "MDLP";
             case PROBABILITY_FAST:
                 return "Probability fast";
             case PROBABILITY_SIMPLE:
@@ -128,6 +138,8 @@ public class BFGridFactory {
                 return MethodType.EQUAL_FREQUENCY;
             case "Equal width":
                 return MethodType.EQUAL_WIDTH;
+            case "MDLP":
+                return MethodType.MDLP;
             case "Probability fast":
                 return MethodType.PROBABILITY_FAST;
             case "Probability":
