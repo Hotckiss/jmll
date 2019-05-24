@@ -34,7 +34,7 @@ public class EntropyDiscretization {
         double min = sortedTargets[0];
         double max = sortedTargets[targetsLength - 1];
 
-        double width = (max - min) / 32;
+        double width = (max - min) / binFactor;
 
         int[] classes = new int[targetsLength];
 

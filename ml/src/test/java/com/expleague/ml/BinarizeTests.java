@@ -666,7 +666,7 @@ public class BinarizeTests extends GridTest {
         int xdim = 5;
         int len = 4096;
         double[] arr = new double[xdim * len];
-        int[] arr1 = new int[xdim * len];
+        int[] arr1 = new int[len];
         for (int i = 0; i < len; i++) {
             for (int j = 0; j < xdim; j++) {
                 if (i % 3 == 0) {
@@ -676,8 +676,15 @@ public class BinarizeTests extends GridTest {
                 } else {
                     arr[xdim * i + j] = i * i;
                 }
-                arr1[xdim * i + j] = i;
             }
+        }
+
+        for (int i = 0; i < len; i++) {
+            double sum = 0;
+            for (int j = 0; j < xdim; j++) {
+                sum += arr[xdim * j + i];
+            }
+            arr1[i] = (int)sum / xdim;
         }
 
         ArrayVec vec = new ArrayVec(arr, 0, xdim * len);
@@ -705,7 +712,7 @@ public class BinarizeTests extends GridTest {
     public void testOTBoostX2Med() throws IOException {
         FileWriter fileWriter = null;
         try {
-            fileWriter = new FileWriter("threadX2LogMed.txt");
+            fileWriter = new FileWriter("threadX1LogProb.txt");
         } catch (Exception ex) {
         }
 
@@ -716,16 +723,34 @@ public class BinarizeTests extends GridTest {
         int xdim = 5;
         int len = 4096;
         double[] arr = new double[xdim * len];
-        int[] arr1 = new int[xdim * len];
+        int[] arr1 = new int[len];
         for (int i = 0; i < len; i++) {
             for (int j = 0; j < xdim; j++) {
-                arr[xdim * i + j] = i;
-                arr1[xdim * i + j] = i;
+                if (i % 3 == 0) {
+                    arr[xdim * i + j] = i;
+                } else if (i % 3 == 1) {
+                    arr[xdim * i + j] = Math.log(i + 1);
+                } else {
+                    arr[xdim * i + j] = i * i;
+                }
             }
         }
 
-        final Pool<?> pool = TestResourceLoader.loadXPool("x.txt");
+        for (int i = 0; i < len; i++) {
+            double sum = 0;
+            for (int j = 0; j < xdim; j++) {
+                sum += arr[xdim * j + i];
+            }
+            arr1[i] = (int)sum / xdim;
+        }
 
+        ArrayVec vec = new ArrayVec(arr, 0, xdim * len);
+        final VecBasedMx data = new VecBasedMx(xdim, vec);
+
+        final FakePool pool = FakePool.create(
+                data,
+                new IntSeq(arr1, 0, len)
+        );
 
         List<? extends Pool<?>> split_local_all = DataTools.splitDataSet(pool, rand, 0.2, 0.8);
         Pool<?> local_learn = split_local_all.get(0);
