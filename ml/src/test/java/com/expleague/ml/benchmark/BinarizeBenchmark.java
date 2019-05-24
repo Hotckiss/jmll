@@ -6,7 +6,6 @@ import com.expleague.ml.benchmark.ml.BFGridFactory;
 import com.expleague.ml.benchmark.ml.MethodRunner;
 import com.expleague.ml.benchmark.ml.MethodType;
 import com.expleague.ml.benchmark.ui.BinarizeBenchmarkUIUtils;
-import com.expleague.ml.binarization.algorithms.EntropyDiscretization;
 import com.expleague.ml.data.tools.Pool;
 import com.expleague.ml.testUtils.TestResourceLoader;
 import javafx.application.Application;
@@ -78,6 +77,11 @@ public class BinarizeBenchmark extends Application {
     private Label algorithm3TotalBins = new Label();
     private Label algorithm4TotalBins = new Label();
 
+    private CheckBox thread1Enabled = new CheckBox();
+    private CheckBox thread2Enabled = new CheckBox();
+    private CheckBox thread3Enabled = new CheckBox();
+    private CheckBox thread4Enabled = new CheckBox();
+
     private static synchronized void loadDataSet() {
         try {
             dataset = TestResourceLoader.loadPool("features.txt");
@@ -132,126 +136,129 @@ public class BinarizeBenchmark extends Application {
         gridpane.add(runButt, 1, 3);
 
         runButt.setOnAction(event -> {
-            final String name1 = BFGridFactory.getAlgorithmName(method1);
-            final String name2 = BFGridFactory.getAlgorithmName(method2);
-            final String name3 = BFGridFactory.getAlgorithmName(method3);
-            final String name4 = BFGridFactory.getAlgorithmName(method4);
+            if (thread1Enabled.isSelected()) {
+                final String name1 = BFGridFactory.getAlgorithmName(method1);
+                algorithm1Chart.setTitle(name1 + " score");
+                series1.setName(name1 + " validate");
+                series1T.setName(name1 + " train");
+                barsUsageSeries1.setName(name1 + " bins usage");
+                bar1Chart.setTitle(name1 + " bins usage");
+                new Thread(() -> {
+                    try {
+                        new MethodRunner("Algorithm1Log.txt",
+                                dataset,
+                                new FastRandom(1),
+                                method1,
+                                0.2,
+                                series1,
+                                series1T,
+                                32,
+                                6,
+                                2000,
+                                0.005,
+                                new BuildProgressHandler(algorithm1Bar, BFGridFactory.getStepsCount(method1, dataset.vecData(), 32)),
+                                0,
+                                barsUsageSeries1,
+                                algorithm1BinTime,
+                                algorithm1FinalScore,
+                                algorithm1TotalBins).run();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }).start();
+            }
 
-            algorithm1Chart.setTitle(name1 + " score");
-            algorithm2Chart.setTitle(name2 + " score");
-            algorithm3Chart.setTitle(name3 + " score");
-            algorithm4Chart.setTitle(name4 + " score");
+            if(thread2Enabled.isSelected()) {
+                final String name2 = BFGridFactory.getAlgorithmName(method2);
+                algorithm2Chart.setTitle(name2 + " score");
+                series2.setName(name2 + " validate");
+                series2T.setName(name2 + " train");
+                barsUsageSeries2.setName(name2 + " bins usage");
+                bar2Chart.setTitle(name2 + " bins usage");
+                new Thread(() -> {
+                    try {
+                        new MethodRunner("Algorithm2Log.txt",
+                                dataset,
+                                new FastRandom(1),
+                                method2,
+                                0.2,
+                                series2,
+                                series2T,
+                                32,
+                                6,
+                                2000,
+                                0.005,
+                                new BuildProgressHandler(algorithm2Bar, BFGridFactory.getStepsCount(method2, dataset.vecData(), 32)),
+                                1,
+                                barsUsageSeries2,
+                                algorithm2BinTime,
+                                algorithm2FinalScore,
+                                algorithm2TotalBins).run();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }).start();
+            }
 
-            series1.setName(name1 + " validate");
-            series2.setName(name2 + " validate");
-            series3.setName(name3 + " validate");
-            series4.setName(name4 + " validate");
-            series1T.setName(name1 + " train");
-            series2T.setName(name2 + " train");
-            series3T.setName(name3 + " train");
-            series4T.setName(name4 + " train");
+            if (thread3Enabled.isSelected()) {
+                final String name3 = BFGridFactory.getAlgorithmName(method3);
+                algorithm3Chart.setTitle(name3 + " score");
+                series3.setName(name3 + " validate");
+                series3T.setName(name3 + " train");
+                barsUsageSeries3.setName(name3 + " bins usage");
+                bar3Chart.setTitle(name3 + " bins usage");
+                new Thread(() -> {
+                    try {
+                        new MethodRunner("Algorithm3Log.txt",
+                                dataset,
+                                new FastRandom(1),
+                                method3,
+                                0.2,
+                                series3,
+                                series3T,
+                                32,
+                                6,
+                                2000,
+                                0.005,
+                                new BuildProgressHandler(algorithm3Bar, BFGridFactory.getStepsCount(method3, dataset.vecData(), 32)),
+                                2,
+                                barsUsageSeries3,
+                                algorithm3BinTime, algorithm3FinalScore, algorithm3TotalBins).run();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }).start();
+            }
 
-            barsUsageSeries1.setName(name1 + " bins usage");
-            barsUsageSeries2.setName(name2 + " bins usage");
-            barsUsageSeries3.setName(name3 + " bins usage");
-            barsUsageSeries4.setName(name4 + " bins usage");
-
-            bar1Chart.setTitle(name1 + " bins usage");
-            bar2Chart.setTitle(name2 + " bins usage");
-            bar3Chart.setTitle(name3 + " bins usage");
-            bar4Chart.setTitle(name4 + " bins usage");
-
-            new Thread(() -> {
-                try {
-                    new MethodRunner("Algorithm1Log.txt",
-                            dataset,
-                            new FastRandom(1),
-                            method1,
-                            0.2,
-                            series1,
-                            series1T,
-                            32,
-                            6,
-                            2000,
-                            0.005,
-                            new BuildProgressHandler(algorithm1Bar, BFGridFactory.getStepsCount(method1, dataset.vecData(), 32)),
-                            0,
-                            barsUsageSeries1,
-                            algorithm1BinTime,
-                            algorithm1FinalScore,
-                            algorithm1TotalBins).run();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }).start();
-
-            new Thread(() -> {
-                try {
-                    new MethodRunner("Algorithm2Log.txt",
-                            dataset,
-                            new FastRandom(1),
-                            method2,
-                            0.2,
-                            series2,
-                            series2T,
-                            32,
-                            6,
-                            2000,
-                            0.005,
-                            new BuildProgressHandler(algorithm2Bar, BFGridFactory.getStepsCount(method2, dataset.vecData(), 32)),
-                            1,
-                            barsUsageSeries2,
-                            algorithm2BinTime,
-                            algorithm2FinalScore,
-                            algorithm2TotalBins).run();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }).start();
-
-            new Thread(() -> {
-                try {
-                    new MethodRunner("Algorithm3Log.txt",
-                            dataset,
-                            new FastRandom(1),
-                            method3,
-                            0.2,
-                            series3,
-                            series3T,
-                            32,
-                            6,
-                            2000,
-                            0.005,
-                            new BuildProgressHandler(algorithm3Bar, BFGridFactory.getStepsCount(method3, dataset.vecData(), 32)),
-                            2,
-                            barsUsageSeries3,
-                            algorithm3BinTime, algorithm3FinalScore, algorithm3TotalBins).run();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }).start();
-
-            new Thread(() -> {
-                try {
-                    new MethodRunner("Algorithm4Log.txt",
-                            dataset,
-                            new FastRandom(1),
-                            method4,
-                            0.2,
-                            series4,
-                            series4T,
-                            32,
-                            6,
-                            2000,
-                            0.005,
-                            new BuildProgressHandler(algorithm4Bar, BFGridFactory.getStepsCount(method4, dataset.vecData(), 32)),
-                            3,
-                            barsUsageSeries4,
-                            algorithm4BinTime, algorithm4FinalScore, algorithm4TotalBins).run();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }).start();
+            if (thread4Enabled.isSelected()) {
+                final String name4 = BFGridFactory.getAlgorithmName(method4);
+                algorithm4Chart.setTitle(name4 + " score");
+                series4.setName(name4 + " validate");
+                series4T.setName(name4 + " train");
+                barsUsageSeries4.setName(name4 + " bins usage");
+                bar4Chart.setTitle(name4 + " bins usage");
+                new Thread(() -> {
+                    try {
+                        new MethodRunner("Algorithm4Log.txt",
+                                dataset,
+                                new FastRandom(1),
+                                method4,
+                                0.2,
+                                series4,
+                                series4T,
+                                32,
+                                6,
+                                2000,
+                                0.005,
+                                new BuildProgressHandler(algorithm4Bar, BFGridFactory.getStepsCount(method4, dataset.vecData(), 32)),
+                                3,
+                                barsUsageSeries4,
+                                algorithm4BinTime, algorithm4FinalScore, algorithm4TotalBins).run();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }).start();
+            }
         });
 
         series1.setName("Algorithm 1");
@@ -295,6 +302,11 @@ public class BinarizeBenchmark extends Application {
         algorithm2TotalBins = BinarizeBenchmarkUIUtils.addBinsCount(gridpane, 1);
         algorithm3TotalBins = BinarizeBenchmarkUIUtils.addBinsCount(gridpane, 2);
         algorithm4TotalBins = BinarizeBenchmarkUIUtils.addBinsCount(gridpane, 3);
+
+        thread1Enabled = BinarizeBenchmarkUIUtils.addAlgorithmEnabled(gridpane, 0);
+        thread2Enabled = BinarizeBenchmarkUIUtils.addAlgorithmEnabled(gridpane, 1);
+        thread3Enabled = BinarizeBenchmarkUIUtils.addAlgorithmEnabled(gridpane, 2);
+        thread4Enabled = BinarizeBenchmarkUIUtils.addAlgorithmEnabled(gridpane, 3);
 
         root.getChildren().add(gridpane);
         primaryStage.setScene(new Scene(root, 1920, 900));

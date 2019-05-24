@@ -109,6 +109,14 @@ public class BinarizeBenchmarkUIUtils {
         return box;
     }
 
+    public static CheckBox addAlgorithmEnabled(GridPane gridpane, int index) {
+        CheckBox box = new CheckBox("enabled");
+        GridPane.setHalignment(box, HPos.CENTER);
+        gridpane.add(box, index * 4, 5);
+
+        return box;
+    }
+
     public static Label addBinarizeTime(GridPane gridpane, int index) {
         Label binLabel = new Label("Time:");
         GridPane.setHalignment(binLabel, HPos.CENTER);
