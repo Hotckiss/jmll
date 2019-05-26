@@ -143,26 +143,37 @@ public class BinarizeBenchmark extends Application {
             ColumnConstraints column1 = new ColumnConstraints(140);
             ColumnConstraints column2 = new ColumnConstraints(190);
             settingsPane.getColumnConstraints().addAll(column1, column2);
+            settingsPane.setHgap(8);
+            settingsPane.setVgap(8);
 
-            Label randomSeedLabel = new Label("Random seed: ");
-            GridPane.setHalignment(randomSeedLabel, HPos.LEFT);
-            settingsPane.add(randomSeedLabel, 0, 0);
-            TextField randomSeedField = new TextField("1");
-            GridPane.setHalignment(randomSeedField, HPos.RIGHT);
-            settingsPane.add(randomSeedField, 1, 0, 2, 1);
+            TextField randomSeedField = addSettingsItem(settingsPane, "Random seed:", "1", 0);
+            TextField learnSize = addSettingsItem(settingsPane, "Learn size:", "0.2", 1);
+            TextField binFactor = addSettingsItem(settingsPane, "Bin factor: ", "32", 2);
+            TextField treeDepth = addSettingsItem(settingsPane, "Tree depth:", "6", 3);
+            TextField itersCount = addSettingsItem(settingsPane, "Iterations count:", "2000", 4);
+            TextField stepSize = addSettingsItem(settingsPane, "Step size:", "0.005", 5);
 
             Scene secondScene = new Scene(settingsPane, 360, 640);
-
-            Stage newWindow = new Stage();
-            newWindow.setTitle("Settings");
-            newWindow.setScene(secondScene);
-
-            newWindow.show();
+            Stage settingsWindow = new Stage();
+            settingsWindow.setTitle("Settings");
+            settingsWindow.setScene(secondScene);
+            settingsWindow.show();
         });
 
         root.getChildren().add(gridpane);
         primaryStage.setScene(new Scene(root, 1920, 900));
         primaryStage.show();
+    }
+
+    private TextField addSettingsItem(GridPane settingsPane, String title, String value, int index) {
+        Label label = new Label(title);
+        GridPane.setHalignment(label, HPos.LEFT);
+        settingsPane.add(label, 0, index);
+        TextField field = new TextField(value);
+        GridPane.setHalignment(field, HPos.RIGHT);
+        settingsPane.add(field, 1, index, 2, 1);
+
+        return field;
     }
 
     private void setupScoreCharts(GridPane gridpane) {

@@ -16,8 +16,8 @@ public class BinarizeBenchmarkUIUtils {
     public static GridPane makeGridPane() {
         GridPane gridpane = new GridPane();
         gridpane.setPadding(new Insets(5));
-        gridpane.setHgap(16);
-        gridpane.setVgap(10);
+        gridpane.setHgap(8);
+        gridpane.setVgap(8);
 
         RowConstraints row7 = new RowConstraints(300);
         RowConstraints row9 = new RowConstraints(300);
