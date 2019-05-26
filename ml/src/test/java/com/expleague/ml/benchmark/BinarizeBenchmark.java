@@ -3,14 +3,14 @@ package com.expleague.ml.benchmark;
 import com.expleague.commons.random.FastRandom;
 import com.expleague.ml.BuildProgressHandler;
 import com.expleague.ml.benchmark.generators.FakePoolsGenerator;
-import com.expleague.ml.benchmark.ml.BFGridFactory;
-import com.expleague.ml.benchmark.ml.MethodRunner;
-import com.expleague.ml.benchmark.ml.MethodType;
+import com.expleague.ml.benchmark.ml.*;
 import com.expleague.ml.benchmark.ui.BinarizeBenchmarkUIUtils;
 import com.expleague.ml.benchmark.utils.SettingsConfig;
 import com.expleague.ml.data.tools.Pool;
 import com.expleague.ml.testUtils.TestResourceLoader;
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
@@ -101,18 +101,14 @@ public class BinarizeBenchmark extends Application {
     private Label ss = new Label();
 
     private ComboBox datasetSelection = new ComboBox();
+    private DatasetType currentType = DatasetType.FEATURES_TXT;
 
     private static synchronized void loadDataSet() {
         try {
-            dataset = TestResourceLoader.loadPool("features.txt");
+            dataset = DatasetsFactory.makePool(DatasetType.FEATURES_TXT);
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        dataset = FakePoolsGenerator.sameFeaturesPool(50, 12000);
-        dataset = FakePoolsGenerator.logFeaturesPool(25, 25, 12000);
-        dataset = FakePoolsGenerator.sameFeaturesPoolDupl(50, 12000, 0.8);
-        dataset = FakePoolsGenerator.randomFuncsPool(50, 12000);
     }
 
     public static void main(String[] args) {
@@ -190,6 +186,14 @@ public class BinarizeBenchmark extends Application {
         setupBinsUsageCharts(gridpane);
 
         datasetSelection = BinarizeBenchmarkUIUtils.addDatasetSelection(gridpane);
+        datasetSelection.valueProperty().addListener((ChangeListener<String>) (ov, t, t1) -> {
+            currentType = DatasetsFactory.getDatasetType(t1);
+            try {
+                dataset = DatasetsFactory.makePool(currentType);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
 
         settingsButton = BinarizeBenchmarkUIUtils.addSettingsInput(gridpane);
 
