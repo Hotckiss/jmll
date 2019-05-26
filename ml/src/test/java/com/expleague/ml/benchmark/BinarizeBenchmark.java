@@ -2,17 +2,12 @@ package com.expleague.ml.benchmark;
 
 import com.expleague.commons.random.FastRandom;
 import com.expleague.ml.BuildProgressHandler;
-import com.expleague.ml.benchmark.generators.FakePoolsGenerator;
 import com.expleague.ml.benchmark.ml.*;
 import com.expleague.ml.benchmark.ui.BinarizeBenchmarkUIUtils;
 import com.expleague.ml.benchmark.utils.SettingsConfig;
 import com.expleague.ml.data.tools.Pool;
-import com.expleague.ml.testUtils.TestResourceLoader;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -26,7 +21,6 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 public class BinarizeBenchmark extends Application {
     public static Pool<?> dataset;
