@@ -48,29 +48,29 @@ public class BinarizeBenchmarkUIUtils {
 
     public static void addDatasetInput(GridPane gridPane, Label label, TextField field, Button btn) {
         GridPane.setHalignment(label, HPos.LEFT);
-        gridPane.add(label, 0, 0);
+        gridPane.add(label, 6, 0);
         GridPane.setHalignment(field, HPos.LEFT);
-        gridPane.add(field, 1, 0, 2, 1);
+        gridPane.add(field, 7, 0, 2, 1);
         GridPane.setHalignment(btn, HPos.LEFT);
-        gridPane.add(btn, 3, 0, 3, 1);
+        gridPane.add(btn, 9, 0, 3, 1);
     }
 
     public static void addFeaturesInput(GridPane gridPane, Label label, TextField field, Button btn) {
         GridPane.setHalignment(label, HPos.LEFT);
-        gridPane.add(label, 0, 1);
+        gridPane.add(label, 6, 1);
         GridPane.setHalignment(field, HPos.LEFT);
-        gridPane.add(field, 1, 1, 2, 1);
+        gridPane.add(field, 7, 1, 2, 1);
         GridPane.setHalignment(btn, HPos.LEFT);
-        gridPane.add(btn, 3, 1, 3, 1);
+        gridPane.add(btn, 9, 1, 3, 1);
     }
 
     public static void addTargetInput(GridPane gridPane, Label label, TextField field, Button btn) {
         GridPane.setHalignment(label, HPos.LEFT);
-        gridPane.add(label, 0, 2);
+        gridPane.add(label, 6, 2);
         GridPane.setHalignment(field, HPos.LEFT);
-        gridPane.add(field, 1, 2, 2, 1);
+        gridPane.add(field, 7, 2, 2, 1);
         GridPane.setHalignment(btn, HPos.LEFT);
-        gridPane.add(btn, 3, 2, 3, 1);
+        gridPane.add(btn, 9, 2, 3, 1);
     }
 
     public static LineChart<Number,Number> addAlgorithmChart(GridPane gridPane, XYChart.Series series, XYChart.Series seriesT, int index) {
@@ -167,6 +167,6 @@ public class BinarizeBenchmarkUIUtils {
 
     public static void addSettingsInput(GridPane gridPane, Button btn) {
         GridPane.setHalignment(btn, HPos.LEFT);
-        gridPane.add(btn, 15, 1);
+        gridPane.add(btn, 11, 1);
     }
 }
