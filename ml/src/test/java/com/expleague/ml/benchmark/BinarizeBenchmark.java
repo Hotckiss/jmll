@@ -226,7 +226,7 @@ public class BinarizeBenchmark extends Application {
                                     + "-fx-border-width: 0pt;"
                                     + "-fx-background-radius: 19pt; "
                     );
-            Scene secondScene = new Scene(settingsPane, 360, 640);
+            Scene secondScene = new Scene(settingsPane, 360, 280);
             final Stage settingsWindow = new Stage();
 
             apply.setOnAction(event1 -> {
