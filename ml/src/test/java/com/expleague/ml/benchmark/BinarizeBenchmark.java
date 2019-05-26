@@ -153,6 +153,10 @@ public class BinarizeBenchmark extends Application {
             TextField itersCount = addSettingsItem(settingsPane, "Iterations count:", "2000", 4);
             TextField stepSize = addSettingsItem(settingsPane, "Step size:", "0.005", 5);
 
+            Button apply = new Button("Apply");
+            GridPane.setHalignment(apply, HPos.CENTER);
+            settingsPane.add(apply, 0, 7, 2, 1);
+
             Scene secondScene = new Scene(settingsPane, 360, 640);
             Stage settingsWindow = new Stage();
             settingsWindow.setTitle("Settings");
