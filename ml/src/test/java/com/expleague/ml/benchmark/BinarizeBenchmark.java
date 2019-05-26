@@ -142,8 +142,8 @@ public class BinarizeBenchmark extends Application {
         setupBinarizeProgress(gridpane);
 
         Button runButt = new Button("Run!");
-        GridPane.setHalignment(runButt, HPos.RIGHT);
-        gridpane.add(runButt, 7, 3);
+        GridPane.setHalignment(runButt, HPos.CENTER);
+        gridpane.add(runButt, 7, 3, 2, 1);
         setupRunButton(runButt);
 
         setupScoreCharts(gridpane);
@@ -302,6 +302,16 @@ public class BinarizeBenchmark extends Application {
     }
 
     private void setupRunButton(Button runButt) {
+        runButt.setStyle
+                (
+                        "-fx-font-size: 24px;"
+                                + "-fx-font-weight: bold;"
+                                + "-fx-background-color: lightgreen;"
+                                + "-fx-border-style: solid inside;"
+                                + "-fx-border-width: 0pt;"
+                                + "-fx-background-radius: 24pt; "
+                );
+
         runButt.setOnAction(event -> {
             if (thread1Enabled.isSelected()) {
                 final String name1 = BFGridFactory.getAlgorithmName(method1);
