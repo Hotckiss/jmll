@@ -2,6 +2,7 @@ package com.expleague.ml.benchmark.ui;
 
 import com.expleague.ml.GridTools;
 import com.expleague.ml.benchmark.ml.BFGridFactory;
+import com.expleague.ml.benchmark.ml.DatasetsFactory;
 import javafx.collections.FXCollections;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
@@ -196,8 +197,19 @@ public class BinarizeBenchmarkUIUtils {
                                 + "-fx-background-radius: 19pt; "
                 );
         GridPane.setHalignment(btn, HPos.LEFT);
-        gridPane.add(btn, 11, 1);
+        gridPane.add(btn, 14, 1);
 
         return btn;
+    }
+
+    public static ComboBox addDatasetSelection(GridPane gridpane) {
+        Label binLabel = new Label("Dataset:");
+        GridPane.setHalignment(binLabel, HPos.CENTER);
+        gridpane.add(binLabel, 10, 1);
+        ComboBox<String> box = new ComboBox<>(FXCollections.observableArrayList(DatasetsFactory.getDatasetNames()));
+        GridPane.setHalignment(box, HPos.LEFT);
+        gridpane.add(box, 11, 1, 4, 1);
+
+        return box;
     }
 }
