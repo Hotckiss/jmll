@@ -21,6 +21,8 @@ public class DatasetsFactory {
                 return FakePoolsGenerator.randomFuncsPool(50 , 12000);
             case ELECTRICITY:
                 return TestResourceLoader.loadXPool("electricity.txt");
+            case CT:
+                return TestResourceLoader.loadCTPool("slice_localization_data.csv");
         }
 
         return TestResourceLoader.loadPool("features.txt");
@@ -40,6 +42,8 @@ public class DatasetsFactory {
                 return "Random functions";
             case ELECTRICITY:
                 return "Electricity stability";
+            case CT:
+                return "CT slices";
         }
 
         return "Median division";
@@ -59,6 +63,8 @@ public class DatasetsFactory {
                 return DatasetType.RANDOM_FUNCS;
             case "Electricity stability":
                 return DatasetType.ELECTRICITY;
+            case "CT slices":
+                return DatasetType.CT;
             default:
                 return DatasetType.FEATURES_TXT;
         }

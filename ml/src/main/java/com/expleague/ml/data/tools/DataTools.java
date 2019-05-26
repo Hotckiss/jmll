@@ -180,7 +180,7 @@ public class DataTools {
       public void accept(final CharSequence arg) {
         lindex++;
         final CharSequence[] parts = CharSeqTools.split(arg, ',');
-        items.add(new QURLItem(CharSeqTools.parseInt(parts[0]), "2", 3));
+        items.add(new QURLItem(1, "2", 3));
         target.append(CharSeqTools.parseDouble(parts[parts.length - 1]));
         if (featuresCount[0] < 0)
           featuresCount[0] = parts.length - 2;
