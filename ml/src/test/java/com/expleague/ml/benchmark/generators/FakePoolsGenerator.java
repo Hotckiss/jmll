@@ -7,7 +7,7 @@ import com.expleague.ml.data.tools.FakePool;
 import com.expleague.ml.data.tools.Pool;
 
 public class FakePoolsGenerator {
-    public static Pool<?> sameFeaturesPool(int xdim, int len, double duplicateProb) {
+    public static Pool<?> sameFeaturesPool(int xdim, int len) {
         double[] data = new double[xdim * len];
         int[] target = new int[len];
         for (int i = 0; i < len; i++) {
