@@ -5,6 +5,7 @@ import com.expleague.ml.data.tools.DataTools;
 
 import java.io.*;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.zip.GZIPInputStream;
 
 /**
@@ -48,4 +49,11 @@ public final class TestResourceLoader {
     return DataTools.loadFromXTxt(localPath, reader);
   }
 
+  public static Pool<?> loadGenericPool(final String localPath, ArrayList<Integer> selectedCols, int targetCol) throws IOException {
+    //System.out.println(localPath);
+    final InputStream stream = loadResourceAsStream(localPath);
+    final InputStreamReader reader = localPath.endsWith(".gz") ? new InputStreamReader(new GZIPInputStream(stream))
+            : new InputStreamReader(stream);
+    return DataTools.loadGeneric(localPath, reader, selectedCols, targetCol);
+  }
 }

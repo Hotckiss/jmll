@@ -95,8 +95,9 @@ import java.util.zip.GZIPInputStream;
 public class DataTools {
   public static Logger log = LoggerFactory.getLogger(DataTools.class);
 
-  public static final SerializationRepository<CharSequence> SERIALIZATION = new SerializationRepository<>(
-      new TypeConvertersCollection(MathTools.CONVERSION, DataTools.class, "com.expleague.ml.io"), CharSequence.class);
+  public static final SerializationRepository<CharSequence> SERIALIZATION = null;//new SerializationRepository<CharSequence>();
+  //new SerializationRepository<>(
+      //new TypeConvertersCollection(MathTools.CONVERSION, DataTools.class, "com.expleague.ml.io"), CharSequence.class);
 
 
   public static Pool<QURLItem> loadFromFeaturesTxt(final String file) throws IOException {
@@ -157,6 +158,36 @@ public class DataTools {
           throw new RuntimeException("\"Failed to parse line \" + lindex + \":\"");
         for (int i = 0; i < parts.length - 2; i++) {
           data.append(CharSeqTools.parseDouble(parts[i]));
+        }
+      }
+    });
+    return new FeaturesTxtPool(
+            new ArraySeq<>(items.toArray(new QURLItem[items.size()])),
+            new VecBasedMx(featuresCount[0], data.build()),
+            target.build()
+    );
+  }
+
+  public static FeaturesTxtPool loadGeneric(final String fileName, final Reader in, ArrayList<Integer> selectedCols, int targetCol) throws IOException {
+    final List<QURLItem> items = new ArrayList<>();
+    final VecBuilder target = new VecBuilder();
+    final VecBuilder data = new VecBuilder();
+    final int[] featuresCount = new int[]{-1};
+    CharSeqTools.processLines(in, new Consumer<CharSequence>() {
+      int lindex = 0;
+
+      @Override
+      public void accept(final CharSequence arg) {
+        lindex++;
+        final CharSequence[] parts = CharSeqTools.split(arg, ',');
+        items.add(new QURLItem(1, "2", 3));
+        target.append(CharSeqTools.parseDouble(parts[targetCol]));
+        if (featuresCount[0] < 0)
+          featuresCount[0] = selectedCols.size();
+        else if (featuresCount[0] != selectedCols.size())
+          throw new RuntimeException("\"Failed to parse line \" + lindex + \":\"");
+        for (int i = 0; i < selectedCols.size(); i++) {
+          data.append(CharSeqTools.parseDouble(parts[selectedCols.get(i)]));
         }
       }
     });
