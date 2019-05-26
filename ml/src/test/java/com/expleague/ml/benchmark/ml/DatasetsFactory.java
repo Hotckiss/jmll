@@ -1,6 +1,29 @@
 package com.expleague.ml.benchmark.ml;
 
+import com.expleague.ml.benchmark.generators.FakePoolsGenerator;
+import com.expleague.ml.data.tools.Pool;
+import com.expleague.ml.testUtils.TestResourceLoader;
+
+import java.io.IOException;
+
 public class DatasetsFactory {
+    public static Pool<?> makePool(DatasetType type) throws IOException {
+        switch (type) {
+            case FEATURES_TXT:
+                return TestResourceLoader.loadPool("features.txt");
+            case SAME:
+                return FakePoolsGenerator.sameFeaturesPool(50, 12000);
+            case SAME_LOG:
+                return FakePoolsGenerator.logFeaturesPool(25, 25, 12000);
+            case SAME_DUPL_0_25:
+                return FakePoolsGenerator.sameFeaturesPoolDupl(50, 12000, 0.25);
+            case RANDOM_FUNCS:
+                return FakePoolsGenerator.randomFuncsPool(50 , 12000);
+        }
+
+        return TestResourceLoader.loadPool("features.txt");
+    }
+
     public static String getDatasetName(DatasetType type) {
         switch (type) {
             case FEATURES_TXT:
