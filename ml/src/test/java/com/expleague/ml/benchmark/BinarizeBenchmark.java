@@ -16,6 +16,7 @@ import javafx.scene.chart.BarChart;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
@@ -137,15 +138,18 @@ public class BinarizeBenchmark extends Application {
         settingsButton = BinarizeBenchmarkUIUtils.addSettingsInput(gridpane);
 
         settingsButton.setOnAction(event -> {
-            Label secondLabel = new Label("TODO: settings");
-            GridPane.setHalignment(secondLabel, HPos.CENTER);
-
-
             GridPane settingsPane = new GridPane();
-            gridpane.setPadding(new Insets(5));
-            //gridpane.setHgap(1);
-            //gridpane.setVgap(6);
-            settingsPane.add(secondLabel, 0, 0);
+            settingsPane.setPadding(new Insets(5));
+            ColumnConstraints column1 = new ColumnConstraints(140);
+            ColumnConstraints column2 = new ColumnConstraints(190);
+            settingsPane.getColumnConstraints().addAll(column1, column2);
+
+            Label randomSeedLabel = new Label("Random seed: ");
+            GridPane.setHalignment(randomSeedLabel, HPos.LEFT);
+            settingsPane.add(randomSeedLabel, 0, 0);
+            TextField randomSeedField = new TextField("1");
+            GridPane.setHalignment(randomSeedField, HPos.RIGHT);
+            settingsPane.add(randomSeedField, 1, 0, 2, 1);
 
             Scene secondScene = new Scene(settingsPane, 360, 640);
 
