@@ -165,8 +165,11 @@ public class BinarizeBenchmarkUIUtils {
         return timeLabel;
     }
 
-    public static void addSettingsInput(GridPane gridPane, Button btn) {
+    public static Button addSettingsInput(GridPane gridPane) {
+        Button btn = new Button("Settings");
         GridPane.setHalignment(btn, HPos.LEFT);
         gridPane.add(btn, 11, 1);
+
+        return btn;
     }
 }

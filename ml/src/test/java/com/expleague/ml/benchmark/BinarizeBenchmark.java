@@ -10,6 +10,7 @@ import com.expleague.ml.data.tools.Pool;
 import com.expleague.ml.testUtils.TestResourceLoader;
 import javafx.application.Application;
 import javafx.geometry.HPos;
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.LineChart;
@@ -82,6 +83,8 @@ public class BinarizeBenchmark extends Application {
     private CheckBox thread3Enabled = new CheckBox();
     private CheckBox thread4Enabled = new CheckBox();
 
+    private Button settingsButton = new Button();
+
     private static synchronized void loadDataSet() {
         try {
             dataset = TestResourceLoader.loadPool("features.txt");
@@ -126,12 +129,32 @@ public class BinarizeBenchmark extends Application {
         Button runButt = new Button("Run!");
         GridPane.setHalignment(runButt, HPos.RIGHT);
         gridpane.add(runButt, 1, 3);
-        setupRunButton(gridpane, runButt);
+        setupRunButton(runButt);
 
         setupScoreCharts(gridpane);
         setupBinsUsageCharts(gridpane);
 
-        BinarizeBenchmarkUIUtils.addSettingsInput(gridpane, new Button("Settings"));
+        settingsButton = BinarizeBenchmarkUIUtils.addSettingsInput(gridpane);
+
+        settingsButton.setOnAction(event -> {
+            Label secondLabel = new Label("TODO: settings");
+            GridPane.setHalignment(secondLabel, HPos.CENTER);
+
+
+            GridPane settingsPane = new GridPane();
+            gridpane.setPadding(new Insets(5));
+            //gridpane.setHgap(1);
+            //gridpane.setVgap(6);
+            settingsPane.add(secondLabel, 0, 0);
+
+            Scene secondScene = new Scene(settingsPane, 360, 640);
+
+            Stage newWindow = new Stage();
+            newWindow.setTitle("Settings");
+            newWindow.setScene(secondScene);
+
+            newWindow.show();
+        });
 
         root.getChildren().add(gridpane);
         primaryStage.setScene(new Scene(root, 1920, 900));
@@ -197,7 +220,7 @@ public class BinarizeBenchmark extends Application {
         thread4Enabled = BinarizeBenchmarkUIUtils.addAlgorithmEnabled(gridpane, 3);
     }
 
-    private void setupRunButton(GridPane gridpane, Button runButt) {
+    private void setupRunButton(Button runButt) {
         runButt.setOnAction(event -> {
             if (thread1Enabled.isSelected()) {
                 final String name1 = BFGridFactory.getAlgorithmName(method1);
