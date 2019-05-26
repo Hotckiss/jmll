@@ -167,6 +167,15 @@ public class BinarizeBenchmarkUIUtils {
 
     public static Button addSettingsInput(GridPane gridPane) {
         Button btn = new Button("Settings");
+        btn.setStyle
+                (
+                        "-fx-font-size: 19px;"
+                                + "-fx-font-weight: bold;"
+                                + "-fx-background-color: lightgreen;"
+                                + "-fx-border-style: solid inside;"
+                                + "-fx-border-width: 0pt;"
+                                + "-fx-background-radius: 19pt; "
+                );
         GridPane.setHalignment(btn, HPos.LEFT);
         gridPane.add(btn, 11, 1);
 

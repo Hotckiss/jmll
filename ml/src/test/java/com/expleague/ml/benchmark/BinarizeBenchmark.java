@@ -122,21 +122,54 @@ public class BinarizeBenchmark extends Application {
         GridPane gridpane = BinarizeBenchmarkUIUtils.makeGridPane();
 
         Label datasetLabel = new Label("Dataset path:");
+        datasetLabel.setStyle
+                (
+                        "-fx-font-size: 11px;"
+                                + "-fx-font-weight: 500;"
+                );
         TextField datasetInput = new TextField();
-        Button datasetLoadButton = new Button();
-        datasetLoadButton.setText("Load");
+        Button datasetLoadButton = new Button(" Load ");
+        datasetLoadButton.setStyle
+                (
+                        "-fx-font-size: 11px;"
+                                + "-fx-background-color: #c2d22b;"
+                                + "-fx-border-style: solid inside;"
+                                + "-fx-border-width: 0pt;"
+                );
         BinarizeBenchmarkUIUtils.addDatasetInput(gridpane, datasetLabel, datasetInput, datasetLoadButton);
 
         Label featuresLabel = new Label("Features columns:");
+        featuresLabel.setStyle
+                (
+                        "-fx-font-size: 11px;"
+                                + "-fx-font-weight: 500;"
+                );
         TextField featuresInput = new TextField();
-        Button featuresApplyButton = new Button();
-        featuresApplyButton.setText("Apply");
+        Button featuresApplyButton = new Button("Apply");
+        featuresApplyButton.setStyle
+                (
+                        "-fx-font-size: 11px;"
+                                + "-fx-background-color: #c2d22b;"
+                                + "-fx-border-style: solid inside;"
+                                + "-fx-border-width: 0pt;"
+                );
         BinarizeBenchmarkUIUtils.addFeaturesInput(gridpane, featuresLabel, featuresInput, featuresApplyButton);
 
         Label targetColumnLabel = new Label("Target column:");
+        targetColumnLabel.setStyle
+                (
+                        "-fx-font-size: 11px;"
+                                + "-fx-font-weight: 500;"
+                );
         TextField targetInput = new TextField();
-        Button targetApplyButton = new Button();
-        targetApplyButton.setText("Apply");
+        Button targetApplyButton = new Button("Apply");
+        targetApplyButton.setStyle
+                (
+                        "-fx-font-size: 11px;"
+                                + "-fx-background-color: #c2d22b;"
+                                + "-fx-border-style: solid inside;"
+                                + "-fx-border-width: 0pt;"
+                );
         BinarizeBenchmarkUIUtils.addTargetInput(gridpane, targetColumnLabel, targetInput, targetApplyButton);
 
         setupBinarizeProgress(gridpane);
@@ -171,7 +204,15 @@ public class BinarizeBenchmark extends Application {
             Button apply = new Button("Apply");
             GridPane.setHalignment(apply, HPos.CENTER);
             settingsPane.add(apply, 0, 7, 2, 1);
-
+            apply.setStyle
+                    (
+                            "-fx-font-size: 19px;"
+                                    + "-fx-font-weight: bold;"
+                                    + "-fx-background-color: lightgreen;"
+                                    + "-fx-border-style: solid inside;"
+                                    + "-fx-border-width: 0pt;"
+                                    + "-fx-background-radius: 19pt; "
+                    );
             Scene secondScene = new Scene(settingsPane, 360, 640);
             final Stage settingsWindow = new Stage();
 
