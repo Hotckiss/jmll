@@ -6,9 +6,12 @@ import com.expleague.ml.benchmark.ml.BFGridFactory;
 import com.expleague.ml.benchmark.ml.MethodRunner;
 import com.expleague.ml.benchmark.ml.MethodType;
 import com.expleague.ml.benchmark.ui.BinarizeBenchmarkUIUtils;
+import com.expleague.ml.benchmark.utils.SettingsConfig;
 import com.expleague.ml.data.tools.Pool;
 import com.expleague.ml.testUtils.TestResourceLoader;
 import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -86,6 +89,8 @@ public class BinarizeBenchmark extends Application {
 
     private Button settingsButton = new Button();
 
+    private SettingsConfig settings = new SettingsConfig();
+
     private static synchronized void loadDataSet() {
         try {
             dataset = TestResourceLoader.loadPool("features.txt");
@@ -146,19 +151,37 @@ public class BinarizeBenchmark extends Application {
             settingsPane.setHgap(8);
             settingsPane.setVgap(8);
 
-            TextField randomSeedField = addSettingsItem(settingsPane, "Random seed:", "1", 0);
-            TextField learnSize = addSettingsItem(settingsPane, "Learn size:", "0.2", 1);
-            TextField binFactor = addSettingsItem(settingsPane, "Bin factor: ", "32", 2);
-            TextField treeDepth = addSettingsItem(settingsPane, "Tree depth:", "6", 3);
-            TextField itersCount = addSettingsItem(settingsPane, "Iterations count:", "2000", 4);
-            TextField stepSize = addSettingsItem(settingsPane, "Step size:", "0.005", 5);
+            TextField randomSeedField = addSettingsItem(settingsPane, "Random seed:", String.valueOf(settings.getSeed()), 0);
+            TextField learnSize = addSettingsItem(settingsPane, "Learn size:", String.valueOf(settings.getLearnSize()), 1);
+            TextField binFactor = addSettingsItem(settingsPane, "Bin factor: ", String.valueOf(settings.getBinFactor()), 2);
+            TextField treeDepth = addSettingsItem(settingsPane, "Tree depth:", String.valueOf(settings.getTreeDepth()), 3);
+            TextField itersCount = addSettingsItem(settingsPane, "Iterations count:", String.valueOf(settings.getIters()), 4);
+            TextField stepSize = addSettingsItem(settingsPane, "Step size:", String.valueOf(settings.getStep()), 5);
+
 
             Button apply = new Button("Apply");
             GridPane.setHalignment(apply, HPos.CENTER);
             settingsPane.add(apply, 0, 7, 2, 1);
 
             Scene secondScene = new Scene(settingsPane, 360, 640);
-            Stage settingsWindow = new Stage();
+            final Stage settingsWindow = new Stage();
+
+            apply.setOnAction(event1 -> {
+                try {
+                    settings.setSeed(Integer.parseInt(randomSeedField.getText()));
+                    settings.setLearnSize(Double.parseDouble(learnSize.getText()));
+                    settings.setBinFactor(Integer.parseInt(binFactor.getText()));
+                    settings.setTreeDepth(Integer.parseInt(treeDepth.getText()));
+                    settings.setIters(Integer.parseInt(itersCount.getText()));
+                    settings.setStep(Double.parseDouble(stepSize.getText()));
+                } catch (NumberFormatException ex) {
+                    //reset to default
+                    settings = new SettingsConfig();
+                }
+
+                settingsWindow.close();
+            });
+
             settingsWindow.setTitle("Settings");
             settingsWindow.setScene(secondScene);
             settingsWindow.show();
