@@ -143,7 +143,7 @@ public class BinarizeBenchmark extends Application {
 
         Button runButt = new Button("Run!");
         GridPane.setHalignment(runButt, HPos.CENTER);
-        gridpane.add(runButt, 7, 3, 2, 1);
+        gridpane.add(runButt, 7, 4, 2, 1);
         setupRunButton(runButt);
 
         setupScoreCharts(gridpane);
@@ -215,7 +215,7 @@ public class BinarizeBenchmark extends Application {
         ss = addParam(gridpane, "Step size:", String.valueOf(settings.getStep()), 3, 3);
 
         root.getChildren().add(gridpane);
-        primaryStage.setScene(new Scene(root, 1920, 900));
+        primaryStage.setScene(new Scene(root, 1920, 940));
         primaryStage.show();
     }
 

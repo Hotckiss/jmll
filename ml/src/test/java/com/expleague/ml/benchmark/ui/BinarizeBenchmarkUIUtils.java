@@ -41,7 +41,7 @@ public class BinarizeBenchmarkUIUtils {
         gridpane.getColumnConstraints().addAll(column1, column2, column3, column4, column5, column6, column7, column8,
                 column9,column10,column11,column12,column13,column14,column15,column16);
         gridpane.getRowConstraints().addAll(new RowConstraints(), new RowConstraints(), new RowConstraints(), new RowConstraints(), new RowConstraints(),
-                new RowConstraints(), row7, new RowConstraints(), row9, new RowConstraints());
+                new RowConstraints(), new RowConstraints(), row7, new RowConstraints(), row9, new RowConstraints());
 
         return gridpane;
     }
@@ -82,7 +82,7 @@ public class BinarizeBenchmarkUIUtils {
         lineChart.setStyle(".chart-series-line { -fx-stroke-width: 1px; }");
         lineChart.getData().add(series);
         lineChart.getData().add(seriesT);
-        gridPane.add(lineChart, index * 4, 6, 4, 1);
+        gridPane.add(lineChart, index * 4, 7, 4, 1);
 
         return lineChart;
     }
@@ -90,10 +90,10 @@ public class BinarizeBenchmarkUIUtils {
     public static ProgressBar addProgressBar(GridPane gridpane, int index) {
         Label binLabel = new Label("Binarize progress:");
         GridPane.setHalignment(binLabel, HPos.CENTER);
-        gridpane.add(binLabel, index * 4, 4);
+        gridpane.add(binLabel, index * 4, 5);
         ProgressBar algorithmBar = new ProgressBar();
         GridPane.setHalignment(algorithmBar, HPos.LEFT);
-        gridpane.add(algorithmBar, index * 4 + 1, 4);
+        gridpane.add(algorithmBar, index * 4 + 1, 5);
 
         return algorithmBar;
     }
@@ -101,10 +101,10 @@ public class BinarizeBenchmarkUIUtils {
     public static ComboBox addAlgorithmSelection(GridPane gridpane, int index) {
         Label binLabel = new Label("Algorithm:");
         GridPane.setHalignment(binLabel, HPos.CENTER);
-        gridpane.add(binLabel, index * 4 + 1, 5);
+        gridpane.add(binLabel, index * 4 + 1, 6);
         ComboBox<String> box = new ComboBox<>(FXCollections.observableArrayList(BFGridFactory.getAlgorithmNames()));
         GridPane.setHalignment(box, HPos.LEFT);
-        gridpane.add(box, index * 4 + 2, 5, 2, 1);
+        gridpane.add(box, index * 4 + 2, 6, 2, 1);
 
         return box;
     }
@@ -112,7 +112,7 @@ public class BinarizeBenchmarkUIUtils {
     public static CheckBox addAlgorithmEnabled(GridPane gridpane, int index) {
         CheckBox box = new CheckBox("enabled");
         GridPane.setHalignment(box, HPos.CENTER);
-        gridpane.add(box, index * 4, 5);
+        gridpane.add(box, index * 4, 6);
 
         return box;
     }
@@ -120,11 +120,11 @@ public class BinarizeBenchmarkUIUtils {
     public static Label addBinarizeTime(GridPane gridpane, int index) {
         Label binLabel = new Label("Time:");
         GridPane.setHalignment(binLabel, HPos.CENTER);
-        gridpane.add(binLabel, index * 4 + 2, 4);
+        gridpane.add(binLabel, index * 4 + 2, 5);
 
         Label timeLabel = new Label();
         GridPane.setHalignment(timeLabel, HPos.LEFT);
-        gridpane.add(timeLabel, index * 4 + 3, 4, 2, 1);
+        gridpane.add(timeLabel, index * 4 + 3, 5, 2, 1);
 
         return timeLabel;
     }
@@ -136,7 +136,7 @@ public class BinarizeBenchmarkUIUtils {
         barChart.setTitle("Bins usage");
         barChart.setStyle(".chart-series-line { -fx-stroke-width: 1px; }");
         barChart.getData().add(bars);
-        gridPane.add(barChart, index * 4, 8, 4, 1);
+        gridPane.add(barChart, index * 4, 9, 4, 1);
 
         return barChart;
     }
@@ -144,11 +144,11 @@ public class BinarizeBenchmarkUIUtils {
     public static Label addScore(GridPane gridpane, int index) {
         Label binLabel = new Label("Best score:");
         GridPane.setHalignment(binLabel, HPos.CENTER);
-        gridpane.add(binLabel, index * 4 + 1, 7);
+        gridpane.add(binLabel, index * 4 + 1, 8);
 
         Label timeLabel = new Label();
         GridPane.setHalignment(timeLabel, HPos.LEFT);
-        gridpane.add(timeLabel, index * 4 + 2, 7, 2, 1);
+        gridpane.add(timeLabel, index * 4 + 2, 8, 2, 1);
 
         return timeLabel;
     }
@@ -156,11 +156,11 @@ public class BinarizeBenchmarkUIUtils {
     public static Label addBinsCount(GridPane gridpane, int index) {
         Label binLabel = new Label("Total bins:");
         GridPane.setHalignment(binLabel, HPos.CENTER);
-        gridpane.add(binLabel, index * 4 + 1, 9);
+        gridpane.add(binLabel, index * 4 + 1, 10);
 
         Label timeLabel = new Label();
         GridPane.setHalignment(timeLabel, HPos.LEFT);
-        gridpane.add(timeLabel, index * 4 + 2, 9, 2, 1);
+        gridpane.add(timeLabel, index * 4 + 2, 10, 2, 1);
 
         return timeLabel;
     }
