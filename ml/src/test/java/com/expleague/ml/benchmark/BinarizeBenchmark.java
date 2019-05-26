@@ -1,7 +1,7 @@
 package com.expleague.ml.benchmark;
 
 import com.expleague.commons.random.FastRandom;
-import com.expleague.ml.BuildProgressHandler;
+import com.expleague.ml.BuildProgressHandler;   
 import com.expleague.ml.benchmark.ml.BFGridFactory;
 import com.expleague.ml.benchmark.ml.MethodRunner;
 import com.expleague.ml.benchmark.ml.MethodType;
@@ -121,6 +121,66 @@ public class BinarizeBenchmark extends Application {
         targetApplyButton.setText("Apply");
         BinarizeBenchmarkUIUtils.addTargetInput(gridpane, targetColumnLabel, targetInput, targetApplyButton);
 
+        setupBinarizeProgress(gridpane);
+
+        Button runButt = new Button("Run!");
+        GridPane.setHalignment(runButt, HPos.RIGHT);
+        gridpane.add(runButt, 1, 3);
+        setupRunButton(gridpane, runButt);
+
+        setupScoreCharts(gridpane);
+        setupBinsUsageCharts(gridpane);
+
+        BinarizeBenchmarkUIUtils.addSettingsInput(gridpane, new Button("Settings"));
+
+        root.getChildren().add(gridpane);
+        primaryStage.setScene(new Scene(root, 1920, 900));
+        primaryStage.show();
+    }
+
+    private void setupScoreCharts(GridPane gridpane) {
+        series1.setName("Algorithm 1");
+        series2.setName("Algorithm 2");
+        series3.setName("Algorithm 3");
+        series4.setName("Algorithm 4");
+        series1T.setName("Algorithm 1 train");
+        series2T.setName("Algorithm 2 train");
+        series3T.setName("Algorithm 3 train");
+        series4T.setName("Algorithm 4 train");
+        algorithm1Chart = BinarizeBenchmarkUIUtils.addAlgorithmChart(gridpane, series1, series1T, 0);
+        algorithm2Chart = BinarizeBenchmarkUIUtils.addAlgorithmChart(gridpane, series2, series2T, 1);
+        algorithm3Chart = BinarizeBenchmarkUIUtils.addAlgorithmChart(gridpane, series3, series3T, 2);
+        algorithm4Chart = BinarizeBenchmarkUIUtils.addAlgorithmChart(gridpane, series4, series4T, 3);
+        algorithm1FinalScore = BinarizeBenchmarkUIUtils.addScore(gridpane, 0);
+        algorithm2FinalScore = BinarizeBenchmarkUIUtils.addScore(gridpane, 1);
+        algorithm3FinalScore = BinarizeBenchmarkUIUtils.addScore(gridpane, 2);
+        algorithm4FinalScore = BinarizeBenchmarkUIUtils.addScore(gridpane, 3);
+    }
+
+    private void setupBinsUsageCharts(GridPane gridpane) {
+        barsUsageSeries1.setName("Bins usage 1");
+        barsUsageSeries2.setName("Bins usage 2");
+        barsUsageSeries3.setName("Bins usage 3");
+        barsUsageSeries4.setName("Bins usage 4");
+        bar1Chart = BinarizeBenchmarkUIUtils.addBinsChartUsage(gridpane, barsUsageSeries1, 0);
+        bar2Chart = BinarizeBenchmarkUIUtils.addBinsChartUsage(gridpane, barsUsageSeries2, 1);
+        bar3Chart = BinarizeBenchmarkUIUtils.addBinsChartUsage(gridpane, barsUsageSeries3, 2);
+        bar4Chart = BinarizeBenchmarkUIUtils.addBinsChartUsage(gridpane, barsUsageSeries4, 3);
+        box1 = BinarizeBenchmarkUIUtils.addAlgorithmSelection(gridpane, 0);
+        box2 = BinarizeBenchmarkUIUtils.addAlgorithmSelection(gridpane, 1);
+        box3 = BinarizeBenchmarkUIUtils.addAlgorithmSelection(gridpane, 2);
+        box4 = BinarizeBenchmarkUIUtils.addAlgorithmSelection(gridpane, 3);
+        box1.setOnAction(event -> method1 = BFGridFactory.getAlgorithmType(box1.getValue().toString()));
+        box2.setOnAction(event -> method2 = BFGridFactory.getAlgorithmType(box2.getValue().toString()));
+        box3.setOnAction(event -> method3 = BFGridFactory.getAlgorithmType(box3.getValue().toString()));
+        box4.setOnAction(event -> method4 = BFGridFactory.getAlgorithmType(box4.getValue().toString()));
+        algorithm1TotalBins = BinarizeBenchmarkUIUtils.addBinsCount(gridpane, 0);
+        algorithm2TotalBins = BinarizeBenchmarkUIUtils.addBinsCount(gridpane, 1);
+        algorithm3TotalBins = BinarizeBenchmarkUIUtils.addBinsCount(gridpane, 2);
+        algorithm4TotalBins = BinarizeBenchmarkUIUtils.addBinsCount(gridpane, 3);
+    }
+
+    private void setupBinarizeProgress(GridPane gridpane) {
         algorithm1Bar = BinarizeBenchmarkUIUtils.addProgressBar(gridpane, 0);
         algorithm2Bar = BinarizeBenchmarkUIUtils.addProgressBar(gridpane, 1);
         algorithm3Bar = BinarizeBenchmarkUIUtils.addProgressBar(gridpane, 2);
@@ -131,10 +191,13 @@ public class BinarizeBenchmark extends Application {
         algorithm3BinTime = BinarizeBenchmarkUIUtils.addBinarizeTime(gridpane, 2);
         algorithm4BinTime = BinarizeBenchmarkUIUtils.addBinarizeTime(gridpane, 3);
 
-        Button runButt = new Button("Run!");
-        GridPane.setHalignment(runButt, HPos.RIGHT);
-        gridpane.add(runButt, 1, 3);
+        thread1Enabled = BinarizeBenchmarkUIUtils.addAlgorithmEnabled(gridpane, 0);
+        thread2Enabled = BinarizeBenchmarkUIUtils.addAlgorithmEnabled(gridpane, 1);
+        thread3Enabled = BinarizeBenchmarkUIUtils.addAlgorithmEnabled(gridpane, 2);
+        thread4Enabled = BinarizeBenchmarkUIUtils.addAlgorithmEnabled(gridpane, 3);
+    }
 
+    private void setupRunButton(GridPane gridpane, Button runButt) {
         runButt.setOnAction(event -> {
             if (thread1Enabled.isSelected()) {
                 final String name1 = BFGridFactory.getAlgorithmName(method1);
@@ -260,56 +323,5 @@ public class BinarizeBenchmark extends Application {
                 }).start();
             }
         });
-
-        series1.setName("Algorithm 1");
-        series2.setName("Algorithm 2");
-        series3.setName("Algorithm 3");
-        series4.setName("Algorithm 4");
-        series1T.setName("Algorithm 1 train");
-        series2T.setName("Algorithm 2 train");
-        series3T.setName("Algorithm 3 train");
-        series4T.setName("Algorithm 4 train");
-        algorithm1Chart = BinarizeBenchmarkUIUtils.addAlgorithmChart(gridpane, series1, series1T, 0);
-        algorithm2Chart = BinarizeBenchmarkUIUtils.addAlgorithmChart(gridpane, series2, series2T, 1);
-        algorithm3Chart = BinarizeBenchmarkUIUtils.addAlgorithmChart(gridpane, series3, series3T, 2);
-        algorithm4Chart = BinarizeBenchmarkUIUtils.addAlgorithmChart(gridpane, series4, series4T, 3);
-
-        barsUsageSeries1.setName("Bins usage 1");
-        barsUsageSeries2.setName("Bins usage 2");
-        barsUsageSeries3.setName("Bins usage 3");
-        barsUsageSeries4.setName("Bins usage 4");
-
-        bar1Chart = BinarizeBenchmarkUIUtils.addBinsChartUsage(gridpane, barsUsageSeries1, 0);
-        bar2Chart = BinarizeBenchmarkUIUtils.addBinsChartUsage(gridpane, barsUsageSeries2, 1);
-        bar3Chart = BinarizeBenchmarkUIUtils.addBinsChartUsage(gridpane, barsUsageSeries3, 2);
-        bar4Chart = BinarizeBenchmarkUIUtils.addBinsChartUsage(gridpane, barsUsageSeries4, 3);
-
-        box1 = BinarizeBenchmarkUIUtils.addAlgorithmSelection(gridpane, 0);
-        box2 = BinarizeBenchmarkUIUtils.addAlgorithmSelection(gridpane, 1);
-        box3 = BinarizeBenchmarkUIUtils.addAlgorithmSelection(gridpane, 2);
-        box4 = BinarizeBenchmarkUIUtils.addAlgorithmSelection(gridpane, 3);
-        box1.setOnAction(event -> method1 = BFGridFactory.getAlgorithmType(box1.getValue().toString()));
-        box2.setOnAction(event -> method2 = BFGridFactory.getAlgorithmType(box2.getValue().toString()));
-        box3.setOnAction(event -> method3 = BFGridFactory.getAlgorithmType(box3.getValue().toString()));
-        box4.setOnAction(event -> method4 = BFGridFactory.getAlgorithmType(box4.getValue().toString()));
-
-        algorithm1FinalScore = BinarizeBenchmarkUIUtils.addScore(gridpane, 0);
-        algorithm2FinalScore = BinarizeBenchmarkUIUtils.addScore(gridpane, 1);
-        algorithm3FinalScore = BinarizeBenchmarkUIUtils.addScore(gridpane, 2);
-        algorithm4FinalScore = BinarizeBenchmarkUIUtils.addScore(gridpane, 3);
-
-        algorithm1TotalBins = BinarizeBenchmarkUIUtils.addBinsCount(gridpane, 0);
-        algorithm2TotalBins = BinarizeBenchmarkUIUtils.addBinsCount(gridpane, 1);
-        algorithm3TotalBins = BinarizeBenchmarkUIUtils.addBinsCount(gridpane, 2);
-        algorithm4TotalBins = BinarizeBenchmarkUIUtils.addBinsCount(gridpane, 3);
-
-        thread1Enabled = BinarizeBenchmarkUIUtils.addAlgorithmEnabled(gridpane, 0);
-        thread2Enabled = BinarizeBenchmarkUIUtils.addAlgorithmEnabled(gridpane, 1);
-        thread3Enabled = BinarizeBenchmarkUIUtils.addAlgorithmEnabled(gridpane, 2);
-        thread4Enabled = BinarizeBenchmarkUIUtils.addAlgorithmEnabled(gridpane, 3);
-
-        root.getChildren().add(gridpane);
-        primaryStage.setScene(new Scene(root, 1920, 900));
-        primaryStage.show();
     }
 }
