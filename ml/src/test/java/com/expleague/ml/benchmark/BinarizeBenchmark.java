@@ -25,6 +25,7 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class BinarizeBenchmark extends Application {
     public static Pool<?> dataset;
@@ -91,6 +92,14 @@ public class BinarizeBenchmark extends Application {
 
     private SettingsConfig settings = new SettingsConfig();
 
+    private Label rs = new Label();
+    private Label ls = new Label();
+    private Label bf = new Label();
+    private Label td = new Label();
+    private Label ic = new Label();
+    private Label ss = new Label();
+
+
     private static synchronized void loadDataSet() {
         try {
             dataset = TestResourceLoader.loadPool("features.txt");
@@ -134,7 +143,7 @@ public class BinarizeBenchmark extends Application {
 
         Button runButt = new Button("Run!");
         GridPane.setHalignment(runButt, HPos.RIGHT);
-        gridpane.add(runButt, 1, 3);
+        gridpane.add(runButt, 7, 3);
         setupRunButton(runButt);
 
         setupScoreCharts(gridpane);
@@ -153,7 +162,7 @@ public class BinarizeBenchmark extends Application {
 
             TextField randomSeedField = addSettingsItem(settingsPane, "Random seed:", String.valueOf(settings.getSeed()), 0);
             TextField learnSize = addSettingsItem(settingsPane, "Learn size:", String.valueOf(settings.getLearnSize()), 1);
-            TextField binFactor = addSettingsItem(settingsPane, "Bin factor: ", String.valueOf(settings.getBinFactor()), 2);
+            TextField binFactor = addSettingsItem(settingsPane, "Bin factor:", String.valueOf(settings.getBinFactor()), 2);
             TextField treeDepth = addSettingsItem(settingsPane, "Tree depth:", String.valueOf(settings.getTreeDepth()), 3);
             TextField itersCount = addSettingsItem(settingsPane, "Iterations count:", String.valueOf(settings.getIters()), 4);
             TextField stepSize = addSettingsItem(settingsPane, "Step size:", String.valueOf(settings.getStep()), 5);
@@ -179,6 +188,13 @@ public class BinarizeBenchmark extends Application {
                     settings = new SettingsConfig();
                 }
 
+                rs.setText(String.valueOf(settings.getSeed()));
+                ls.setText(String.valueOf(settings.getLearnSize()));
+                bf.setText(String.valueOf(settings.getBinFactor()));
+                td.setText(String.valueOf(settings.getTreeDepth()));
+                ic.setText(String.valueOf(settings.getIters()));
+                ss.setText(String.valueOf(settings.getStep()));
+
                 settingsWindow.close();
             });
 
@@ -187,9 +203,32 @@ public class BinarizeBenchmark extends Application {
             settingsWindow.show();
         });
 
+        Label cfgTitle = new Label("Current configuration");
+        GridPane.setHalignment(cfgTitle, HPos.LEFT);
+        gridpane.add(cfgTitle, 2, 0, 2, 1);
+
+        rs = addParam(gridpane, "Random seed:", String.valueOf(settings.getSeed()), 1, 1);
+        ls = addParam(gridpane, "Learn size:", String.valueOf(settings.getLearnSize()), 2, 1);
+        bf = addParam(gridpane, "Bin factor:", String.valueOf(settings.getBinFactor()), 3, 1);
+        td = addParam(gridpane, "Tree depth:", String.valueOf(settings.getTreeDepth()), 1, 3);
+        ic = addParam(gridpane, "Iterations count:", String.valueOf(settings.getIters()), 2, 3);
+        ss = addParam(gridpane, "Step size:", String.valueOf(settings.getStep()), 3, 3);
+
         root.getChildren().add(gridpane);
         primaryStage.setScene(new Scene(root, 1920, 900));
         primaryStage.show();
+    }
+
+    private Label addParam(GridPane gridPane, String name, String value, int row, int col) {
+        Label label = new Label(name);
+        GridPane.setHalignment(label, HPos.LEFT);
+        gridPane.add(label, col, row);
+
+        Label labelV = new Label(value);
+        GridPane.setHalignment(labelV, HPos.CENTER);
+        gridPane.add(labelV, col + 1, row);
+
+        return labelV;
     }
 
     private TextField addSettingsItem(GridPane settingsPane, String title, String value, int index) {
