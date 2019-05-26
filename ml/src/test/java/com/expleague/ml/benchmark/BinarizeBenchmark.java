@@ -164,7 +164,7 @@ public class BinarizeBenchmark extends Application {
             TextField learnSize = addSettingsItem(settingsPane, "Learn size:", String.valueOf(settings.getLearnSize()), 1);
             TextField binFactor = addSettingsItem(settingsPane, "Bin factor:", String.valueOf(settings.getBinFactor()), 2);
             TextField treeDepth = addSettingsItem(settingsPane, "Tree depth:", String.valueOf(settings.getTreeDepth()), 3);
-            TextField itersCount = addSettingsItem(settingsPane, "Iterations count:", String.valueOf(settings.getIters()), 4);
+            TextField itersCount = addSettingsItem(settingsPane, "Iterations:", String.valueOf(settings.getIters()), 4);
             TextField stepSize = addSettingsItem(settingsPane, "Step size:", String.valueOf(settings.getStep()), 5);
 
 
@@ -203,15 +203,20 @@ public class BinarizeBenchmark extends Application {
             settingsWindow.show();
         });
 
-        Label cfgTitle = new Label("Current configuration");
-        GridPane.setHalignment(cfgTitle, HPos.LEFT);
-        gridpane.add(cfgTitle, 2, 0, 2, 1);
+        Label cfgTitle = new Label("current configuration".toUpperCase());
+        cfgTitle.setStyle
+                (
+                        "-fx-font-size: 19px;"
+                                + "-fx-font-weight: bold;"
+                );
+        GridPane.setHalignment(cfgTitle, HPos.CENTER);
+        gridpane.add(cfgTitle, 1, 0, 4, 1);
 
         rs = addParam(gridpane, "Random seed:", String.valueOf(settings.getSeed()), 1, 1);
         ls = addParam(gridpane, "Learn size:", String.valueOf(settings.getLearnSize()), 2, 1);
         bf = addParam(gridpane, "Bin factor:", String.valueOf(settings.getBinFactor()), 3, 1);
         td = addParam(gridpane, "Tree depth:", String.valueOf(settings.getTreeDepth()), 1, 3);
-        ic = addParam(gridpane, "Iterations count:", String.valueOf(settings.getIters()), 2, 3);
+        ic = addParam(gridpane, "Iterations:", String.valueOf(settings.getIters()), 2, 3);
         ss = addParam(gridpane, "Step size:", String.valueOf(settings.getStep()), 3, 3);
 
         root.getChildren().add(gridpane);
@@ -221,10 +226,20 @@ public class BinarizeBenchmark extends Application {
 
     private Label addParam(GridPane gridPane, String name, String value, int row, int col) {
         Label label = new Label(name);
+        label.setStyle
+                (
+                        "-fx-font-size: 15px;"
+                                + "-fx-font-weight: 500;"
+                );
         GridPane.setHalignment(label, HPos.LEFT);
         gridPane.add(label, col, row);
 
         Label labelV = new Label(value);
+        labelV.setStyle
+                (
+                        "-fx-font-size: 15px;"
+                                + "-fx-font-weight: bold;"
+                );
         GridPane.setHalignment(labelV, HPos.CENTER);
         gridPane.add(labelV, col + 1, row);
 
