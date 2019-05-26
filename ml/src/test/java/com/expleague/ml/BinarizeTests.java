@@ -789,7 +789,7 @@ public class BinarizeTests extends GridTest {
             }
         }
 
-        final Pool<?> pool = TestResourceLoader.loadXPool("x.txt");
+        final Pool<?> pool = TestResourceLoader.loadXPool("electricity.txt");
 
 
         List<? extends Pool<?>> split_local_all = DataTools.splitDataSet(pool, rand, 0.2, 0.8);

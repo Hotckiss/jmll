@@ -19,6 +19,8 @@ public class DatasetsFactory {
                 return FakePoolsGenerator.sameFeaturesPoolDupl(50, 12000, 0.25);
             case RANDOM_FUNCS:
                 return FakePoolsGenerator.randomFuncsPool(50 , 12000);
+            case ELECTRICITY:
+                return TestResourceLoader.loadXPool("electricity.txt");
         }
 
         return TestResourceLoader.loadPool("features.txt");
@@ -36,6 +38,8 @@ public class DatasetsFactory {
                 return "Same features + duplicates";
             case RANDOM_FUNCS:
                 return "Random functions";
+            case ELECTRICITY:
+                return "Electricity stability";
         }
 
         return "Median division";
@@ -53,6 +57,8 @@ public class DatasetsFactory {
                 return DatasetType.SAME_DUPL_0_25;
             case "Random functions":
                 return DatasetType.RANDOM_FUNCS;
+            case "Electricity stability":
+                return DatasetType.ELECTRICITY;
             default:
                 return DatasetType.FEATURES_TXT;
         }

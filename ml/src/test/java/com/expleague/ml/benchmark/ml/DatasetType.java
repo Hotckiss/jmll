@@ -5,5 +5,6 @@ public enum DatasetType {
     SAME,
     SAME_LOG,
     SAME_DUPL_0_25,
-    RANDOM_FUNCS
+    RANDOM_FUNCS,
+    ELECTRICITY
 }
