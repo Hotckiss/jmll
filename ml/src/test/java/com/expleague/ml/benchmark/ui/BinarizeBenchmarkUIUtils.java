@@ -12,6 +12,9 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 public class BinarizeBenchmarkUIUtils {
     public static GridPane makeGridPane() {
         GridPane gridpane = new GridPane();
@@ -21,25 +24,11 @@ public class BinarizeBenchmarkUIUtils {
 
         RowConstraints row7 = new RowConstraints(300);
         RowConstraints row9 = new RowConstraints(300);
-        ColumnConstraints column1 = new ColumnConstraints(100);
-        ColumnConstraints column2 = new ColumnConstraints(100);
-        ColumnConstraints column3 = new ColumnConstraints(100);
-        ColumnConstraints column4 = new ColumnConstraints(100);
-        ColumnConstraints column5 = new ColumnConstraints(100);
-        ColumnConstraints column6 = new ColumnConstraints(100);
-        ColumnConstraints column7 = new ColumnConstraints(100);
-        ColumnConstraints column8 = new ColumnConstraints(100);
-        ColumnConstraints column9 = new ColumnConstraints(100);
-        ColumnConstraints column10 = new ColumnConstraints(100);
-        ColumnConstraints column11= new ColumnConstraints(100);
-        ColumnConstraints column12 = new ColumnConstraints(100);
-        ColumnConstraints column13= new ColumnConstraints(100);
-        ColumnConstraints column14 = new ColumnConstraints(100);
-        ColumnConstraints column15 = new ColumnConstraints(100);
-        ColumnConstraints column16 = new ColumnConstraints(100);
-        column2.setHgrow(Priority.ALWAYS);
-        gridpane.getColumnConstraints().addAll(column1, column2, column3, column4, column5, column6, column7, column8,
-                column9,column10,column11,column12,column13,column14,column15,column16);
+        ArrayList<ColumnConstraints> al = new ArrayList<>();
+        for (int i = 0; i < 16; i++) {
+            al.add(new ColumnConstraints(100));
+        }
+        gridpane.getColumnConstraints().addAll(al);
         gridpane.getRowConstraints().addAll(new RowConstraints(), new RowConstraints(), new RowConstraints(), new RowConstraints(), new RowConstraints(),
                 new RowConstraints(), new RowConstraints(), row7, new RowConstraints(), row9, new RowConstraints());
 
