@@ -261,7 +261,7 @@ public class BinarizeBenchmark extends Application {
         ss = addParam(gridpane, "Step size:", String.valueOf(settings.getStep()), 3, 3);
 
         root.getChildren().add(gridpane);
-        primaryStage.setScene(new Scene(root, 1740, 940));
+        primaryStage.setScene(new Scene(root, 1740, 960));
         primaryStage.show();
     }
 

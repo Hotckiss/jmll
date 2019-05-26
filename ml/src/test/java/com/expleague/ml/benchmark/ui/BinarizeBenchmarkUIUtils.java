@@ -119,10 +119,20 @@ public class BinarizeBenchmarkUIUtils {
 
     public static Label addBinarizeTime(GridPane gridpane, int index) {
         Label binLabel = new Label("Time:");
+        binLabel.setStyle
+                (
+                        "-fx-font-size: 13px;"
+                                + "-fx-font-weight:500;"
+                );
         GridPane.setHalignment(binLabel, HPos.CENTER);
         gridpane.add(binLabel, index * 4 + 2, 5);
 
         Label timeLabel = new Label();
+        timeLabel.setStyle
+                (
+                        "-fx-font-size: 13px;"
+                                + "-fx-font-weight: bold;"
+                );
         GridPane.setHalignment(timeLabel, HPos.LEFT);
         gridpane.add(timeLabel, index * 4 + 3, 5, 2, 1);
 
@@ -143,10 +153,20 @@ public class BinarizeBenchmarkUIUtils {
 
     public static Label addScore(GridPane gridpane, int index) {
         Label binLabel = new Label("Best score:");
+        binLabel.setStyle
+                (
+                        "-fx-font-size: 13px;"
+                                + "-fx-font-weight: 500;"
+                );
         GridPane.setHalignment(binLabel, HPos.CENTER);
         gridpane.add(binLabel, index * 4 + 1, 8);
 
         Label timeLabel = new Label();
+        timeLabel.setStyle
+                (
+                        "-fx-font-size: 13px;"
+                                + "-fx-font-weight: bold;"
+                );
         GridPane.setHalignment(timeLabel, HPos.LEFT);
         gridpane.add(timeLabel, index * 4 + 2, 8, 2, 1);
 
@@ -155,10 +175,20 @@ public class BinarizeBenchmarkUIUtils {
 
     public static Label addBinsCount(GridPane gridpane, int index) {
         Label binLabel = new Label("Total bins:");
+        binLabel.setStyle
+                (
+                        "-fx-font-size: 13px;"
+                                + "-fx-font-weight: 500;"
+                );
         GridPane.setHalignment(binLabel, HPos.CENTER);
         gridpane.add(binLabel, index * 4 + 1, 10);
 
         Label timeLabel = new Label();
+        timeLabel.setStyle
+                (
+                        "-fx-font-size: 13px;"
+                                + "-fx-font-weight: bold;"
+                );
         GridPane.setHalignment(timeLabel, HPos.LEFT);
         gridpane.add(timeLabel, index * 4 + 2, 10, 2, 1);
 
