@@ -168,6 +168,36 @@ public class DataTools {
     );
   }
 
+  public static FeaturesTxtPool loadCT(final String fileName, final Reader in) throws IOException {
+    final List<QURLItem> items = new ArrayList<>();
+    final VecBuilder target = new VecBuilder();
+    final VecBuilder data = new VecBuilder();
+    final int[] featuresCount = new int[]{-1};
+    CharSeqTools.processLines(in, new Consumer<CharSequence>() {
+      int lindex = 0;
+
+      @Override
+      public void accept(final CharSequence arg) {
+        lindex++;
+        final CharSequence[] parts = CharSeqTools.split(arg, ',');
+        items.add(new QURLItem(CharSeqTools.parseInt(parts[0]), "2", 3));
+        target.append(CharSeqTools.parseDouble(parts[parts.length - 1]));
+        if (featuresCount[0] < 0)
+          featuresCount[0] = parts.length - 2;
+        else if (featuresCount[0] != parts.length - 2)
+          throw new RuntimeException("\"Failed to parse line \" + lindex + \":\"");
+        for (int i = 1; i < parts.length - 1; i++) {
+          data.append(CharSeqTools.parseDouble(parts[i]));
+        }
+      }
+    });
+    return new FeaturesTxtPool(
+            new ArraySeq<>(items.toArray(new QURLItem[items.size()])),
+            new VecBasedMx(featuresCount[0], data.build()),
+            target.build()
+    );
+  }
+
   public static FeaturesTxtPool loadGeneric(final String fileName, final Reader in, ArrayList<Integer> selectedCols, int targetCol) throws IOException {
     final List<QURLItem> items = new ArrayList<>();
     final VecBuilder target = new VecBuilder();
