@@ -37,6 +37,11 @@ public class SettingsConfig {
     }
 
     public void setSeed(int seed) {
+        if (seed < 1) {
+            this.seed = 1;
+            return;
+        }
+
         this.seed = seed;
     }
 
@@ -45,6 +50,11 @@ public class SettingsConfig {
     }
 
     public void setLearnSize(double learnSize) {
+        if (learnSize >= 1) {
+            this.learnSize = 0.99;
+            return;
+        }
+
         this.learnSize = learnSize;
     }
 
@@ -53,6 +63,11 @@ public class SettingsConfig {
     }
 
     public void setBinFactor(int binFactor) {
+        if (binFactor <= 0) {
+            this.binFactor = 1;
+            return;
+        }
+
         this.binFactor = binFactor;
     }
 
@@ -61,6 +76,11 @@ public class SettingsConfig {
     }
 
     public void setTreeDepth(int treeDepth) {
+        if (treeDepth < 1) {
+            this.treeDepth = 6;
+            return;
+        }
+
         this.treeDepth = treeDepth;
     }
 
@@ -69,6 +89,11 @@ public class SettingsConfig {
     }
 
     public void setIters(int iters) {
+        if (iters < 1) {
+            this.iters = 2000;
+            return;
+        }
+
         this.iters = iters;
     }
 
@@ -77,6 +102,16 @@ public class SettingsConfig {
     }
 
     public void setStep(double step) {
+        if (step > 1) {
+            this.step = 1;
+            return;
+        }
+
+        if (step <= 0) {
+            this.step = 0.005;
+            return;
+        }
+
         this.step = step;
     }
 }
