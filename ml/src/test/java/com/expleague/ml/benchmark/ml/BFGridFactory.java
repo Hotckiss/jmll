@@ -3,10 +3,7 @@ package com.expleague.ml.benchmark.ml;
 import com.expleague.ml.BFGrid;
 import com.expleague.ml.GridTools;
 import com.expleague.ml.BuildProgressHandler;
-import com.expleague.ml.binarization.algorithms.D2Algorithm;
-import com.expleague.ml.binarization.algorithms.EntropyDiscretization;
-import com.expleague.ml.binarization.algorithms.EqualFrequencyBinarization;
-import com.expleague.ml.binarization.algorithms.EqualWidthBinarization;
+import com.expleague.ml.binarization.algorithms.*;
 import com.expleague.ml.data.set.VecDataSet;
 import com.expleague.ml.data.tools.Pool;
 import javafx.application.Platform;
@@ -57,6 +54,9 @@ public class BFGridFactory {
             case PROBABILITY_MEDIAN:
                 res = probabilityGridMedian(data, binFactor, buildProgressHandler);
                 break;
+            case PROBABILITY_PARALLEL:
+                res = ProbabilityGridParallel.probabilityGrid(data, binFactor, buildProgressHandler);
+                break;
             default:
                 res =  GridTools.medianGrid(data, binFactor, buildProgressHandler);
                 break;
@@ -94,6 +94,8 @@ public class BFGridFactory {
                 return binFactor * data.xdim() * data.xdim();
             case PROBABILITY_MEDIAN:
                 return binFactor * data.xdim() * data.xdim();
+            case PROBABILITY_PARALLEL:
+                return binFactor * data.xdim() * data.xdim();
         }
 
         return binFactor;
@@ -123,6 +125,8 @@ public class BFGridFactory {
                 return "Probability + presorting features";
             case PROBABILITY_MEDIAN:
                 return "Probability with median best";
+            case PROBABILITY_PARALLEL:
+                return "Probability parallel";
         }
 
         return "Median division";
@@ -162,6 +166,8 @@ public class BFGridFactory {
                 return MethodType.PROBABILITY_PRESORT;
             case "Probability with median best":
                 return MethodType.PROBABILITY_MEDIAN;
+            case "Probability parallel":
+                return MethodType.PROBABILITY_PARALLEL;
             default:
                 return MethodType.MEDIAN;
         }

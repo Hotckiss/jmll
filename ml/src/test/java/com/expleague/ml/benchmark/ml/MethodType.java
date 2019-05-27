@@ -11,5 +11,6 @@ public enum MethodType {
     EQUAL_FREQUENCY,
     EQUAL_WIDTH,
     MDLP,
-    D2
+    D2,
+    PROBABILITY_PARALLEL
 }
