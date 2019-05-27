@@ -209,15 +209,30 @@ public class DataTools {
       @Override
       public void accept(final CharSequence arg) {
         lindex++;
-        final CharSequence[] parts = CharSeqTools.split(arg, ',');
-        items.add(new QURLItem(1, "2", 3));
-        target.append(CharSeqTools.parseDouble(parts[parts.length - 1]));
+        final CharSequence[] parts = CharSeqTools.split(arg, ' ');
+        //query id is the last
+        // no URL and group id
+        items.add(new QURLItem(CharSeqTools.parseInt(parts[parts.length - 1]), "", 3));
+        //target is the first
+        target.append(CharSeqTools.parseDouble(parts[0]));
+        //245 features
         if (featuresCount[0] < 0)
-          featuresCount[0] = parts.length - 2;
-        else if (featuresCount[0] != parts.length - 2)
+          featuresCount[0] = 245;
+        else if (featuresCount[0] != 245)
           throw new RuntimeException("\"Failed to parse line \" + lindex + \":\"");
-        for (int i = 1; i < parts.length - 1; i++) {
-          data.append(CharSeqTools.parseDouble(parts[i]));
+        // skip first -- target
+        // skip # id -- two items
+        int featureId = 1;
+        for (int i = 1; i < parts.length - 2; i++) {
+          //TODO: parse feature
+          CharSequence[] kv = CharSeqTools.split(arg, ':');
+          int fid = CharSeqTools.parseInt(kv[0]);
+          while(featureId < fid) {
+            data.append(0);
+            featureId++;
+          }
+          data.append(CharSeqTools.parseDouble(kv[1]));
+          featureId++;
         }
       }
     });
