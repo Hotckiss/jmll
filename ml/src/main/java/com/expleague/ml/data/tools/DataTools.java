@@ -210,6 +210,10 @@ public class DataTools {
       public void accept(final CharSequence arg) {
         lindex++;
         final CharSequence[] parts = CharSeqTools.split(arg, ' ');
+        //System.out.println(parts.length);
+        //System.out.println(CharSeqTools.parseInt(parts[parts.length - 1]));
+        //System.out.println(CharSeqTools.parseInt(parts[0]));
+        //System.out.println(parts[parts.length - 2].toString());
         //query id is the last
         // no URL and group id
         items.add(new QURLItem(CharSeqTools.parseInt(parts[parts.length - 1]), "", 3));
@@ -222,18 +226,24 @@ public class DataTools {
           throw new RuntimeException("\"Failed to parse line \" + lindex + \":\"");
         // skip first -- target
         // skip # id -- two items
-        int featureId = 1;
+        //int featureId = 1;
+        HashMap<Integer, Double> mp = new HashMap<>();
         for (int i = 1; i < parts.length - 2; i++) {
           //TODO: parse feature
-          CharSequence[] kv = CharSeqTools.split(arg, ':');
+          CharSequence[] kv = CharSeqTools.split(parts[i], ':');
           int fid = CharSeqTools.parseInt(kv[0]);
-          while(featureId < fid) {
-            data.append(0);
-            featureId++;
-          }
-          data.append(CharSeqTools.parseDouble(kv[1]));
-          featureId++;
+          double val = CharSeqTools.parseDouble(kv[1]);
+          mp.put(fid - 1, val);
         }
+
+        for (int t = 0; t < 245; t++) {
+          if (mp.containsKey(t)) {
+            data.append(mp.get(t));
+          } else {
+            data.append(0);
+          }
+        }
+        //System.out.println(data.build().dim());
       }
     });
     return new FeaturesTxtPool(
