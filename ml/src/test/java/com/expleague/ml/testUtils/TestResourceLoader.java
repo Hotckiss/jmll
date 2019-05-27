@@ -64,4 +64,12 @@ public final class TestResourceLoader {
             : new InputStreamReader(stream);
     return DataTools.loadGeneric(localPath, reader, selectedCols, targetCol);
   }
+
+  public static Pool<?> loadMathPool(final String localPath) throws IOException {
+    //System.out.println(localPath);
+    final InputStream stream = loadResourceAsStream(localPath);
+    final InputStreamReader reader = localPath.endsWith(".gz") ? new InputStreamReader(new GZIPInputStream(stream))
+            : new InputStreamReader(stream);
+    return DataTools.loadMath(localPath, reader);
+  }
 }
