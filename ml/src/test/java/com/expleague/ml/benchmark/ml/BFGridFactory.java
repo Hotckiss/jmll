@@ -54,8 +54,14 @@ public class BFGridFactory {
             case PROBABILITY_MEDIAN:
                 res = probabilityGridMedian(data, binFactor, buildProgressHandler);
                 break;
-            case PROBABILITY_PARALLEL:
-                res = ProbabilityGridParallel.probabilityGrid(data, binFactor, buildProgressHandler);
+            case PROBABILITY_PARALLEL_2:
+                res = ProbabilityGridParallel.probabilityGrid(data, binFactor, buildProgressHandler, 2);
+                break;
+            case PROBABILITY_PARALLEL_4:
+                res = ProbabilityGridParallel.probabilityGrid(data, binFactor, buildProgressHandler, 4);
+                break;
+            case PROBABILITY_PARALLEL_8:
+                res = ProbabilityGridParallel.probabilityGrid(data, binFactor, buildProgressHandler, 8);
                 break;
             default:
                 res =  GridTools.medianGrid(data, binFactor, buildProgressHandler);
@@ -94,7 +100,11 @@ public class BFGridFactory {
                 return binFactor * data.xdim() * data.xdim();
             case PROBABILITY_MEDIAN:
                 return binFactor * data.xdim() * data.xdim();
-            case PROBABILITY_PARALLEL:
+            case PROBABILITY_PARALLEL_2:
+                return binFactor * data.xdim() * data.xdim();
+            case PROBABILITY_PARALLEL_4:
+                return binFactor * data.xdim() * data.xdim();
+            case PROBABILITY_PARALLEL_8:
                 return binFactor * data.xdim() * data.xdim();
         }
 
@@ -125,8 +135,12 @@ public class BFGridFactory {
                 return "Probability + presorting features";
             case PROBABILITY_MEDIAN:
                 return "Probability with median best";
-            case PROBABILITY_PARALLEL:
-                return "Probability parallel";
+            case PROBABILITY_PARALLEL_2:
+                return "Probability parallel @2";
+            case PROBABILITY_PARALLEL_4:
+                return "Probability parallel @4";
+            case PROBABILITY_PARALLEL_8:
+                return "Probability parallel @8";
         }
 
         return "Median division";
@@ -166,8 +180,12 @@ public class BFGridFactory {
                 return MethodType.PROBABILITY_PRESORT;
             case "Probability with median best":
                 return MethodType.PROBABILITY_MEDIAN;
-            case "Probability parallel":
-                return MethodType.PROBABILITY_PARALLEL;
+            case "Probability parallel @2":
+                return MethodType.PROBABILITY_PARALLEL_2;
+            case "Probability parallel @4":
+                return MethodType.PROBABILITY_PARALLEL_4;
+            case "Probability parallel @8":
+                return MethodType.PROBABILITY_PARALLEL_8;
             default:
                 return MethodType.MEDIAN;
         }

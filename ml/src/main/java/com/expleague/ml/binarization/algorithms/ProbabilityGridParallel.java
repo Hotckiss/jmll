@@ -25,7 +25,7 @@ public class ProbabilityGridParallel {
      * @param binFactor
      * @return
      */
-    public static BFGrid probabilityGrid(final VecDataSet ds, final int binFactor, BuildProgressHandler buildProgressHandler) {
+    public static BFGrid probabilityGrid(final VecDataSet ds, final int binFactor, BuildProgressHandler buildProgressHandler, final int threadsCount) {
         assert (binFactor < ds.length());
 
         final int dim = ds.xdim();
@@ -71,44 +71,18 @@ public class ProbabilityGridParallel {
 
                 PartitionResult bestFromAll = PartitionResult.makeWorst();
 
-                for (int paired_feature_index = 0; paired_feature_index < dim; paired_feature_index += 4) {
-                    buildProgressHandler.step();
-                    buildProgressHandler.step();
-                    buildProgressHandler.step();
-                    buildProgressHandler.step();
-                    Thread t1 = null;
-                    Thread t2 = null;
-                    Thread t3 = null;
-                    Thread t4 = null;
+                for (int paired_feature_index = 0; paired_feature_index < dim; paired_feature_index += threadsCount) {
+                    ArrayList<Thread> threads = new ArrayList<>();
                     final int fi = feature_index;
+                    for (int t = 0; t < threadsCount; t++) {
+                        final int pi = paired_feature_index + t;
+                        if (pi >= dim) continue;
+                        buildProgressHandler.step();
+                        if (pi == fi) continue;
+                        threads.add(new Thread(() -> {
+                            final int[] reversePaired = reverces.get(pi).permutation;
 
-                    if (paired_feature_index != feature_index) {
-                        final int p = paired_feature_index;
-                        t1 = new Thread(() -> {
-                            final int[] reversePaired = reverces.get(p).permutation;
-
-                            int[] binNumberMapper = buildBinsMapper(currentBorders.get(p), reverse, reversePaired);
-
-                            PartitionResult bestResult = PartitionResult.makeWorst();
-
-                            bestResult = bestPartitionWithMapper_veryFast(binNumberMapper, feature, currentBorders.get(fi));
-
-                            synchronized (bestFromAll) {
-                                if (bestFromAll.getScore() < bestResult.getScore()) {
-                                    bestFromAll.setScore(bestResult.getScore());
-                                    bestFromAll.setSplitPosition(bestResult.getSplitPosition());
-                                }
-                            }
-                        });
-
-                    }
-
-                    if (paired_feature_index + 1 < dim && paired_feature_index + 1 != feature_index) {
-                        final int p = paired_feature_index + 1;
-                        t2 = new Thread(() -> {
-                            final int[] reversePaired = reverces.get(p).permutation;
-
-                            int[] binNumberMapper = buildBinsMapper(currentBorders.get(p), reverse, reversePaired);
+                            int[] binNumberMapper = buildBinsMapper(currentBorders.get(pi), reverse, reversePaired);
 
                             PartitionResult bestResult = PartitionResult.makeWorst();
 
@@ -120,95 +94,19 @@ public class ProbabilityGridParallel {
                                     bestFromAll.setSplitPosition(bestResult.getSplitPosition());
                                 }
                             }
-                        });
+                        }));
                     }
 
-                    if (paired_feature_index + 2 < dim && paired_feature_index + 2 != feature_index) {
-                        final int p = paired_feature_index + 2;
-                        t3 = new Thread(() -> {
-                            final int[] reversePaired = reverces.get(p).permutation;
-
-                            int[] binNumberMapper = buildBinsMapper(currentBorders.get(p), reverse, reversePaired);
-
-                            PartitionResult bestResult = PartitionResult.makeWorst();
-
-                            bestResult = bestPartitionWithMapper_veryFast(binNumberMapper, feature, currentBorders.get(fi));
-
-                            synchronized (bestFromAll) {
-                                if (bestFromAll.getScore() < bestResult.getScore()) {
-                                    bestFromAll.setScore(bestResult.getScore());
-                                    bestFromAll.setSplitPosition(bestResult.getSplitPosition());
-                                }
-                            }
-                        });
+                    for (Thread th : threads) {
+                        th.start();
                     }
 
-                    if (paired_feature_index + 3 < dim && paired_feature_index + 3 != feature_index) {
-                        final int p = paired_feature_index + 3;
-                        t4 = new Thread(() -> {
-                            final int[] reversePaired = reverces.get(p).permutation;
-
-                            int[] binNumberMapper = buildBinsMapper(currentBorders.get(p), reverse, reversePaired);
-
-                            PartitionResult bestResult = PartitionResult.makeWorst();
-
-                            bestResult = bestPartitionWithMapper_veryFast(binNumberMapper, feature, currentBorders.get(fi));
-
-                            synchronized (bestFromAll) {
-                                if (bestFromAll.getScore() < bestResult.getScore()) {
-                                    bestFromAll.setScore(bestResult.getScore());
-                                    bestFromAll.setSplitPosition(bestResult.getSplitPosition());
-                                }
-                            }
-                        });
-                    }
-
-                    if (t1 != null) {
-                        t1.start();
-                    }
-
-                    if (t2 != null) {
-                        t2.start();
-                    }
-
-                    if (t3 != null) {
-                        t3.start();
-                    }
-
-                    if (t4 != null) {
-                        t4.start();
-                    }
-
-                    try {
-                        if (t1 != null) {
-                            t1.join();
+                    for (Thread th : threads) {
+                        try {
+                            th.join();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
                         }
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-
-                    try {
-                        if (t2 != null) {
-                            t2.join();
-                        }
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-
-                    try {
-                        if (t3 != null) {
-                            t3.join();
-                        }
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-
-                    try {
-                        if (t4 != null) {
-                            t4.join();
-                        }
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
                     }
                 }
 
