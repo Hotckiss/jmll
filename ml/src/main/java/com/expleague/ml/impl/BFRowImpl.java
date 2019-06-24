@@ -52,6 +52,8 @@ public class BFRowImpl implements BFGrid.Row {
 
   @Override
   public BinaryFeatureImpl bf(final int index) {
+
+    //System.out.println(bfStart + index);
     return bfs[index];
   }
 

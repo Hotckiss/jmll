@@ -28,6 +28,7 @@ public class BFGridImpl implements BFGrid {
     for (int i = 0; i < features.length; i++) {
       while (rowIndex < rows.length && i >= rows[rowIndex].bfEnd)
         rowIndex++;
+      //System.out.println("INDEX: " + (i - rows[rowIndex].bfStart));
       features[i] = rows[rowIndex].bf(i - rows[rowIndex].bfStart);
     }
 

@@ -5,6 +5,7 @@ import com.expleague.ml.data.tools.DataTools;
 
 import java.io.*;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.zip.GZIPInputStream;
 
 /**
@@ -33,10 +34,42 @@ public final class TestResourceLoader {
   }
 
   public static Pool<?> loadPool(final String localPath) throws IOException {
+    //System.out.println(localPath);
     final InputStream stream = loadResourceAsStream(localPath);
     final InputStreamReader reader = localPath.endsWith(".gz") ? new InputStreamReader(new GZIPInputStream(stream))
                                                                : new InputStreamReader(stream);
     return DataTools.loadFromFeaturesTxt(localPath, reader);
   }
 
+  public static Pool<?> loadXPool(final String localPath) throws IOException {
+    //System.out.println(localPath);
+    final InputStream stream = loadResourceAsStream(localPath);
+    final InputStreamReader reader = localPath.endsWith(".gz") ? new InputStreamReader(new GZIPInputStream(stream))
+            : new InputStreamReader(stream);
+    return DataTools.loadFromXTxt(localPath, reader);
+  }
+
+  public static Pool<?> loadCTPool(final String localPath) throws IOException {
+    //System.out.println(localPath);
+    final InputStream stream = loadResourceAsStream(localPath);
+    final InputStreamReader reader = localPath.endsWith(".gz") ? new InputStreamReader(new GZIPInputStream(stream))
+            : new InputStreamReader(stream);
+    return DataTools.loadCT(localPath, reader);
+  }
+
+  public static Pool<?> loadGenericPool(final String localPath, ArrayList<Integer> selectedCols, int targetCol) throws IOException {
+    //System.out.println(localPath);
+    final InputStream stream = loadResourceAsStream(localPath);
+    final InputStreamReader reader = localPath.endsWith(".gz") ? new InputStreamReader(new GZIPInputStream(stream))
+            : new InputStreamReader(stream);
+    return DataTools.loadGeneric(localPath, reader, selectedCols, targetCol);
+  }
+
+  public static Pool<?> loadMathPool(final String localPath) throws IOException {
+    //System.out.println(localPath);
+    final InputStream stream = loadResourceAsStream(localPath);
+    final InputStreamReader reader = localPath.endsWith(".gz") ? new InputStreamReader(new GZIPInputStream(stream))
+            : new InputStreamReader(stream);
+    return DataTools.loadMath(localPath, reader);
+  }
 }

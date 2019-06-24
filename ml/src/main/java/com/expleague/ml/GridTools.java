@@ -2,6 +2,10 @@ package com.expleague.ml;
 
 import com.expleague.commons.math.AnalyticFunc;
 import com.expleague.commons.math.vectors.Vec;
+import com.expleague.ml.binarization.partitions.PartitionResult;
+import com.expleague.ml.binarization.partitions.PartitionResultBigInt;
+import com.expleague.ml.binarization.wrappers.PermutationWrapper;
+import com.expleague.ml.binarization.wrappers.SortedFeatureWrapper;
 import com.expleague.ml.data.Aggregate;
 import com.expleague.ml.data.set.VecDataSet;
 import com.expleague.commons.math.vectors.impl.idxtrans.ArrayPermutation;
@@ -15,7 +19,15 @@ import gnu.trove.set.TDoubleSet;
 import gnu.trove.set.hash.TDoubleHashSet;
 import gnu.trove.set.hash.TIntHashSet;
 
-import java.util.Arrays;
+import java.math.BigInteger;
+import java.util.*;
+
+import static com.expleague.ml.binarization.calcers.MapperScoreCalcerBigInt.mapperScoreBigInt;
+import static com.expleague.ml.binarization.calcers.PartitionScoreCalcers.calculatePartitionScore_hash;
+import static com.expleague.ml.binarization.partitions.BestPartitionsSearchers.*;
+import static com.expleague.ml.binarization.utils.BinarizationUtils.firstPartition;
+import static com.expleague.ml.binarization.utils.BinarizationUtils.insertBorder;
+import static com.expleague.ml.binarization.utils.MappersUtils.*;
 
 /**
  * User: solar
@@ -23,7 +35,6 @@ import java.util.Arrays;
  * Time: 17:42
  */
 public class GridTools {
-
   public static TIntArrayList greedyLogSumBorders(final double[] sortedFeature,
                                                   final int binFactor) {
     final TIntArrayList borders = new TIntArrayList();
@@ -36,6 +47,7 @@ public class GridTools {
         final int start = i > 0 ? borders.get(i - 1) : 0;
         final int end = borders.get(i);
         final double median = sortedFeature[start + (end - start) / 2];
+
         int split = Math.abs(Arrays.binarySearch(sortedFeature, start, end, median));
 
         while (split > 0 && Math.abs(sortedFeature[split] - median) < 1e-9) // look for first less then median value
@@ -82,25 +94,34 @@ public class GridTools {
     return uniqueValuesSet(vec).size();
   }
 
-  public static BFGrid medianGrid(final VecDataSet ds, final int binFactor) {
+  public static BFGrid medianGrid(final VecDataSet ds, final int binFactor, BuildProgressHandler buildProgressHandler) {
     final int dim = ds.xdim();
+    System.out.println("[");
     final BFRowImpl[] rows = new BFRowImpl[dim];
     final TIntHashSet known = new TIntHashSet();
     int bfCount = 0;
 
     final double[] feature = new double[ds.length()];
     for (int f = 0; f < dim; f++) {
+      buildProgressHandler.step();
       final ArrayPermutation permutation = new ArrayPermutation(ds.order(f));
       final int[] order = permutation.direct();
       final int[] reverse = permutation.reverse();
+
       boolean haveDiffrentElements = false;
       for (int i = 1; i < order.length; i++)
         if (order[i] != order[0])
           haveDiffrentElements = true;
       if (!haveDiffrentElements)
         continue;
-      for (int i = 0; i < feature.length; i++)
+      for (int i = 0; i < feature.length; i++) {
         feature[i] = ds.at(order[i]).get(f);
+        //printWriter.print(feature[i] + " ");
+      }
+      //printWriter.println("");
+
+
+      //sorted feature
       final TIntArrayList borders = greedyLogSumBorders(feature, binFactor);
       final TDoubleArrayList dborders = new TDoubleArrayList();
       final TIntArrayList sizes = new TIntArrayList();
@@ -114,18 +135,35 @@ public class GridTools {
           }
         }
         for (int b = 0; b < size - 1; b++) {
-          if (known.contains(crcs[b]))
+          if (known.contains(crcs[b])) {
+            //System.out.print("CRCS: " + borders.get(b) + " ");
             continue;
+          }
           known.add(crcs[b]);
           int borderValue = borders.get(b);
           dborders.add((feature[borderValue - 1] + feature[borderValue]) / 2.);
           sizes.add(borderValue);
         }
       }
+      System.out.print("[");
+      StringBuilder sb = new StringBuilder();
+      for (int ii = 0; ii < sizes.size(); ii++) {
+        sb.append(sizes.get(ii) + ", ");
+        //System.out.print(sizes.get(ii) + ", ");
+      }
+      if (sb.length() > 0) {
+        sb.delete(sb.length() - 2, sb.length());
+      }
+
+      System.out.println(sb.toString() + "], ");
+      //System.out.println("]");
       rows[f] = new BFRowImpl(bfCount, f, dborders.toArray(), sizes.toArray());
 
       bfCount += dborders.size();
     }
+    System.out.println("]");
+    System.out.println("BF: " + bfCount);
+    //printWriter.close();
     return new BFGridImpl(rows);
   }
 

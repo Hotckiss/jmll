@@ -75,6 +75,14 @@ public class GreedyObliviousTree<Loss extends StatBasedLoss> extends VecOptimiza
       leaves = next;
       currentScore = scores[bestSplit];
     }
+
+    /*for (int i = 0; i < leaves.size(); i++) {
+      for (int j = 0; j < leaves.get(i).size(); j++) {
+        System.out.print(leaves.get(i).getPoints()[j] + " ");
+
+      }
+      System.out.println();
+    }*/
     return new Pair<>(leaves, conditions);
   }
 
